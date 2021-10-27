@@ -1,0 +1,12 @@
+[info] 
+[info] ------- Jacoco Coverage Report -------
+[info] 
+[info] Lines: 64.22% (>= required 0.0%) covered, 78 of 218 missed, OK
+[info] Instructions: 56.87% (>= required 0.0%) covered, 916 of 2124 missed, OK
+[info] Branches: 33.33% (>= required 0.0%) covered, 60 of 90 missed, OK
+[info] Methods: 36.99% (>= required 0.0%) covered, 109 of 173 missed, OK
+[info] Complexity: 32.11% (>= required 0.0%) covered, 148 of 218 missed, OK
+[info] Class: 74.07% (>= required 0.0%) covered, 7 of 27 missed, OK
+[info] 
+[info] Check D:\Downloads\play-samples-play-java-starter-example\target\scala-2.13\jacoco\report for detailed report
+[info]  

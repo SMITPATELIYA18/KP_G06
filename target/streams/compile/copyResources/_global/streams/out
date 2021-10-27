@@ -1,0 +1,4 @@
+[debug] Copy resource mappings: 
+[debug] 	(D:\Downloads\play-samples-play-java-starter-example\conf\application.conf,D:\Downloads\play-samples-play-java-starter-example\target\scala-2.13\classes\application.conf)
+[debug] 	(D:\Downloads\play-samples-play-java-starter-example\conf\logback.xml,D:\Downloads\play-samples-play-java-starter-example\target\scala-2.13\classes\logback.xml)
+[debug] 	(D:\Downloads\play-samples-play-java-starter-example\conf\routes,D:\Downloads\play-samples-play-java-starter-example\target\scala-2.13\classes\routes)
