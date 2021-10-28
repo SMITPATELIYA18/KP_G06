@@ -1,0 +1,4 @@
+[debug] Copy resource mappings: 
+[debug] 	(D:\KP_G06\conf\application.conf,D:\KP_G06\target\scala-2.13\classes\application.conf)
+[debug] 	(D:\KP_G06\conf\logback.xml,D:\KP_G06\target\scala-2.13\classes\logback.xml)
+[debug] 	(D:\KP_G06\conf\routes,D:\KP_G06\target\scala-2.13\classes\routes)

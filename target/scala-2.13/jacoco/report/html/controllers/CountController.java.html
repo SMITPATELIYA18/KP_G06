@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CountController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Jacoco Coverage Report</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">CountController.java</span></div><h1>CountController.java</h1><pre class="source lang-java linenums">package controllers;
+
+import play.mvc.Controller;
+import play.mvc.Result;
+import services.Counter;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+/**
+ * This controller demonstrates how to use dependency injection to
+ * bind a component into a controller class. The class contains an
+ * action that shows an incrementing count to users. The {@link Counter}
+ * object is injected by the Guice dependency injection system.
+ */
+@Singleton
+public class CountController extends Controller {
+
+    private final Counter counter;
+
+    @Inject
+<span class="fc" id="L22">    public CountController(Counter counter) {</span>
+<span class="fc" id="L23">       this.counter = counter;</span>
+<span class="fc" id="L24">    }</span>
+
+    /**
+     * An action that responds with the {@link Counter}'s current
+     * count. The result is plain text. This action is mapped to
+     * &lt;code&gt;GET&lt;/code&gt; requests with a path of &lt;code&gt;/count&lt;/code&gt;
+     * requests by an entry in the &lt;code&gt;routes&lt;/code&gt; config file.
+     */
+    public Result count() {
+<span class="fc" id="L33">        return ok(Integer.toString(counter.nextCount()));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
