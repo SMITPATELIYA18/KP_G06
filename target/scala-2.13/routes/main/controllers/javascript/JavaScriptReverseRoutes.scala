@@ -10,7 +10,7 @@ import _root_.play.libs.F
 // @LINE:6
 package controllers.javascript {
 
-  // @LINE:10
+  // @LINE:11
   class ReverseAsyncController(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -18,7 +18,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:10
+    // @LINE:11
     def message: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.AsyncController.message",
       """
@@ -31,7 +31,7 @@ package controllers.javascript {
   }
 
   // @LINE:6
-  class ReverseHomeController(_prefix: => String) {
+  class ReverseIndexPageController(_prefix: => String) {
 
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
@@ -40,7 +40,7 @@ package controllers.javascript {
   
     // @LINE:6
     def index: JavaScriptReverseRoute = JavaScriptReverseRoute(
-      "controllers.HomeController.index",
+      "controllers.IndexPageController.index",
       """
         function() {
           return _wA({method:"GET", url:"""" + _prefix + """"})
@@ -50,7 +50,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:13
+  // @LINE:14
   class ReverseAssets(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -58,7 +58,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:13
+    // @LINE:14
     def versioned: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Assets.versioned",
       """
@@ -70,7 +70,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:8
+  // @LINE:9
   class ReverseCountController(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -78,7 +78,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:8
+    // @LINE:9
     def count: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.CountController.count",
       """

@@ -21,13 +21,13 @@ import play.data._
 import play.core.j.PlayFormsMagicForJava._
 import scala.jdk.CollectionConverters._
 
-object index extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template2[List[RepositoryModel],AssetsFinder,play.twirl.api.HtmlFormat.Appendable] {
+object index extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template3[SearchCacheStore,String,AssetsFinder,play.twirl.api.HtmlFormat.Appendable] {
 
   /*
 * This template takes a two arguments, a String containing a
 * message to display and an AssetsFinder to locate static assets.
 */
-  def apply/*5.2*/(repositorys: List[RepositoryModel])(implicit assetsFinder: AssetsFinder):play.twirl.api.HtmlFormat.Appendable = {
+  def apply/*5.2*/(repositorys: SearchCacheStore,error:String)(implicit assetsFinder: AssetsFinder):play.twirl.api.HtmlFormat.Appendable = {
     _display_ {
       {
 
@@ -37,7 +37,7 @@ Seq[Any](format.raw/*6.1*/("""
 """),_display_(/*12.2*/main("Gitterific")/*12.20*/ {_display_(Seq[Any](format.raw/*12.22*/("""
 
     """),format.raw/*17.8*/("""
-    """),_display_(/*18.6*/welcome(repositorys, style = "java")),format.raw/*18.42*/("""
+    """),_display_(/*18.6*/welcome(repositorys,error, style = "java")),format.raw/*18.48*/("""
 
 """)))}),format.raw/*20.2*/("""
 """))
@@ -45,9 +45,9 @@ Seq[Any](format.raw/*6.1*/("""
     }
   }
 
-  def render(repositorys:List[RepositoryModel],assetsFinder:AssetsFinder): play.twirl.api.HtmlFormat.Appendable = apply(repositorys)(assetsFinder)
+  def render(repositorys:SearchCacheStore,error:String,assetsFinder:AssetsFinder): play.twirl.api.HtmlFormat.Appendable = apply(repositorys,error)(assetsFinder)
 
-  def f:((List[RepositoryModel]) => (AssetsFinder) => play.twirl.api.HtmlFormat.Appendable) = (repositorys) => (assetsFinder) => apply(repositorys)(assetsFinder)
+  def f:((SearchCacheStore,String) => (AssetsFinder) => play.twirl.api.HtmlFormat.Appendable) = (repositorys,error) => (assetsFinder) => apply(repositorys,error)(assetsFinder)
 
   def ref: this.type = this
 
@@ -57,8 +57,8 @@ Seq[Any](format.raw/*6.1*/("""
               /*
                   -- GENERATED --
                   SOURCE: app/views/index.scala.html
-                  HASH: 3c46b793af80ae55181285c57a5cc9411d6aa095
-                  MATRIX: 1063->134|1230->208|1258->403|1286->405|1313->423|1353->425|1386->554|1418->560|1475->596|1508->599
+                  HASH: b6ed69644c919901c6e090aaa94c263cfb1dedd5
+                  MATRIX: 1065->134|1240->216|1268->411|1296->413|1323->431|1363->433|1396->562|1428->568|1491->610|1524->613
                   LINES: 30->5|35->6|36->11|37->12|37->12|37->12|39->17|40->18|40->18|42->20
                   -- GENERATED --
               */

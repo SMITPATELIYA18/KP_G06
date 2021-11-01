@@ -21,10 +21,10 @@ import play.data._
 import play.core.j.PlayFormsMagicForJava._
 import scala.jdk.CollectionConverters._
 
-object welcome extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template2[List[RepositoryModel],String,play.twirl.api.HtmlFormat.Appendable] {
+object welcome extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template3[SearchCacheStore,String,String,play.twirl.api.HtmlFormat.Appendable] {
 
   /**/
-  def apply/*1.2*/(repositorys: List[RepositoryModel], style: String = "java"):play.twirl.api.HtmlFormat.Appendable = {
+  def apply/*1.2*/(cacheResult: SearchCacheStore,error:String, style: String = "java"):play.twirl.api.HtmlFormat.Appendable = {
     _display_ {
       {
 
@@ -40,38 +40,43 @@ Seq[Any](format.raw/*2.1*/("""
 <div
 	style="margin-left: 18%; margin-right: 18%; margin-bottom: 1%; margin-top: 1%;">
 	<div style="padding: 10px 0px; text-align: center">
-		<form id="form">
-			<input type="search" id="searchField"
+		<form id="form" action="/" method="GET">
+			<input type="search" id="searchField" name="search"
 				placeholder="Enter Search Terms" />
-			<button type="submit" name="GO!">Go!</button>
+			<button type="submit">Go!</button>
 		</form>
 	</div>
 	<div>
-		<h2>Search terms: JAVA Play Framework</h2>
+		"""),_display_(/*20.4*/if(error != null)/*20.21*/ {_display_(Seq[Any](format.raw/*20.23*/("""
+		"""),format.raw/*21.3*/("""<h2>Error: """),_display_(/*21.15*/error),format.raw/*21.20*/("""</h2>
+		""")))}),format.raw/*22.4*/(""" """),_display_(/*22.6*/if(cacheResult != null)/*22.29*/ {_display_(Seq[Any](format.raw/*22.31*/(""" """),_display_(/*22.33*/for(repositorys <-
+		cacheResult.getSearches()) yield /*23.29*/{_display_(Seq[Any](format.raw/*23.30*/("""
+		"""),format.raw/*24.3*/("""<h2>Search terms: """),_display_(/*24.22*/repositorys/*24.33*/.getQuery()),format.raw/*24.44*/("""</h2>
 		<div style="margin-top: 3%">
-			"""),_display_(/*22.5*/for(repository <- repositorys) yield /*22.35*/ {_display_(Seq[Any](format.raw/*22.37*/("""
-			"""),format.raw/*23.4*/("""<div style="margin-bottom: 2%">
-				<li>Owner Name: """),_display_(/*24.22*/repository/*24.32*/.getOwnerName()),format.raw/*24.47*/(""" """),format.raw/*24.48*/("""&nbsp; Repository
-					Name: """),_display_(/*25.13*/repository/*25.23*/.getRepositoryName()),format.raw/*25.43*/("""
-				"""),_display_(/*26.6*/for(topic <- repository.getTopics()) yield /*26.42*/ {_display_(Seq[Any](format.raw/*26.44*/("""
-					"""),format.raw/*27.6*/("""("""),_display_(/*27.8*/topic),format.raw/*27.13*/(""")&nbsp;
-				""")))}),format.raw/*28.6*/("""	
-				"""),format.raw/*29.5*/("""</li>
+			"""),_display_(/*26.5*/for(repository <- repositorys.getRepositorys()) yield /*26.52*/ {_display_(Seq[Any](format.raw/*26.54*/("""
+			"""),format.raw/*27.4*/("""<div style="margin-bottom: 2%">
+				<ul>
+					<li><b>Owner Name:</b> """),_display_(/*29.30*/repository/*29.40*/.getOwnerName()),format.raw/*29.55*/(""" """),format.raw/*29.56*/("""&nbsp; |
+						&nbsp;<b> Repository Name:</b> """),_display_(/*30.39*/repository/*30.49*/.getRepositoryName()),format.raw/*30.69*/("""
+						"""),_display_(/*31.8*/if(!repository.getTopics().isEmpty())/*31.45*/{_display_(Seq[Any](format.raw/*31.46*/(""" """),format.raw/*31.47*/("""&nbsp; | &nbsp; """),_display_(/*31.64*/for(topic
+						<- repository.getTopics()) yield /*32.33*/ {_display_(Seq[Any](format.raw/*32.35*/(""" """),format.raw/*32.36*/("""("""),_display_(/*32.38*/topic),format.raw/*32.43*/(""")&nbsp; """)))}),format.raw/*32.52*/(""" """)))}),format.raw/*32.54*/("""</li>
+				</ul>
 			</div>
-			""")))}),format.raw/*31.5*/("""
-		"""),format.raw/*32.3*/("""</div>
-		<hr/>
-	</div>
+			""")))}),format.raw/*35.5*/("""
+		"""),format.raw/*36.3*/("""</div>
+		<hr />
+		""")))}),format.raw/*38.4*/(""" """)))}),format.raw/*38.6*/("""
+	"""),format.raw/*39.2*/("""</div>
 </div>
-""")))}),format.raw/*36.2*/("""
+""")))}),format.raw/*41.2*/("""
 """))
       }
     }
   }
 
-  def render(repositorys:List[RepositoryModel],style:String): play.twirl.api.HtmlFormat.Appendable = apply(repositorys,style)
+  def render(cacheResult:SearchCacheStore,error:String,style:String): play.twirl.api.HtmlFormat.Appendable = apply(cacheResult,error,style)
 
-  def f:((List[RepositoryModel],String) => play.twirl.api.HtmlFormat.Appendable) = (repositorys,style) => apply(repositorys,style)
+  def f:((SearchCacheStore,String,String) => play.twirl.api.HtmlFormat.Appendable) = (cacheResult,error,style) => apply(cacheResult,error,style)
 
   def ref: this.type = this
 
@@ -81,9 +86,9 @@ Seq[Any](format.raw/*2.1*/("""
               /*
                   -- GENERATED --
                   SOURCE: app/views/welcome.scala.html
-                  HASH: 8452b99593b8af02eaaa2ed46dad1a3efafffef5
-                  MATRIX: 931->1|1085->62|1112->64|1159->103|1209->116|1237->118|1740->595|1786->625|1826->627|1857->631|1937->684|1956->694|1992->709|2021->710|2078->740|2097->750|2138->770|2170->776|2222->812|2262->814|2295->820|2323->822|2349->827|2392->840|2425->846|2475->866|2505->869|2566->900
-                  LINES: 27->1|32->2|33->3|33->3|33->3|35->5|52->22|52->22|52->22|53->23|54->24|54->24|54->24|54->24|55->25|55->25|55->25|56->26|56->26|56->26|57->27|57->27|57->27|58->28|59->29|61->31|62->32|66->36
+                  HASH: 1f01f9c3eb2b8186fc0d3a3cb302a8a635ecf306
+                  MATRIX: 933->1|1095->70|1122->72|1169->111|1219->124|1247->126|1700->553|1726->570|1766->572|1796->575|1835->587|1861->592|1900->601|1928->603|1960->626|2000->628|2029->630|2092->677|2131->678|2161->681|2207->700|2227->711|2259->722|2326->763|2389->810|2429->812|2460->816|2557->886|2576->896|2612->911|2641->912|2715->959|2734->969|2775->989|2809->997|2855->1034|2894->1035|2923->1036|2967->1053|3025->1095|3065->1097|3094->1098|3123->1100|3149->1105|3189->1114|3222->1116|3282->1146|3312->1149|3361->1168|3393->1170|3422->1172|3467->1187
+                  LINES: 27->1|32->2|33->3|33->3|33->3|35->5|50->20|50->20|50->20|51->21|51->21|51->21|52->22|52->22|52->22|52->22|52->22|53->23|53->23|54->24|54->24|54->24|54->24|56->26|56->26|56->26|57->27|59->29|59->29|59->29|59->29|60->30|60->30|60->30|61->31|61->31|61->31|61->31|61->31|62->32|62->32|62->32|62->32|62->32|62->32|62->32|65->35|66->36|68->38|68->38|69->39|71->41
                   -- GENERATED --
               */
           

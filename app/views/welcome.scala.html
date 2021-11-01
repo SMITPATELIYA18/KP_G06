@@ -1,4 +1,4 @@
-@(repositorys: List[RepositoryModel], style: String = "java")
+@(cacheResult: SearchCacheStore,error:String, style: String = "java")
 
 @defining(play.core.PlayVersion.current) { version =>
 
@@ -10,27 +10,32 @@
 <div
 	style="margin-left: 18%; margin-right: 18%; margin-bottom: 1%; margin-top: 1%;">
 	<div style="padding: 10px 0px; text-align: center">
-		<form id="form">
-			<input type="search" id="searchField"
+		<form id="form" action="/" method="GET">
+			<input type="search" id="searchField" name="search"
 				placeholder="Enter Search Terms" />
-			<button type="submit" name="GO!">Go!</button>
+			<button type="submit">Go!</button>
 		</form>
 	</div>
 	<div>
-		<h2>Search terms: JAVA Play Framework</h2>
+		@if(error != null) {
+		<h2>Error: @error</h2>
+		} @if(cacheResult != null) { @for(repositorys <-
+		cacheResult.getSearches()){
+		<h2>Search terms: @repositorys.getQuery()</h2>
 		<div style="margin-top: 3%">
-			@for(repository <- repositorys) {
+			@for(repository <- repositorys.getRepositorys()) {
 			<div style="margin-bottom: 2%">
-				<li>Owner Name: @repository.getOwnerName() &nbsp; Repository
-					Name: @repository.getRepositoryName()
-				@for(topic <- repository.getTopics()) {
-					(@topic)&nbsp;
-				}	
-				</li>
+				<ul>
+					<li><b>Owner Name:</b> @repository.getOwnerName() &nbsp; |
+						&nbsp;<b> Repository Name:</b> @repository.getRepositoryName()
+						@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
+						<- repository.getTopics()) { (@topic)&nbsp; } }</li>
+				</ul>
 			</div>
 			}
 		</div>
-		<hr/>
+		<hr />
+		} }
 	</div>
 </div>
 }

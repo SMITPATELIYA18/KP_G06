@@ -1,2 +1,3 @@
-[error] D:\KP_G06\app\controllers\HomeController.java:47:1: package views.html.Application does not exist
-[error] views.html.Application.index
+[error] D:\KP_G06\app\controllers\IndexPageController.java:78:1: incompatible types: java.lang.Object cannot be converted to models.SearchCacheStore
+[error] cacheResult.orElse(null)
+[info] Some messages have been simplified; recompile with -Xdiags:verbose to get full output

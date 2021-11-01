@@ -35,17 +35,17 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-    public Result index() {
+    //public Result index() {
     	
-    	ArrayList<RepositoryModel> repositorys = new ArrayList<>();
-    	repositorys.add(new RepositoryModel("ABCD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-    	repositorys.add(new RepositoryModel("ABCadasdadD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-    	repositorys.add(new RepositoryModel("ABCsdfafD", "XYdsfsfZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-    	repositorys.add(new RepositoryModel("AsdfdsfBCD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-    	repositorys.add(new RepositoryModel("ABCD", "XYZdfsdfsdfdsfW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-        return ok(
-        		views.html.index.render(repositorys,assetsFinder));
-    }
+//    	ArrayList<RepositoryModel> repositorys = new ArrayList<>();
+//    	repositorys.add(new RepositoryModel("ABCD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	repositorys.add(new RepositoryModel("ABCadasdadD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	repositorys.add(new RepositoryModel("ABCsdfafD", "XYdsfsfZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	repositorys.add(new RepositoryModel("AsdfdsfBCD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	repositorys.add(new RepositoryModel("ABCD", "XYZdfsdfsdfdsfW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//        return ok(
+//        		views.html.index.render(repositorys,assetsFinder));
+    //}
     
 //    public Result currentTime() {
 //    	return ok(java.time.Clock.systemUTC().instant().toString());
