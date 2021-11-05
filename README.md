@@ -1,5 +1,20 @@
 # KP_G06 APP Project Fall 2021
 
+2.	Team Information
+•	1st Team Member
+      Pradnya Kandarkar 40194666
+      Task 1 (User Profile)
+•	2nd Team Member
+      Farheen Jamadar 40194668
+      Task 2 (Repository Profile)
+•	3rd Team Member
+      Smit Ashokbhai Pateliya 40202779
+      Task 3 (Repository Issues)
+•	4th Team Member
+      Indraneel rachakonda 40206072
+      Task 4 (Topics)
+
+
 ## Running
 
 Run this using [sbt](http://www.scala-sbt.org/).  If you downloaded this project from http://www.playframework.com/download then you'll find a prepackaged version of sbt in the project directory:
