@@ -16,11 +16,13 @@ class Routes(
   // @LINE:6
   IndexPageController_0: controllers.IndexPageController,
   // @LINE:9
-  CountController_3: controllers.CountController,
+  CountController_1: controllers.CountController,
   // @LINE:11
-  AsyncController_1: controllers.AsyncController,
-  // @LINE:14
-  Assets_2: controllers.Assets,
+  AsyncController_4: controllers.AsyncController,
+  // @LINE:13
+  IssueController_2: controllers.IssueController,
+  // @LINE:16
+  Assets_3: controllers.Assets,
   val prefix: String
 ) extends GeneratedRouter {
 
@@ -29,17 +31,19 @@ class Routes(
     // @LINE:6
     IndexPageController_0: controllers.IndexPageController,
     // @LINE:9
-    CountController_3: controllers.CountController,
+    CountController_1: controllers.CountController,
     // @LINE:11
-    AsyncController_1: controllers.AsyncController,
-    // @LINE:14
-    Assets_2: controllers.Assets
-  ) = this(errorHandler, IndexPageController_0, CountController_3, AsyncController_1, Assets_2, "/")
+    AsyncController_4: controllers.AsyncController,
+    // @LINE:13
+    IssueController_2: controllers.IssueController,
+    // @LINE:16
+    Assets_3: controllers.Assets
+  ) = this(errorHandler, IndexPageController_0, CountController_1, AsyncController_4, IssueController_2, Assets_3, "/")
 
   def withPrefix(addPrefix: String): Routes = {
     val prefix = play.api.routing.Router.concatPrefix(addPrefix, this.prefix)
     router.RoutesPrefix.setPrefix(prefix)
-    new Routes(errorHandler, IndexPageController_0, CountController_3, AsyncController_1, Assets_2, prefix)
+    new Routes(errorHandler, IndexPageController_0, CountController_1, AsyncController_4, IssueController_2, Assets_3, prefix)
   }
 
   private[this] val defaultPrefix: String = {
@@ -50,6 +54,7 @@ class Routes(
     ("""GET""", this.prefix, """controllers.IndexPageController.index(request:Request)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """count""", """controllers.CountController.count"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """message""", """controllers.AsyncController.message"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """issues""", """controllers.IssueController.getIssueStat(request:Request)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/""" + "$" + """file<.+>""", """controllers.Assets.versioned(file:String)"""),
     Nil
   ).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
@@ -83,7 +88,7 @@ class Routes(
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("count")))
   )
   private[this] lazy val controllers_CountController_count1_invoker = createInvoker(
-    CountController_3.count,
+    CountController_1.count,
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.CountController",
@@ -102,7 +107,7 @@ class Routes(
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("message")))
   )
   private[this] lazy val controllers_AsyncController_message2_invoker = createInvoker(
-    AsyncController_1.message,
+    AsyncController_4.message,
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.AsyncController",
@@ -115,12 +120,32 @@ class Routes(
     )
   )
 
-  // @LINE:14
-  private[this] lazy val controllers_Assets_versioned3_route = Route("GET",
+  // @LINE:13
+  private[this] lazy val controllers_IssueController_getIssueStat3_route = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("issues")))
+  )
+  private[this] lazy val controllers_IssueController_getIssueStat3_invoker = createInvoker(
+    
+    (req:play.mvc.Http.Request) =>
+      IssueController_2.getIssueStat(fakeValue[play.mvc.Http.Request]),
+    play.api.routing.HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.IssueController",
+      "getIssueStat",
+      Seq(classOf[play.mvc.Http.Request]),
+      "GET",
+      this.prefix + """issues""",
+      """""",
+      Seq()
+    )
+  )
+
+  // @LINE:16
+  private[this] lazy val controllers_Assets_versioned4_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("assets/"), DynamicPart("file", """.+""",false)))
   )
-  private[this] lazy val controllers_Assets_versioned3_invoker = createInvoker(
-    Assets_2.versioned(fakeValue[String]),
+  private[this] lazy val controllers_Assets_versioned4_invoker = createInvoker(
+    Assets_3.versioned(fakeValue[String]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.Assets",
@@ -146,19 +171,26 @@ class Routes(
     // @LINE:9
     case controllers_CountController_count1_route(params@_) =>
       call { 
-        controllers_CountController_count1_invoker.call(CountController_3.count)
+        controllers_CountController_count1_invoker.call(CountController_1.count)
       }
   
     // @LINE:11
     case controllers_AsyncController_message2_route(params@_) =>
       call { 
-        controllers_AsyncController_message2_invoker.call(AsyncController_1.message)
+        controllers_AsyncController_message2_invoker.call(AsyncController_4.message)
       }
   
-    // @LINE:14
-    case controllers_Assets_versioned3_route(params@_) =>
+    // @LINE:13
+    case controllers_IssueController_getIssueStat3_route(params@_) =>
+      call { 
+        controllers_IssueController_getIssueStat3_invoker.call(
+          req => IssueController_2.getIssueStat(req))
+      }
+  
+    // @LINE:16
+    case controllers_Assets_versioned4_route(params@_) =>
       call(params.fromPath[String]("file", None)) { (file) =>
-        controllers_Assets_versioned3_invoker.call(Assets_2.versioned(file))
+        controllers_Assets_versioned4_invoker.call(Assets_3.versioned(file))
       }
   }
 }

@@ -1,0 +1,30 @@
+@(issues: IssueModel,style: String = "java")
+
+@defining(play.core.PlayVersion.current) { version =>
+<section id="top">
+	<div class="wrapper">
+		<h1>Gitterific</h1>
+	</div>
+</section>
+
+<div
+	style="margin-left: 18%; margin-right: 18%; margin-bottom: 1%; margin-top: 1%;">
+	<div style="padding: 10px 0px;">
+		<h1>A word-level statistics of the issue titles</h1>
+		<span>
+			<i>(by frequency of the words in descending order)</i>
+		</span>
+	</div>
+	<div>
+		<h2 style="margin-bottom: 3%">Repository Name:
+			@issues.getRepoFullName()</h2>
+		@for(words <- {issues.getWordLevelData()}) {
+		<div style="margin-bottom: 2%">
+			<ul>
+				<li><b>@{words._1}</b> : : @{words._2}</li>
+			</ul>
+		</div>
+		}
+	</div>
+</div>
+}

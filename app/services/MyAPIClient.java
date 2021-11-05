@@ -3,8 +3,10 @@ package services;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 
+import models.IssueModel;
 import models.SearchRepository;
 import play.libs.ws.*;
+import services.github.GitHubAPI;
 
 /**
  * This class handles all API of GitHub.
@@ -12,7 +14,7 @@ import play.libs.ws.*;
  *
  */
 
-public class MyAPIClient implements WSBodyReadables, WSBodyWritables {
+public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
 	final String baseURL = "https://api.github.com";
 	
@@ -39,6 +41,14 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables {
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), query));
+		return searchResult;
+	}
+	
+	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName){
+		String finalURL = baseURL + "/repos/"+repoFullName+"/issues";
+		CompletionStage<IssueModel> searchResult = client.url(finalURL)
+				.addHeader("accept", "application/vnd.github.v3+json").get()
+				.thenApplyAsync(result -> new IssueModel(repoFullName,result.asJson()));
 		return searchResult;
 	}
 

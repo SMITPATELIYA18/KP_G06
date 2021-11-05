@@ -1,3 +1,5 @@
-[error] D:\KP_G06\app\controllers\IndexPageController.java:78:1: incompatible types: java.lang.Object cannot be converted to models.SearchCacheStore
-[error] cacheResult.orElse(null)
-[info] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+[error] D:\KP_G06\app\views\issueDisplay.scala.html:25:20: not enough arguments for method apply: (i: Int): Char in class StringOps.
+[error] Unspecified value parameter i.
+[error] 						<b>@{words._1()}</b>
+[error] 						             ^
+[error] one error found
