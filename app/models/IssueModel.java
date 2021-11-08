@@ -22,6 +22,8 @@ public class IssueModel {
 	private LinkedHashMap<String, Long> worldLevelData = new LinkedHashMap<>();
 
 	public IssueModel(String repoFullName, JsonNode data) {
+//		System.out.println(this.repoFullName);
+//		System.out.println(data);
 		this.repoFullName = repoFullName;
 		java.util.Iterator<JsonNode> iteratorItems = data.elements() != null ? data.elements()
 				: Collections.emptyIterator();

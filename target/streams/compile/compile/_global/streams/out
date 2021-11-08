@@ -1,5 +1,7 @@
-[error] D:\KP_G06\app\views\issueDisplay.scala.html:25:20: not enough arguments for method apply: (i: Int): Char in class StringOps.
-[error] Unspecified value parameter i.
-[error] 						<b>@{words._1()}</b>
-[error] 						             ^
-[error] one error found
+[error] D:\KP_G06\app\services\MyAPIClientTest.java:19:1: package test does not exist
+[error] test.TestResources
+[error] D:\KP_G06\app\services\MyAPIClientTest.java:3:1: package test.test does not exist
+[error] D:\KP_G06\app\services\MyAPIClientTest.java:32:1: cannot find symbol
+[error]   symbol:   variable TestResources
+[error]   location: class services.MyAPIClientTest
+[error] TestResources

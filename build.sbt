@@ -13,6 +13,8 @@ lazy val root = (project in file("."))
       // Testing libraries for dealing with CompletionStage...
       "org.assertj" % "assertj-core" % "3.14.0" % Test,
       "org.awaitility" % "awaitility" % "4.0.1" % Test,
+      "com.googlecode.json-simple" % "json-simple" % "1.1.1",
+      "org.mockito" % "mockito-core" % "4.0.0" % Test,
     ),
     javacOptions ++= Seq(
       "-encoding", "UTF-8",

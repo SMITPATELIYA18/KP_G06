@@ -1,0 +1,25 @@
+[debug] javaOptions: Vector(-Djacoco-agent.destfile=D:\KP_G06\target\scala-2.13\jacoco\data\jacoco.exec)
+[debug] Forking tests - parallelism = false
+[debug] Create a single-thread test executor
+[debug] Runner for com.novocode.junit.JUnitFramework produced 2 initial tasks for 2 tests.
+[debug]   Running TaskDef(UnitTest, sbt.ForkMain$AnnotatedFingerscan@75784da0, false, [SuiteSelector])
+[info] Test run started
+[info] Test UnitTest.simpleCheck started
+[debug] Test UnitTest.simpleCheck finished, took 0.087 sec
+[info] Test UnitTest.testAsync started
+[debug] Test UnitTest.testAsync finished, took 3.146 sec
+[info] Test UnitTest.testCount started
+[debug] Test UnitTest.testCount finished, took 0.004 sec
+[info] Test run finished: 0 failed, 0 ignored, 3 total, 3.248s
+[debug]     Produced 0 nested tasks and 3 events.
+[debug]   Running TaskDef(IssuesControllerAPITest, sbt.ForkMain$AnnotatedFingerscan@1434676e, false, [SuiteSelector])
+[info] Test run started
+[info] Test IssuesControllerAPITest.testIssues started
+[debug] Test IssuesControllerAPITest.testIssues finished, took 0.746 sec
+[info] Test run finished: 0 failed, 0 ignored, 1 total, 3.485s
+[debug]     Produced 0 nested tasks and 1 events.
+[debug] Summary for JUnit not available.
+[info] Passed: Total 4, Failed 0, Errors 0, Passed 4
+[debug] Passed tests:
+[debug] 	IssuesControllerAPITest
+[debug] 	UnitTest

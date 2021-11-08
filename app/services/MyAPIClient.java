@@ -16,7 +16,7 @@ import services.github.GitHubAPI;
 
 public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
-	final String baseURL = "https://api.github.com";
+	private String baseURL = "https://api.github.com";
 	
 	/**
 	 *  
@@ -50,6 +50,14 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new IssueModel(repoFullName,result.asJson()));
 		return searchResult;
+	}
+	
+	public void setBaseURL(String URL) {
+		this.baseURL = URL;
+	}
+	
+	public String getBaseURL() {
+		return this.baseURL;
 	}
 
 }

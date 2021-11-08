@@ -30,7 +30,7 @@ public class IssueController extends Controller {
 		Optional<String> query = request.queryString("repoName");
 		MyAPIClient apiClient = new MyAPIClient(client);
 		return apiClient.getRepositoryIssue(query.get()).thenApplyAsync(
-				issueModel -> ok(views.html.issues.render(issueModel, assetsFinder)),
+				issueModel -> { System.out.println(issueModel); return ok(views.html.issues.render(issueModel, assetsFinder));},
 				httpExecutionContext.current());
 	}
 }
