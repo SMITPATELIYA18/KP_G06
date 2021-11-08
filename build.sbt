@@ -11,6 +11,7 @@ lazy val root = (project in file("."))
       // Test Database
       "com.h2database" % "h2" % "1.4.199",
       // Testing libraries for dealing with CompletionStage...
+      "junit" % "junit" % "5.7.2" % "Test",
       "org.assertj" % "assertj-core" % "3.14.0" % Test,
       "org.awaitility" % "awaitility" % "4.0.1" % Test,
       "com.googlecode.json-simple" % "json-simple" % "1.1.1",
