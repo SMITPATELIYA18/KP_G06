@@ -15,6 +15,7 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
 import scala.concurrent.ExecutionContextExecutor;
 import services.MyAPIClient;
+import com.typesafe.config.Config;
 
 /**
  * @author SmitPateliya 
@@ -24,6 +25,7 @@ import services.MyAPIClient;
  */
 
 public class IndexPageController extends Controller {
+	private final Config config;
 	private final ActorSystem actorSystem;
 //	private final ExecutionContextExecutor executor;
 	private final AssetsFinder assetsFinder;
@@ -39,12 +41,13 @@ public class IndexPageController extends Controller {
 
 	@Inject
 	public IndexPageController(HttpExecutionContext httpExecutionContext, WSClient client, ActorSystem actorSystem,
-			ExecutionContextExecutor executor, AssetsFinder assetsFinder, AsyncCacheApi cache) {
+			ExecutionContextExecutor executor, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config) {
 		this.actorSystem = actorSystem;
 		this.assetsFinder = assetsFinder;
 		this.client = client;
 		this.httpExecutionContext = httpExecutionContext;
 		this.asyncCacheApi = cache;
+		this.config = config;
 	}
 	
 	/**
@@ -63,32 +66,35 @@ public class IndexPageController extends Controller {
 			});
 		}
 
-		MyAPIClient apiClient = new MyAPIClient(client);
+		MyAPIClient apiClient = new MyAPIClient(client, config);
 //		try {
 //			apiClient.getRepositoryIssue("TheAlgorithms/Java").toCompletableFuture().get();
 //		} catch (InterruptedException | ExecutionException e1) {
 //			// TODO Auto-generated catch block
 //			e1.printStackTrace();
 //		}
-		return apiClient.getRepositoryFromSearchBar(query.get()).thenApplyAsync(seaarchRepository -> {
+
+		return apiClient.getRepositoryFromSearchBar(query.get()).thenApplyAsync(searchRepository -> {
 			CompletionStage<Optional<SearchCacheStore>> data = asyncCacheApi.get("search");
 			Optional<SearchCacheStore> cacheData = Optional.empty();
 			try {
 				cacheData = data.toCompletableFuture().get();
 			} catch (InterruptedException e) {
+
 			} catch (ExecutionException e) {
+
 			} catch (CancellationException e) {
+
 			}
 			SearchCacheStore store;
+
 			if (cacheData.isPresent()) {
 				store = cacheData.get();
-				store.addNewSearch(seaarchRepository);
-				asyncCacheApi.set("search", store,60*20);
 			} else {
 				store = new SearchCacheStore();
-				store.addNewSearch(seaarchRepository);
-				asyncCacheApi.set("search", store,60*20);
 			}
+			store.addNewSearch(searchRepository);
+			asyncCacheApi.set("search", store,60*20);
 			return ok(views.html.index.render(store, null, assetsFinder));
 		}, httpExecutionContext.current());
 	}

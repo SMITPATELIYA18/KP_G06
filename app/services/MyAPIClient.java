@@ -8,6 +8,8 @@ import models.SearchRepository;
 import play.libs.ws.*;
 import services.github.GitHubAPI;
 
+import com.typesafe.config.Config;
+
 /**
  * This class handles all API of GitHub.
  * @author SmitPateliya
@@ -16,6 +18,7 @@ import services.github.GitHubAPI;
 
 public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
+	private final Config config;
 	private String baseURL = "https://api.github.com";
 	
 	/**
@@ -24,8 +27,9 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	 */
 
 	@Inject
-	public MyAPIClient(WSClient client) {
+	public MyAPIClient(WSClient client, Config config) {
 		this.client = client;
+		this.config = config;
 	}
 	
 	/**
@@ -37,7 +41,7 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
-		String finalURL = baseURL + "/search/repositories";
+		String finalURL = this.config.getString("git.baseUrl") + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), query));
@@ -45,7 +49,7 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	}
 	
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName){
-		String finalURL = baseURL + "/repos/"+repoFullName+"/issues";
+		String finalURL = this.config.getString("git.baseUrl") + "/repos/"+repoFullName+"/issues";
 		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new IssueModel(repoFullName,result.asJson()));
