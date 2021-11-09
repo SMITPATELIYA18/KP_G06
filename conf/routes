@@ -18,3 +18,7 @@ GET     /assets/*file               controllers.Assets.versioned(file)
 #GET     /time                       controllers.HomeController.currentTime
 
 #GET     /hello/:message             controllers.HomeController.printHello(message:String)
+
+
+# User profile routes
+GET 	/sample-user-profile/:username		controllers.UserProfileController.getSampleUserProfile(username: String)
