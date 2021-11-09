@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionStage;
@@ -29,7 +30,7 @@ public class IndexPageController extends Controller {
 	private final ActorSystem actorSystem;
 //	private final ExecutionContextExecutor executor;
 	private final AssetsFinder assetsFinder;
-	private WSClient client;
+	private final WSClient client;
 	private HttpExecutionContext httpExecutionContext;
 	private AsyncCacheApi asyncCacheApi;
 
@@ -60,20 +61,13 @@ public class IndexPageController extends Controller {
 		Optional<String> query = request.queryString("search");
 		if (query.isEmpty() || query.get() == "") {
 			return asyncCacheApi.get("search").thenApplyAsync((cacheResult) -> {
-				SearchCacheStore answer = (SearchCacheStore) cacheResult.orElse(null);
-				return ok(views.html.index.render(answer, "Please, Enter the Search Query!",
+				//SearchCacheStore answer = (SearchCacheStore) cacheResult.orElse(null);
+				return ok(views.html.index.render(null, "Please, Enter the Search Query!",
 						assetsFinder));
 			});
 		}
 
 		MyAPIClient apiClient = new MyAPIClient(client, config);
-//		try {
-//			apiClient.getRepositoryIssue("TheAlgorithms/Java").toCompletableFuture().get();
-//		} catch (InterruptedException | ExecutionException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-
 		return apiClient.getRepositoryFromSearchBar(query.get()).thenApplyAsync(searchRepository -> {
 			CompletionStage<Optional<SearchCacheStore>> data = asyncCacheApi.get("search");
 			Optional<SearchCacheStore> cacheData = Optional.empty();

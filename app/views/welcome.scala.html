@@ -21,7 +21,7 @@
 		<h2>Error: @error</h2>
 		} @if(cacheResult != null) { @for(repositorys <-
 		cacheResult.getSearches()){
-		<h2>Search terms: @repositorys.getQuery()</h2>
+		<h2 type="searchResult">Search terms: @repositorys.getQuery()</h2>
 		<div style="margin-top: 3%">
 			@for(repository <- repositorys.getRepositorys()) {
 			<div style="margin-bottom: 2%">

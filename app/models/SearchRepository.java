@@ -19,6 +19,8 @@ public class SearchRepository {
 	private String query;
 	private List<RepositoryModel> repositorys = new ArrayList<>();
 
+
+	public SearchRepository(){};
 	/**
 	 * 
 	 * @param data  Gets data from API
@@ -42,6 +44,10 @@ public class SearchRepository {
 
 	public void setRepositorys(List<RepositoryModel> repositorys) {
 		this.repositorys = repositorys;
+	}
+
+	public void clearRepository() {
+		this.repositorys.clear();
 	}
 
 	public String getQuery() {
