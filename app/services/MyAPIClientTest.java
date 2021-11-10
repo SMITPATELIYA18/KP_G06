@@ -18,6 +18,12 @@ import play.libs.ws.WSClient;
 import resources.TestResources;
 import services.github.GitHubAPI;
 
+/**
+ * This class mocks API call and return fake response.
+ * @author Smit Pateliya
+ *
+ */
+
 public class MyAPIClientTest implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private WSClient client;
 	@Inject
@@ -25,6 +31,11 @@ public class MyAPIClientTest implements WSBodyReadables, WSBodyWritables, GitHub
 		this.client = client;
 	}
 	
+	/**
+	 * This function returns IssueModel object when API  will call.
+	 * @param repoFullName The name of repository name
+	 * @return returns completion stage issue model object 
+	 */
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName){
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode data = null;

@@ -1,6 +1,8 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
 import static play.inject.Bindings.bind;
 
 import java.util.concurrent.CompletableFuture;
@@ -14,6 +16,7 @@ import play.mvc.Http.Request;
 import play.mvc.Http.RequestBuilder;
 import play.routing.RoutingDsl;
 import play.test.Helpers;
+import static play.test.Helpers.contentAsString;
 import play.test.WithApplication;
 import resources.TestResources;
 import services.MyAPIClientTest;
@@ -36,20 +39,29 @@ import models.IssueModel;
 
 //@RunWith(PowerMockRunner.class)
 //@PowerMockIgnore({"javax.management.*", "javax.crypto.*"})
+/**
+ * This class Tests Issue Controller in Controller Package.
+ * @author Smit Pateliya
+ *
+ */
 public class IssueControllerTest{
 	private Application testApp;
-	private GitHubAPI testGitHub;
+//	private GitHubAPI testGitHub;
 	private IssueController issueController;
 
 //	@Override
 //	protected Application provideApplication() {
 //		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(MyAPIClientTest.class)).build();
 //	}
+	
+	/**
+	 * Overrides live API class to Mock API class and creates fake application.
+	 */
 
 	@Before
 	public void setUp() {
 		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(MyAPIClientTest.class)).build();
-		testGitHub = testApp.injector().instanceOf(GitHubAPI.class);
+		//testGitHub = testApp.injector().instanceOf(GitHubAPI.class);
 		issueController = testApp.injector().instanceOf(IssueController.class);
 	}
 
@@ -57,23 +69,37 @@ public class IssueControllerTest{
 //	public void tearDown() {
 //		Helpers.stop(testApp);
 //	}
+	
+	/**
+	 * Tests issue controller with the help of the Mockito
+	 * 
+	 */
 
 	@Test
 	public void testIssueController() {
 		Helpers.running(testApp, () -> {
-			when(testGitHub.getRepositoryIssue("repoName")).thenReturn(mockIssueController());
+//			when(testGitHub.getRepositoryIssue("repoName")).thenReturn(mockIssueController());
+			GitHubAPI api = mock(GitHubAPI.class);
+			doReturn(mockIssueController()).when(api).getRepositoryIssue("repoName");
 //			IssueController controller = mock(IssueController.class);
 			CompletionStage<Result> issueStat = issueController.getIssueStat("repoName");
 			Result result;
 			try {
 				result = issueStat.toCompletableFuture().get();
 				assertEquals(HttpStatus.SC_OK, result.status());
+				assertEquals("text/html",result.contentType().get());
+				assertTrue(contentAsString(result).contains("TheAlgorithms/Java"));
 			} catch (InterruptedException | ExecutionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
 	}
+	
+	/**
+	 * Mocks issue API fetching call
+	 * @return Completion Stage IssueModel object
+	 */
 	
 	private CompletionStage<IssueModel> mockIssueController() {
 		ObjectMapper mapper = new ObjectMapper();
