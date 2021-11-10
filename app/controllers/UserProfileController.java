@@ -2,16 +2,20 @@ package controllers;
 
 import play.mvc.Controller;
 import play.mvc.*;
-import controllers.AssetsFinder;
 
-import views.html.*;
+import javax.inject.Inject;
 
 public class UserProfileController extends Controller {
-	
-	
+	private final AssetsFinder assetsFinder;
 
-	public Result getSampleUserProfile(String username) {
-	    return (Result) ok("Sample user profile for " + username);
+	@Inject
+	public UserProfileController(AssetsFinder assetsFinder) {
+		this.assetsFinder = assetsFinder;
+	}
+
+	public Result getUserProfile(String username) {
+
+		return ok(views.html.userprofile.profile.render(username, assetsFinder));
 	}
 	
 }
