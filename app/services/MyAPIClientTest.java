@@ -37,7 +37,7 @@ public class MyAPIClientTest implements WSBodyReadables, WSBodyWritables, GitHub
 		CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
 		IssueModel modelData = new IssueModel(repoFullName, data);
 		futureModel.complete(modelData);
-		System.out.println(modelData.getWordLevelData());
+//		System.out.println(modelData.getWordLevelData());
 		return futureModel;
 	}
 }

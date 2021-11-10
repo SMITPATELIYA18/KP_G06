@@ -16,6 +16,8 @@ lazy val root = (project in file("."))
       "org.awaitility" % "awaitility" % "4.0.1" % Test,
       "com.googlecode.json-simple" % "json-simple" % "1.1.1",
       "org.mockito" % "mockito-core" % "4.0.0" % Test,
+      "org.powermock" % "powermock-module-junit4" % "2.0.9" % Test,
+"org.powermock" % "powermock-api-mockito2" % "2.0.9" % Test,
     ),
     javacOptions ++= Seq(
       "-encoding", "UTF-8",
