@@ -26,11 +26,8 @@
 			@for(repository <- repositoryList.getRepositoryList()) {
 			<div style="margin-bottom: 2%">
 				<ul>
-					<li><b>Owner Name:</b> @repository.getOwnerName() &nbsp; |
-						&nbsp;<b> Repository Name:</b>
-						 <a href="/repositoryProfile?ownerName=@repository.getOwnerName()&repositoryName=@repository.getRepositoryName()">
-							 @repository.getRepositoryName()
-						 </a>
+					<li><b>Owner Name:</b> <a href="@routes.UserProfileController.getUserProfile(repository.getOwnerName())">@repository.getOwnerName()</a> &nbsp; |
+						&nbsp;<b> Repository Name:</b> <a href="@routes.UserProfileController.getUserProfile(repository.getOwnerName())"> @repository.getRepositoryName()
 						@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
 						<- repository.getTopics()) { (@topic)&nbsp; } }</li>
 				</ul>

@@ -17,3 +17,10 @@ GET     /assets/*file               controllers.Assets.versioned(file)
 
 #Repository Profile Controller
 GET     /repositoryProfile/:ownerName/:repositoryName		    controllers.RepositoryProfileController.repositoryProfile(ownerName: String, repositoryName: String)
+#GET     /time                       controllers.HomeController.currentTime
+
+#GET     /hello/:message             controllers.HomeController.printHello(message:String)
+
+
+# User profile routes
+GET 	/sample-user-profile/:username		controllers.UserProfileController.getUserProfile(username: String)
