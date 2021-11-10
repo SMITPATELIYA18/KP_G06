@@ -1,8 +1,12 @@
 package services;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.IssueModel;
 import models.SearchRepository;
 import play.libs.ws.*;
@@ -19,7 +23,7 @@ import com.typesafe.config.Config;
 public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
 	private final Config config;
-	private String baseURL = "https://api.github.com";
+	private String baseURL;
 	
 	/**
 	 *  
@@ -30,6 +34,7 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	public MyAPIClient(WSClient client, Config config) {
 		this.client = client;
 		this.config = config;
+		this.baseURL = config.getString("git.baseUrl");
 	}
 	
 	/**
@@ -54,6 +59,17 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new IssueModel(repoFullName,result.asJson()));
 		return searchResult;
+	}
+
+	// ToDo: Add a model for user profile
+	// ToDo: Add abstraction
+	// ToDo: Verify timeout
+	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
+		String requestURL = baseURL + "/users/" + username;
+		return client.url(requestURL)
+				.addHeader("accept", "application/vnd.github.v3+json")
+				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get()
+				.thenApplyAsync(r -> r.getBody(json()));
 	}
 	
 	public void setBaseURL(String URL) {

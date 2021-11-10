@@ -21,4 +21,4 @@ GET     /assets/*file               controllers.Assets.versioned(file)
 
 
 # User profile routes
-GET 	/sample-user-profile/:username		controllers.UserProfileController.getUserProfile(username: String)
+GET 	/user-profile/:username		controllers.UserProfileController.getUserProfile(username: String)
