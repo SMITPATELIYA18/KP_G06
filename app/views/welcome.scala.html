@@ -19,15 +19,18 @@
 	<div>
 		@if(error != null) {
 		<h2>Error: @error</h2>
-		} @if(cacheResult != null) { @for(repositorys <-
+		} @if(cacheResult != null) { @for(repositoryList <-
 		cacheResult.getSearches()){
-		<h2 type="searchResult">Search terms: @repositorys.getQuery()</h2>
+		<h2 type="searchResult">Search terms: @repositoryList.getQuery()</h2>
 		<div style="margin-top: 3%">
-			@for(repository <- repositorys.getRepositorys()) {
+			@for(repository <- repositoryList.getRepositoryList()) {
 			<div style="margin-bottom: 2%">
 				<ul>
 					<li><b>Owner Name:</b> @repository.getOwnerName() &nbsp; |
-						&nbsp;<b> Repository Name:</b> @repository.getRepositoryName()
+						&nbsp;<b> Repository Name:</b>
+						 <a href="/repositoryProfile?ownerName=@repository.getOwnerName()&repositoryName=@repository.getRepositoryName()">
+							 @repository.getRepositoryName()
+						 </a>
 						@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
 						<- repository.getTopics()) { (@topic)&nbsp; } }</li>
 				</ul>

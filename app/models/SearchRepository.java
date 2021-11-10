@@ -17,10 +17,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class SearchRepository {
 	private String query;
-	private List<RepositoryModel> repositorys = new ArrayList<>();
-
-
-	public SearchRepository(){};
+	private List<RepositoryModel> repositoryList = new ArrayList<>();
 	/**
 	 * 
 	 * @param data  Gets data from API
@@ -33,21 +30,22 @@ public class SearchRepository {
 		java.util.Iterator<JsonNode> iteratorItems = items != null ? items.elements() : Collections.emptyIterator();
 		while (iteratorItems.hasNext()) {
 			JsonNode item = iteratorItems.next();
-			repositorys.add(new RepositoryModel(item));
+			repositoryList.add(new RepositoryModel(item));
 		}
-		repositorys = repositorys.stream().limit(10).collect(toList());
+		System.out.println("Repository: " + repositoryList);
+		repositoryList = repositoryList.stream().limit(10).collect(toList());
 	}
 
-	public List<RepositoryModel> getRepositorys() {
-		return repositorys;
+	public List<RepositoryModel> getRepositoryList() {
+		return repositoryList;
 	}
 
-	public void setRepositorys(List<RepositoryModel> repositorys) {
-		this.repositorys = repositorys;
+	public void setRepositoryList(List<RepositoryModel> repositoryList) {
+		this.repositoryList = repositoryList;
 	}
 
 	public void clearRepository() {
-		this.repositorys.clear();
+		this.repositoryList.clear();
 	}
 
 	public String getQuery() {

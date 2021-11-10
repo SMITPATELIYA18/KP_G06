@@ -1,9 +1,14 @@
 package services;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import models.IssueModel;
+import models.RepositoryModel;
+import models.RepositoryProfileModel;
 import models.SearchRepository;
 import play.libs.ws.*;
 import services.github.GitHubAPI;
@@ -19,8 +24,7 @@ import com.typesafe.config.Config;
 public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
 	private final Config config;
-	private String baseURL = "https://api.github.com";
-	
+
 	/**
 	 *  
 	 * @param client Constructor gets data from the Controller class.
@@ -48,20 +52,31 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 		return searchResult;
 	}
 	
-	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName){
-		String finalURL = this.config.getString("git.baseUrl") + "/repos/"+repoFullName+"/issues";
+	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) {
+		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + repoFullName + "/issues";
 		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
-				.thenApplyAsync(result -> new IssueModel(repoFullName,result.asJson()));
+				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
 		return searchResult;
 	}
-	
-	public void setBaseURL(String URL) {
-		this.baseURL = URL;
-	}
-	
-	public String getBaseURL() {
-		return this.baseURL;
-	}
 
+	/*public CompletableFuture<RepositoryProfileModel> getRepositoryProfile(String ownerName, String repositoryName){
+		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
+		CompletableFuture<RepositoryProfileModel> result = client.url(finalURL).get()
+										.toCompletableFuture().thenApplyAsync(output -> RepositoryProfileModel.initialize(output.asJson()));
+
+		System.out.println("Result: " + result);
+		return  result;
+	}*/
+
+	//TODO: Optimize
+	public CompletionStage<RepositoryProfileModel> getRepositoryProfile(String ownerName, String repositoryName){
+		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
+		CompletionStage<RepositoryProfileModel> result = client.url(finalURL).get().thenApplyAsync(output -> {
+				System.out.println("Result1: " + output);
+				return new RepositoryProfileModel(output.asJson());
+		});
+		//System.out.println("Result: " + result);
+		return  result;
+	}
 }
