@@ -1,4 +1,31 @@
-@(username: String)(implicit assetsFinder: AssetsFinder)
+@(username: String)(profileData: com.fasterxml.jackson.databind.JsonNode)(implicit assetsFinder: AssetsFinder)
+
+@import com.fasterxml.jackson.databind.JsonNode
+
+@walkJsonTree(name: String, node: JsonNode) = {
+
+    @if(node.isObject()) {
+    <ul>
+        @for(nodeEntry <- node.fields()) {
+            <li>@nodeEntry.getKey(): @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())</li>
+        }
+    </ul>
+    }
+    @if(node.isArray()) {
+    <ul>
+        @for(arrayNode <- node.elements()) {
+            <li>[List]: @walkJsonTree(name, arrayNode)</li>
+        }
+    </ul>
+    }
+    @if(node.isValueNode()) {
+        @node.asText()
+    } else {
+        @* other *@
+        @node.asText()
+    }
+
+}
 
 @main("User Profile") {
     <section id="top">
@@ -7,8 +34,12 @@
         </div>
     </section>
     <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
-        <div style="padding: 10px 0px">
-            <p>Sample user profile for @username</p>
+        <div id="user-info" style="padding: 10px 0px">
+            <p>User profile for @username</p>
+            <p>@walkJsonTree(null, profileData) </p>
+        </div>
+        <div id="user-repositories" style="padding: 10px 0px">
+            <p>repositories go here</p>
         </div>
     </div>
 }

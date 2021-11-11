@@ -1,11 +1,14 @@
 package services;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.IssueModel;
 import models.RepositoryModel;
 import models.RepositoryProfileModel;
@@ -24,7 +27,8 @@ import com.typesafe.config.Config;
 public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
 	private final Config config;
-
+	private String baseURL;
+	
 	/**
 	 *  
 	 * @param client Constructor gets data from the Controller class.
@@ -61,6 +65,17 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 		return searchResult;
 	}
 
+	// ToDo: Add a model for user profile
+	// ToDo: Add abstraction
+	// ToDo: Verify timeout
+	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
+		String requestURL = baseURL + "/users/" + username;
+		return client.url(requestURL)
+				.addHeader("accept", "application/vnd.github.v3+json")
+				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get()
+				.thenApplyAsync(r -> r.getBody(json()));
+	}
+
 	/*public CompletableFuture<RepositoryProfileModel> getRepositoryProfile(String ownerName, String repositoryName){
 		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
 		CompletableFuture<RepositoryProfileModel> result = client.url(finalURL).get()
@@ -74,8 +89,16 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	public CompletionStage<WSResponse> getRepositoryProfile(String ownerName, String repositoryName){
 		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
 		CompletionStage<WSResponse> result = client.url(finalURL).get();
-				//.thenApplyAsync(output -> new RepositoryProfileModel(output.asJson()));
+		//.thenApplyAsync(output -> new RepositoryProfileModel(output.asJson()));
 		//System.out.println("Result: " + result);
 		return  result;
+	}
+
+	public void setBaseURL(String URL) {
+		this.baseURL = URL;
+	}
+
+	public String getBaseURL() {
+		return this.baseURL;
 	}
 }
