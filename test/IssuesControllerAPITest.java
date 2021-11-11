@@ -17,20 +17,42 @@ import org.junit.*;
 
 import models.IssueModel;
 
+/**
+ * This class tests Issue Controller API.
+ * @author Smit Pateliya 40202779
+ *
+ */
+
 public class IssuesControllerAPITest {
 	private static Application testApp;
 	private static GitHubAPI testGitHub;
+	
+	/**
+	 * Changes the bind from Live API to fake API and injects the injector in to GitHubAPI.
+	 */
 
 	@BeforeClass
 	public static void setUp() {
 		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(MyAPIClientTest.class)).build();
 		testGitHub = testApp.injector().instanceOf(GitHubAPI.class);
 	}
+	
+	/**
+	 * Stops the fake Application.
+	 * @throws Exception
+	 */
 
 	@AfterClass
 	public static void tearDown() throws Exception {
 		Helpers.stop(testApp);
 	}
+	
+	/**
+	 * Creates Mock API result and Calls the API.
+	 * After that asserts the result with the Mock data. 
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 
 	@Test
 	public void testIssues() throws InterruptedException, ExecutionException {
