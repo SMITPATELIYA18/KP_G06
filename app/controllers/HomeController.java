@@ -37,14 +37,14 @@ public class HomeController extends Controller {
      */
     //public Result index() {
     	
-//    	ArrayList<RepositoryModel> repositorys = new ArrayList<>();
-//    	repositorys.add(new RepositoryModel("ABCD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-//    	repositorys.add(new RepositoryModel("ABCadasdadD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-//    	repositorys.add(new RepositoryModel("ABCsdfafD", "XYdsfsfZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-//    	repositorys.add(new RepositoryModel("AsdfdsfBCD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
-//    	repositorys.add(new RepositoryModel("ABCD", "XYZdfsdfsdfdsfW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	ArrayList<RepositoryModel> repositoryList = new ArrayList<>();
+//    	repositoryList.add(new RepositoryModel("ABCD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	repositoryList.add(new RepositoryModel("ABCadasdadD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	repositoryList.add(new RepositoryModel("ABCsdfafD", "XYdsfsfZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	repositoryList.add(new RepositoryModel("AsdfdsfBCD", "XYZW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
+//    	repositoryList.add(new RepositoryModel("ABCD", "XYZdfsdfsdfdsfW", new ArrayList<String>(Arrays.asList("JAVA","Asynchonous","Play Framework"))));
 //        return ok(
-//        		views.html.index.render(repositorys,assetsFinder));
+//        		views.html.index.render(repositoryList,assetsFinder));
     //}
     
 //    public Result currentTime() {

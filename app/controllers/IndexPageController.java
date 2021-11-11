@@ -62,8 +62,7 @@ public class IndexPageController extends Controller {
 		if (query.isEmpty() || query.get() == "") {
 			return asyncCacheApi.get("search").thenApplyAsync((cacheResult) -> {
 				//SearchCacheStore answer = (SearchCacheStore) cacheResult.orElse(null);
-				return ok(views.html.index.render(null, "Please, Enter the Search Query!",
-						assetsFinder));
+				return ok(views.html.index.render(null, assetsFinder));
 			});
 		}
 
@@ -89,7 +88,7 @@ public class IndexPageController extends Controller {
 			}
 			store.addNewSearch(searchRepository);
 			asyncCacheApi.set("search", store,60*20);
-			return ok(views.html.index.render(store, null, assetsFinder));
+			return ok(views.html.index.render(store, assetsFinder));
 		}, httpExecutionContext.current());
 	}
 	

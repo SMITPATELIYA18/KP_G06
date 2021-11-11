@@ -1,0 +1,42 @@
+
+@import com.fasterxml.jackson.databind.JsonNode
+@(repositoryProfileDetails: JsonNode)(implicit assetsFinder: AssetsFinder)
+
+@walkJsonTree(name: String, repositoryProfileDetails: JsonNode) = {
+
+@if(repositoryProfileDetails.isObject()) {
+<ul>
+    @for(nodeEntry <- repositoryProfileDetails.fields()) {
+    <li>@nodeEntry.getKey(): @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())</li>
+    }
+</ul>
+}
+@if(repositoryProfileDetails.isArray()) {
+<ul>
+    @for(arrayNode <- repositoryProfileDetails.elements()) {
+    <li>[List]: @walkJsonTree(name, arrayNode)</li>
+    }
+</ul>
+}
+@if(repositoryProfileDetails.isValueNode()) {
+@repositoryProfileDetails.asText()
+} else {
+@* other *@
+@repositoryProfileDetails.asText()
+}
+
+}
+
+@main("Repository Profile") {
+
+<div class="container">
+    <section id="top">
+        <div class="wrapper">
+
+        </div>
+    </section>
+    @walkJsonTree(null, repositoryProfileDetails)
+</div>
+}
+
+
