@@ -38,6 +38,7 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	public MyAPIClient(WSClient client, Config config) {
 		this.client = client;
 		this.config = config;
+		this.baseURL = config.getString("git.baseUrl");
 	}
 	
 	/**
@@ -49,7 +50,7 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
-		String finalURL = this.config.getString("git.baseUrl") + "/search/repositories";
+		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), query));
@@ -57,7 +58,7 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	}
 	
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) {
-		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + repoFullName + "/issues";
+		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
 		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
