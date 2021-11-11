@@ -16,7 +16,7 @@ GET     /issues						controllers.IssueController.getIssueStat(request: Request)
 GET     /assets/*file               controllers.Assets.versioned(file)
 
 #Repository Profile Controller
-GET     /repositoryProfile/:ownerName/:repositoryName		    controllers.RepositoryProfileController.repositoryProfile(ownerName: String, repositoryName: String)
+GET     /repositoryProfile/:ownerName/:repositoryName		    controllers.RepositoryProfileController.getRepositoryProfile(ownerName: String, repositoryName: String)
 #GET     /time                       controllers.HomeController.currentTime
 
 #GET     /hello/:message             controllers.HomeController.printHello(message:String)

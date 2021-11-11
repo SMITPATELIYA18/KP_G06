@@ -47,14 +47,24 @@ public class RepositoryProfileController extends Controller {
 		this.config = config;
 	}
 
-	public CompletionStage<Result> repositoryProfile(String ownerName, String repositoryName) {
+	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName) {
+
 		MyAPIClient apiClient = new MyAPIClient(client, config);
-			return apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
+		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName, () -> apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
+						repositoryProfileDetails -> {
+							//System.out.println("Controller: " + repositoryProfileDetails);
+							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
+							return ok(repositoryProfile.render(repositoryProfileDetails.asJson(), assetsFinder));
+						},
+						httpExecutionContext.current()));
+
+			/*return apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
 					repositoryProfileDetails -> {
 						//System.out.println("Controller: " + repositoryProfileDetails);
-						return ok(repositoryProfile.render(repositoryProfileDetails));
+						asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
+						return ok(repositoryProfile.render(repositoryProfileDetails.asJson(), assetsFinder));
 					},
-			httpExecutionContext.current());
+			httpExecutionContext.current());*/
 	}
 
 	/*public Result repositoryDetails(String ownerName, String repositoryName) {

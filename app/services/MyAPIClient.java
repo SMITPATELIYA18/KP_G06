@@ -57,6 +57,7 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
+		System.out.println("Result issues: " + searchResult);
 		return searchResult;
 	}
 
@@ -70,12 +71,10 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	}*/
 
 	//TODO: Optimize
-	public CompletionStage<RepositoryProfileModel> getRepositoryProfile(String ownerName, String repositoryName){
+	public CompletionStage<WSResponse> getRepositoryProfile(String ownerName, String repositoryName){
 		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
-		CompletionStage<RepositoryProfileModel> result = client.url(finalURL).get().thenApplyAsync(output -> {
-				System.out.println("Result1: " + output);
-				return new RepositoryProfileModel(output.asJson());
-		});
+		CompletionStage<WSResponse> result = client.url(finalURL).get();
+				//.thenApplyAsync(output -> new RepositoryProfileModel(output.asJson()));
 		//System.out.println("Result: " + result);
 		return  result;
 	}
