@@ -1,14 +1,16 @@
 package services;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.IssueModel;
 import models.RepositoryModel;
 import models.RepositoryProfileModel;
@@ -17,6 +19,7 @@ import play.libs.ws.*;
 import services.github.GitHubAPI;
 
 import com.typesafe.config.Config;
+import views.html.RepositoryProfile.repositoryProfile;
 
 /**
  * This class handles all API of GitHub.
@@ -87,9 +90,19 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	}*/
 
 	//TODO: Optimize
-	public CompletionStage<WSResponse> getRepositoryProfile(String ownerName, String repositoryName){
+	public CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName){
 		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
-		CompletionStage<WSResponse> result = client.url(finalURL).get();
+		CompletionStage<JsonNode> result = client.url(finalURL).get().thenApplyAsync(
+				repositoryProfileDetails -> {
+					/*List<String> issueList = new IssueModel(repositoryName, repositoryProfileDetailsJson).getIssueTitles()
+							.stream().limit(20).collect(Collectors.toList());
+
+					((ObjectNode) repositoryProfileDetailsJson).put("Issue List", (BigDecimal) issueList);
+
+					System.out.println("List : " + issueList);*/
+
+					return repositoryProfileDetails.asJson();
+				});
 		//.thenApplyAsync(output -> new RepositoryProfileModel(output.asJson()));
 		//System.out.println("Result: " + result);
 		return  result;

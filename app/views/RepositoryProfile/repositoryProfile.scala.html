@@ -1,41 +1,63 @@
 
 @import com.fasterxml.jackson.databind.JsonNode
-@(repositoryProfileDetails: JsonNode)(implicit assetsFinder: AssetsFinder)
+@import java.lang.String
+@(ownerName: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: List[String])(implicit assetsFinder: AssetsFinder)
 
-@walkJsonTree(name: String, repositoryProfileDetails: JsonNode) = {
 
-@if(repositoryProfileDetails.isObject()) {
+@walkJsonTree(name: String, node: JsonNode) = {
+
+@if(node.isObject()) {
 <ul>
-    @for(nodeEntry <- repositoryProfileDetails.fields()) {
-    <li>@nodeEntry.getKey(): @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())</li>
+    @for(nodeEntry <- node.fields()) {
+        <li>
+            <b>@nodeEntry.getKey(): </b>
+            @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())
+        </li>
     }
 </ul>
 }
-@if(repositoryProfileDetails.isArray()) {
+@if(node.isArray()) {
 <ul>
-    @for(arrayNode <- repositoryProfileDetails.elements()) {
+    @for(arrayNode <- node.elements()) {
     <li>[List]: @walkJsonTree(name, arrayNode)</li>
     }
 </ul>
 }
-@if(repositoryProfileDetails.isValueNode()) {
-@repositoryProfileDetails.asText()
-} else {
-@* other *@
-@repositoryProfileDetails.asText()
-}
 
+@if(node.isValueNode()) {
+    @node.asText()
+} else {
+    @* other *@
+    @node.asText()
+}
 }
 
 @main("Repository Profile") {
 
-<div class="container">
-    <section id="top">
-        <div class="wrapper">
+<section id="top">
+    <div class="wrapper">
+        <h1>Gitterific</h1>
+    </div>
+</section>
 
-        </div>
-    </section>
-    @walkJsonTree(null, repositoryProfileDetails)
+<div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
+    <div style="padding: 10px 0px;">
+        <h3>Repository Profile Data for: <b>@repositoryName</b></h3>
+        <h3>Owner Name: <b><a href="@routes.UserProfileController.getUserProfile(ownerName)">@ownerName</a></b></h3>
+    </div>
+    <div>
+         @walkJsonTree(null, repositoryProfileDetails)
+    </div>
+    <div>
+        <ul>
+            <li>
+                <b>Below is the issue List: <br></b>
+                <a href="@routes.IssueController.getIssueStat(ownerName + '/' + repositoryName)">Click for issue statistics</a>
+                @for(issue <- issueList) {
+                <li>@issue  </li>
+                }
+        </ul>
+    </div>
 </div>
 }
 

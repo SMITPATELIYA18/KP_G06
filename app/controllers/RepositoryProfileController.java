@@ -2,6 +2,7 @@ package controllers;
 
 import javax.inject.Inject;
 import akka.actor.ActorSystem;
+import models.IssueModel;
 import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
@@ -10,7 +11,10 @@ import scala.concurrent.ExecutionContextExecutor;
 import services.MyAPIClient;
 import com.typesafe.config.Config;
 
+import java.util.List;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import views.html.RepositoryProfile.*;
 
@@ -38,7 +42,7 @@ public class RepositoryProfileController extends Controller {
 
 	@Inject
 	public RepositoryProfileController(HttpExecutionContext httpExecutionContext, WSClient client, ActorSystem actorSystem,
-							   ExecutionContextExecutor executor, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config) {
+									   ExecutionContextExecutor executor, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config) {
 		this.actorSystem = actorSystem;
 		this.assetsFinder = assetsFinder;
 		this.client = client;
@@ -47,28 +51,35 @@ public class RepositoryProfileController extends Controller {
 		this.config = config;
 	}
 
-	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName) {
+	//TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture
+
+	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName) throws ExecutionException, InterruptedException {
 
 		MyAPIClient apiClient = new MyAPIClient(client, config);
-		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName, () -> apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
+
+		CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> apiClient.getRepositoryIssue(ownerName + "/" + repositoryName)
+				.thenApplyAsync(issueModel -> issueModel,
+						httpExecutionContext.current()));
+		/*CompletionStage<IssueModel> issues = apiClient.getRepositoryIssue(ownerName + "/" + repositoryName)
+				.thenApplyAsync(issueModel -> issueModel,
+				httpExecutionContext.current());*/
+
+		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+				() -> apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
 						repositoryProfileDetails -> {
-							//System.out.println("Controller: " + repositoryProfileDetails);
+							List<String> issueList = null;
+							try {
+								issueList = issues.toCompletableFuture().get().getIssueTitles().stream().limit(20).collect(Collectors.toList());
+								asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch (ExecutionException e) {
+								e.printStackTrace();
+							}
 							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-							return ok(repositoryProfile.render(repositoryProfileDetails.asJson(), assetsFinder));
+							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetails,  issueList, assetsFinder));
 						},
 						httpExecutionContext.current()));
 
-			/*return apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
-					repositoryProfileDetails -> {
-						//System.out.println("Controller: " + repositoryProfileDetails);
-						asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-						return ok(repositoryProfile.render(repositoryProfileDetails.asJson(), assetsFinder));
-					},
-			httpExecutionContext.current());*/
 	}
-
-	/*public Result repositoryDetails(String ownerName, String repositoryName) {
-		System.out.println("Owner Name1: " + ownerName + " Repository Name: " + repositoryName);
-		return ok(views.html.RepositoryProfile.repositoryProfile.render(ownerName, repositoryName));
-	}*/
 }
