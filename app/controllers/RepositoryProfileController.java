@@ -57,14 +57,14 @@ public class RepositoryProfileController extends Controller {
 
 		MyAPIClient apiClient = new MyAPIClient(client, config);
 
-		CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> apiClient.getRepositoryIssue(ownerName + "/" + repositoryName)
+		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> apiClient.getRepositoryIssue(ownerName + "/" + repositoryName)
 				.thenApplyAsync(issueModel -> issueModel,
-						httpExecutionContext.current()));
+						httpExecutionContext.current()));*/
 		/*CompletionStage<IssueModel> issues = apiClient.getRepositoryIssue(ownerName + "/" + repositoryName)
 				.thenApplyAsync(issueModel -> issueModel,
 				httpExecutionContext.current());*/
 
-		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
 				() -> apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
 						repositoryProfileDetails -> {
 							List<String> issueList = null;
@@ -79,7 +79,28 @@ public class RepositoryProfileController extends Controller {
 							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
 							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetails,  issueList, assetsFinder));
 						},
+						httpExecutionContext.current()));*/
+
+		CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> apiClient.getRepositoryIssue(ownerName + "/" + repositoryName)
+				.thenApplyAsync(issueModel -> issueModel,
 						httpExecutionContext.current()));
+
+		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+				() -> apiClient.getRepositoryProfile(ownerName, repositoryName)
+						.thenApplyAsync(repositoryProfileDetails -> {
+							List<String> issueList = null;
+							try {
+								issueList = issues.toCompletableFuture().get().getIssueTitles().stream().limit(20).collect(Collectors.toList());
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch (ExecutionException e) {
+								e.printStackTrace();
+							}
+							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
+							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
+						return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetails, issueList, assetsFinder));
+					}, httpExecutionContext.current()));
+
 
 	}
 }
