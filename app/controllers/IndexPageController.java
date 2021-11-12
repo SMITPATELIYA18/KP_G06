@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import akka.actor.ActorSystem;
 import models.SearchCacheStore;
+import models.SearchRepository;
 import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
@@ -19,9 +20,8 @@ import services.MyAPIClient;
 import com.typesafe.config.Config;
 
 /**
- * @author SmitPateliya 
- * This controller contains action for fetching information
- * from Github API and send result to the client.
+ * @author SmitPateliya This controller contains action for fetching information
+ *         from Github API and send result to the client.
  *
  */
 
@@ -50,36 +50,28 @@ public class IndexPageController extends Controller {
 		this.asyncCacheApi = cache;
 		this.config = config;
 	}
-	
+
 	/**
 	 * This method executes when user fetches index page.
-	 * @param request Getting HTTP Request to get search query 
-	 * @return Future CompletionStage Object 
+	 * 
+	 * @param request Getting HTTP Request to get search query
+	 * @return Future CompletionStage Object
 	 */
 
 	public CompletionStage<Result> index(Http.Request request) {
 		Optional<String> query = request.queryString("search");
 		if (query.isEmpty() || query.get() == "") {
 			return asyncCacheApi.get("search").thenApplyAsync((cacheResult) -> {
-				//SearchCacheStore answer = (SearchCacheStore) cacheResult.orElse(null);
-				return ok(views.html.index.render(null, "Please, Enter the Search Query!",
-						assetsFinder));
+				// SearchCacheStore answer = (SearchCacheStore) cacheResult.orElse(null);
+				return ok(views.html.index.render(null, assetsFinder));
 			});
 		}
 
 		MyAPIClient apiClient = new MyAPIClient(client, config);
-		return apiClient.getRepositoryFromSearchBar(query.get()).thenApplyAsync(searchRepository -> {
-			CompletionStage<Optional<SearchCacheStore>> data = asyncCacheApi.get("search");
-			Optional<SearchCacheStore> cacheData = Optional.empty();
-			try {
-				cacheData = data.toCompletableFuture().get();
-			} catch (InterruptedException e) {
-
-			} catch (ExecutionException e) {
-
-			} catch (CancellationException e) {
-
-			}
+		//apiClient.getRepositoryFromSearchBar(query.get()).thenCompose(searc);
+		CompletionStage<SearchRepository> searchRepoStage = apiClient.getRepositoryFromSearchBar(query.get());
+		CompletionStage<Optional<SearchCacheStore>> cacheDataStage = asyncCacheApi.get("search");
+		return searchRepoStage.thenCombineAsync(cacheDataStage, (searchData, cacheData) -> {
 			SearchCacheStore store;
 
 			if (cacheData.isPresent()) {
@@ -87,11 +79,33 @@ public class IndexPageController extends Controller {
 			} else {
 				store = new SearchCacheStore();
 			}
-			store.addNewSearch(searchRepository);
-			asyncCacheApi.set("search", store,60*20);
-			return ok(views.html.index.render(store, null, assetsFinder));
-		}, httpExecutionContext.current());
+			store.addNewSearch(searchData);
+			asyncCacheApi.set("search", store, 60 * 20);
+			return ok(views.html.index.render(store, assetsFinder));
+		},httpExecutionContext.current());
+//		return apiClient.getRepositoryFromSearchBar(query.get()).thenApplyAsync(searchRepository -> {
+//			CompletionStage<Optional<SearchCacheStore>> data = asyncCacheApi.get("search");
+//			Optional<SearchCacheStore> cacheData = Optional.empty();
+//			try {
+//				cacheData = data.toCompletableFuture().get();
+//			} catch (InterruptedException e) {
+//
+//			} catch (ExecutionException e) {
+//
+//			} catch (CancellationException e) {
+//
+//			}
+//			SearchCacheStore store;
+//
+//			if (cacheData.isPresent()) {
+//				store = cacheData.get();
+//			} else {
+//				store = new SearchCacheStore();
+//			}
+//			store.addNewSearch(searchRepository);
+//			asyncCacheApi.set("search", store, 60 * 20);
+//			return ok(views.html.index.render(store, null, assetsFinder));
+//		}, httpExecutionContext.current());
 	}
-	
-	
+
 }
