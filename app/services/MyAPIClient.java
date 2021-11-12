@@ -2,17 +2,24 @@ package services;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import models.IssueModel;
 import models.RepositoryModel;
 import models.RepositoryProfileModel;
 import models.SearchRepository;
+import org.checkerframework.checker.units.qual.A;
 import play.libs.ws.*;
 import services.github.GitHubAPI;
 
@@ -70,11 +77,36 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	// ToDo: Add abstraction
 	// ToDo: Verify timeout
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
-		String requestURL = baseURL + "/users/" + username;
+		String requestURL = this.baseURL + "/users/" + username;
 		return client.url(requestURL)
 				.addHeader("accept", "application/vnd.github.v3+json")
 				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get()
 				.thenApplyAsync(r -> r.getBody(json()));
+	}
+
+	public CompletionStage<JsonNode> getUserRepositories(String username) {
+		String requestURL = this.baseURL + "/users/" + username + "/repos";
+		return client.url(requestURL)
+				.addHeader("accept", "application/vnd.github.v3+json")
+				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get()
+				.thenApplyAsync(r -> {
+					JsonNode userRepos = r.getBody(json());
+					ObjectMapper mapper = new ObjectMapper();
+					ArrayNode userRepoList = mapper.createArrayNode();
+
+					if(userRepos != null){
+						if(userRepos instanceof ArrayNode){
+							ArrayNode arrayNode = (ArrayNode) userRepos;
+							Iterator<JsonNode> nodeIterator = arrayNode.iterator();
+							while (nodeIterator.hasNext()) {
+								JsonNode elementNode = nodeIterator.next();
+								userRepoList.add(elementNode.findValue("name"));
+							}
+						}
+					}
+					System.out.println(userRepoList);
+					return userRepoList;
+				});
 	}
 
 	/*public CompletableFuture<RepositoryProfileModel> getRepositoryProfile(String ownerName, String repositoryName){
