@@ -1,6 +1,6 @@
-@(username: String)(profileData: com.fasterxml.jackson.databind.JsonNode)(implicit assetsFinder: AssetsFinder)
+@(username: String)(userProfile: com.fasterxml.jackson.databind.JsonNode, userRepositories: com.fasterxml.jackson.databind.JsonNode)(implicit assetsFinder: AssetsFinder)
 
-@import com.fasterxml.jackson.databind.JsonNode
+@import com.fasterxml.jackson.databind.JsonNode;
 
 @walkJsonTree(name: String, node: JsonNode) = {
 
@@ -8,6 +8,9 @@
     <ul>
         @for(nodeEntry <- node.fields()) {
             <li>@nodeEntry.getKey(): @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())</li>
+            @if(nodeEntry.getKey() == "repos_url"){
+                <p>ToDo: List the repositories</p>
+            }
         }
     </ul>
     }
@@ -24,7 +27,12 @@
         @* other *@
         @node.asText()
     }
+}
 
+@listUserRepositories(node: JsonNode) = {
+    @for(arrayNode <- node.elements()) {
+        <li><a href="@routes.RepositoryProfileController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
+    }
 }
 
 @main("User Profile") {
@@ -36,10 +44,11 @@
     <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
         <div id="user-info" style="padding: 10px 0px">
             <p>User profile for @username</p>
-            <p>@walkJsonTree(null, profileData) </p>
+            <p>@walkJsonTree(null, userProfile) </p>
         </div>
         <div id="user-repositories" style="padding: 10px 0px">
             <p>repositories go here</p>
+            <p>@listUserRepositories(userRepositories)</p>
         </div>
     </div>
 }
