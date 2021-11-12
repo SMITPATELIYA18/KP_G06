@@ -28,10 +28,10 @@ public class UserProfileController extends Controller {
 	public CompletionStage<Result> getUserProfile(String username) {
 		MyAPIClient apiClient = new MyAPIClient(client, config);
 		return apiClient.getUserProfileByUsername(username)
-				.thenApplyAsync(profileData ->
-					ok(views.html.userprofile.profile.render(username, profileData, assetsFinder)),
-						httpExecutionContext.current());
-
+				.thenCombineAsync(
+						apiClient.getUserRepositories(username),
+						(userProfile, userRepositories) -> ok(views.html.userprofile.profile.render(username, userProfile, userRepositories, assetsFinder)),
+						httpExecutionContext.current()
+				);
 	}
-	
 }
