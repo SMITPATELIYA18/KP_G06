@@ -5,7 +5,7 @@ import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
-import services.MyAPIClient;
+import services.GitHubAPIImpl;
 import scala.concurrent.ExecutionContextExecutor;
 import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
@@ -28,29 +28,30 @@ public class RepositoryProfileController extends Controller {
 	private final WSClient client;
 	private HttpExecutionContext httpExecutionContext;
 	private AsyncCacheApi asyncCacheApi;
+	private GitHubAPIImpl gitHubAPI;
 
 	@Inject
-	public RepositoryProfileController(HttpExecutionContext httpExecutionContext, WSClient client, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config) {
+	public RepositoryProfileController(HttpExecutionContext httpExecutionContext, WSClient client, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config, GitHubAPIImpl githubAPI) {
 		this.assetsFinder = assetsFinder;
 		this.client = client;
 		this.httpExecutionContext = httpExecutionContext;
 		this.asyncCacheApi = cache;
 		this.config = config;
+		this.gitHubAPI = githubAPI;
 	}
 
 	//TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases
 	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName) throws ExecutionException, InterruptedException {
 
-		MyAPIClient apiClient = new MyAPIClient(client, config);
-		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> apiClient.getRepositoryIssue(ownerName + "/" + repositoryName)
+		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)
 				.thenApplyAsync(issueModel -> issueModel,
 						httpExecutionContext.current()));*/
 
 		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-				() ->  apiClient.getRepositoryProfile(ownerName, repositoryName))
+				() ->  gitHubAPI.getRepositoryProfile(ownerName, repositoryName))
 				.thenCombineAsync(
 						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
-								() -> apiClient.getRepositoryIssue(ownerName + "/" + repositoryName)),
+								() -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)),
 						(repositoryProfileDetail, issueList) -> {
 							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
 							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
@@ -61,7 +62,7 @@ public class RepositoryProfileController extends Controller {
 				);
 
 		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-				() -> apiClient.getRepositoryProfile(ownerName, repositoryName)
+				() -> gitHubAPI.getRepositoryProfile(ownerName, repositoryName)
 						.thenApplyAsync(repositoryProfileDetails -> {
 							List<String> issueList = null;
 							try {
