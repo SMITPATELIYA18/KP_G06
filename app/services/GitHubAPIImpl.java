@@ -2,24 +2,15 @@ package services;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import models.IssueModel;
-import models.RepositoryModel;
-import models.RepositoryProfileModel;
 import models.SearchRepository;
-import org.checkerframework.checker.units.qual.A;
 import play.libs.ws.*;
 import services.github.GitHubAPI;
 
@@ -115,19 +106,11 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	}*/
 
 	//TODO: Optimize
-	public CompletionStage<WSResponse> getRepositoryProfile(String ownerName, String repositoryName){
-		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
-		CompletionStage<WSResponse> result = client.url(finalURL).get();
-		//.thenApplyAsync(output -> new RepositoryProfileModel(output.asJson()));
-		//System.out.println("Result: " + result);
+	public CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName){
+		String finalURL = this.baseURL + "/repos/" + ownerName + "/" + repositoryName;
+		CompletionStage<JsonNode> result = client.url(finalURL)
+				.addHeader("accept", "application/vnd.github.v3+json")
+				.get().thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.asJson());
 		return  result;
-	}
-
-	public void setBaseURL(String URL) {
-		this.baseURL = URL;
-	}
-
-	public String getBaseURL() {
-		return this.baseURL;
 	}
 }
