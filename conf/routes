@@ -20,6 +20,7 @@ GET     /repositoryProfile/:ownerName/:repositoryName		    controllers.Repositor
 
 #GET     /hello/:message             controllers.HomeController.printHello(message:String)
 
+GET     /topics/:topic              controllers.TopicController.getTopicRepository(topic:String)
 
 # User profile routes
 GET 	/user-profile/:username		controllers.UserProfileController.getUserProfile(username: String)

@@ -2,24 +2,17 @@ package services;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import models.IssueModel;
-import models.RepositoryModel;
-import models.RepositoryProfileModel;
 import models.SearchRepository;
-import org.checkerframework.checker.units.qual.A;
 import play.libs.ws.*;
 import services.github.GitHubAPI;
 
@@ -27,6 +20,7 @@ import com.typesafe.config.Config;
 
 /**
  * This class handles all API of GitHub.
+ * 
  * @author SmitPateliya
  *
  */
@@ -35,9 +29,9 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	private final WSClient client;
 	private final Config config;
 	private String baseURL;
-	
+
 	/**
-	 *  
+	 * 
 	 * @param client Constructor gets data from the Controller class.
 	 */
 
@@ -47,52 +41,50 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 		this.config = config;
 		this.baseURL = config.getString("git.baseUrl");
 	}
-	
+
 	/**
-	 * This method is getting information from user and returns
-	 * all the information regarding the query.
+	 * This method is getting information from user and returns all the information
+	 * regarding the query.
 	 * 
 	 * @param query Gets the query from User to search repositories.
 	 * @return Returns SearchRepository Model containing all Repository information.
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
-		String finalURL = this.baseURL + "/search/repositories";
+		String finalURL = this.config.getString("git.baseUrl") + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), query));
 		return searchResult;
 	}
-	
+
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) {
-		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
+		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + repoFullName + "/issues";
 		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
-		System.out.println("Result issues: " + searchResult);
 		return searchResult;
 	}
 
+	// ToDo: Add a model for user profile
+	// ToDo: Add abstraction
+	// ToDo: Verify timeout
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
-		String requestURL = this.baseURL + "/users/" + username;
-		return client.url(requestURL)
-				.addHeader("accept", "application/vnd.github.v3+json")
-				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get()
-				.thenApplyAsync(r -> r.getBody(json()));
+		String requestURL = baseURL + "/users/" + username;
+		return client.url(requestURL).addHeader("accept", "application/vnd.github.v3+json")
+				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get().thenApplyAsync(r -> r.getBody(json()));
 	}
 
 	public CompletionStage<JsonNode> getUserRepositories(String username) {
 		String requestURL = this.baseURL + "/users/" + username + "/repos";
-		return client.url(requestURL)
-				.addHeader("accept", "application/vnd.github.v3+json")
-				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get()
-				.thenApplyAsync(r -> {
+		return client.url(requestURL).addHeader("accept", "application/vnd.github.v3+json")
+				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get().thenApplyAsync(r -> {
 					JsonNode userRepos = r.getBody(json());
 					ObjectMapper mapper = new ObjectMapper();
 					ArrayNode userRepoList = mapper.createArrayNode();
 
-					if(userRepos != null){
-						if(userRepos instanceof ArrayNode){
+					if (userRepos != null) {
+						if (userRepos instanceof ArrayNode) {
 							ArrayNode arrayNode = (ArrayNode) userRepos;
 							Iterator<JsonNode> nodeIterator = arrayNode.iterator();
 							while (nodeIterator.hasNext()) {
@@ -105,22 +97,21 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 				});
 	}
 
-	/*public CompletableFuture<RepositoryProfileModel> getRepositoryProfile(String ownerName, String repositoryName){
-		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
-		CompletableFuture<RepositoryProfileModel> result = client.url(finalURL).get()
-										.toCompletableFuture().thenApplyAsync(output -> RepositoryProfileModel.initialize(output.asJson()));
-
-		System.out.println("Result: " + result);
-		return  result;
-	}*/
-
-	//TODO: Optimize
-	public CompletionStage<WSResponse> getRepositoryProfile(String ownerName, String repositoryName){
+	// TODO: Optimize
+	public CompletionStage<WSResponse> getRepositoryProfile(String ownerName, String repositoryName) {
 		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
 		CompletionStage<WSResponse> result = client.url(finalURL).get();
-		//.thenApplyAsync(output -> new RepositoryProfileModel(output.asJson()));
-		//System.out.println("Result: " + result);
-		return  result;
+		// .thenApplyAsync(output -> new RepositoryProfileModel(output.asJson()));
+		// System.out.println("Result: " + result);
+		return result;
+	}
+
+	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
+		String finalURL = this.baseURL + "/search/repositories?q=topic:" + topic + "&sort=created&order=desc";
+		CompletionStage<SearchRepository> searchResult = client.url(finalURL)
+				.addHeader("accept", "application/vnd.github.v3+json").get()
+				.thenApplyAsync(result -> new SearchRepository(result.asJson(), topic));
+		return searchResult;
 	}
 
 	public void setBaseURL(String URL) {
@@ -130,4 +121,5 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	public String getBaseURL() {
 		return this.baseURL;
 	}
+
 }
