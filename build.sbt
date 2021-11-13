@@ -6,7 +6,7 @@ lazy val root = (project in file("."))
     scalaVersion := "2.13.6",
     libraryDependencies ++= Seq(
       guice,
-      ehcache,                                                    // For enabling HTTP Caching in Play WS
+      ehcache,                                                    // For enabling Caching
       javaWs,                                                     // For calling REST APIs with Play WS
       // Test Database
       "com.h2database" % "h2" % "1.4.199",

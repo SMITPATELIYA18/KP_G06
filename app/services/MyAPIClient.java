@@ -73,9 +73,6 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 		return searchResult;
 	}
 
-	// ToDo: Add a model for user profile
-	// ToDo: Add abstraction
-	// ToDo: Verify timeout
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
 		String requestURL = this.baseURL + "/users/" + username;
 		return client.url(requestURL)
@@ -104,7 +101,6 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 							}
 						}
 					}
-					System.out.println(userRepoList);
 					return userRepoList;
 				});
 	}
