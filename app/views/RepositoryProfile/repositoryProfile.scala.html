@@ -35,6 +35,7 @@
 
         </div>
     </section>
+    <a href='@routes.IssueController.getIssueStat(repositoryProfileDetails.get("full_name").asText())'> To see word level statistic of @{repositoryProfileDetails.get("full_name").asText()} Respository</a>
     @walkJsonTree(null, repositoryProfileDetails)
 </div>
 }
