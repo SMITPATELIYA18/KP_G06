@@ -8,9 +8,6 @@
     <ul>
         @for(nodeEntry <- node.fields()) {
             <li>@nodeEntry.getKey(): @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())</li>
-            @if(nodeEntry.getKey() == "repos_url"){
-                <p>ToDo: List the repositories</p>
-            }
         }
     </ul>
     }
@@ -43,11 +40,11 @@
     </section>
     <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
         <div id="user-info" style="padding: 10px 0px">
-            <p>User profile for @username</p>
+            <p>User profile information for @username</p>
             <p>@walkJsonTree(null, userProfile) </p>
         </div>
         <div id="user-repositories" style="padding: 10px 0px">
-            <p>repositories go here</p>
+            <p>@username's repositories</p>
             <p>@listUserRepositories(userRepositories)</p>
         </div>
     </div>

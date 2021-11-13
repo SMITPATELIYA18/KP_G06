@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import models.SearchCacheStore;
 import models.SearchRepository;
+import play.cache.Cached;
 import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
