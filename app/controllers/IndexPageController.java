@@ -1,23 +1,19 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import akka.actor.ActorSystem;
 import models.SearchCacheStore;
 import models.SearchRepository;
-import play.cache.Cached;
 import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
 import scala.concurrent.ExecutionContextExecutor;
-import services.MyAPIClient;
+import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
 
 /**
@@ -68,7 +64,7 @@ public class IndexPageController extends Controller {
 			});
 		}
 
-		MyAPIClient apiClient = new MyAPIClient(client, config);
+		GitHubAPIImpl apiClient = new GitHubAPIImpl(client, config);
 		//apiClient.getRepositoryFromSearchBar(query.get()).thenCompose(searc);
 		CompletionStage<SearchRepository> searchRepoStage = apiClient.getRepositoryFromSearchBar(query.get());
 		CompletionStage<Optional<SearchCacheStore>> cacheDataStage = asyncCacheApi.get("search");

@@ -27,11 +27,11 @@ import com.typesafe.config.Config;
 
 /**
  * This class handles all API of GitHub.
- * @author SmitPateliya
+ * @author SmitPateliya, Pradnya Kandarkar, Farheen Jamadar
  *
  */
 
-public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI {
+public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
 	private final Config config;
 	private String baseURL;
@@ -42,7 +42,7 @@ public class MyAPIClient implements WSBodyReadables, WSBodyWritables, GitHubAPI 
 	 */
 
 	@Inject
-	public MyAPIClient(WSClient client, Config config) {
+	public GitHubAPIImpl(WSClient client, Config config) {
 		this.client = client;
 		this.config = config;
 		this.baseURL = config.getString("git.baseUrl");

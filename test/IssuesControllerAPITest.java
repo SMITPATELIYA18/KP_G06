@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.Helpers;
-import services.MyAPIClientTest;
+import services.GitHubAPIMock;
 import services.github.GitHubAPI;
 import static play.inject.Bindings.bind;
 
@@ -33,7 +33,7 @@ public class IssuesControllerAPITest {
 
 	@BeforeClass
 	public static void setUp() {
-		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(MyAPIClientTest.class)).build();
+		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
 		testGitHub = testApp.injector().instanceOf(GitHubAPI.class);
 	}
 	

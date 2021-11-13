@@ -7,7 +7,7 @@ import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
 import scala.concurrent.ExecutionContextExecutor;
-import services.MyAPIClient;
+import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
 
 import java.util.concurrent.CompletionStage;
@@ -49,7 +49,7 @@ public class RepositoryProfileController extends Controller {
 
 	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName) {
 
-		MyAPIClient apiClient = new MyAPIClient(client, config);
+		GitHubAPIImpl apiClient = new GitHubAPIImpl(client, config);
 		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName, () -> apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
 						repositoryProfileDetails -> {
 							//System.out.println("Controller: " + repositoryProfileDetails);

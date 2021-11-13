@@ -1,7 +1,6 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doReturn;
 import static play.inject.Bindings.bind;
 
@@ -11,15 +10,11 @@ import java.util.concurrent.ExecutionException;
 
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
-import play.libs.typedmap.TypedKey;
-import play.mvc.Http.Request;
-import play.mvc.Http.RequestBuilder;
-import play.routing.RoutingDsl;
 import play.test.Helpers;
 import static play.test.Helpers.contentAsString;
-import play.test.WithApplication;
+
 import resources.TestResources;
-import services.MyAPIClientTest;
+import services.GitHubAPIMock;
 import play.mvc.*;
 import services.github.GitHubAPI;
 
@@ -29,12 +24,8 @@ import org.junit.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import static org.mockito.ArgumentMatchers.anyString;
 
 import controllers.IssueController;
-import controllers.routes;
 import models.IssueModel;
 
 //@RunWith(PowerMockRunner.class)
@@ -60,7 +51,7 @@ public class IssueControllerTest{
 
 	@Before
 	public void setUp() {
-		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(MyAPIClientTest.class)).build();
+		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
 		//testGitHub = testApp.injector().instanceOf(GitHubAPI.class);
 		issueController = testApp.injector().instanceOf(IssueController.class);
 	}
