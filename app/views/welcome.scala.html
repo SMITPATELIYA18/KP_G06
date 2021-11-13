@@ -1,6 +1,14 @@
-@(cacheResult: SearchCacheStore,error:String, style: String = "java")
+@(cacheResult: SearchCacheStore, style: String = "java")
 
-@defining(play.core.PlayVersion.current) { version =>
+<script lang="text/javascript">
+	function validateForm() {
+	  var x = document.forms["searchForm"]["search"].value;
+	  if (x == "") {
+		alert("Please enter a string to be searched.");
+		return false;
+	  }
+}
+</script>
 
 <section id="top">
 	<div class="wrapper">
@@ -8,26 +16,24 @@
 	</div>
 </section>
 <div
-	style="margin-left: 18%; margin-right: 18%; margin-bottom: 1%; margin-top: 1%;">
+		style="margin-left: 18%; margin-right: 18%; margin-bottom: 1%; margin-top: 1%;">
 	<div style="padding: 10px 0px; text-align: center">
-		<form id="form" action="/" method="GET">
+		<form name="searchForm" onsubmit="return validateForm()" id="form" action="/" method="GET">
 			<input type="search" id="searchField" name="search"
-				placeholder="Enter Search Terms" />
+				   placeholder="Enter Search Terms" />
 			<button type="submit">Go!</button>
 		</form>
 	</div>
 	<div>
-		@if(error != null) {
-		<h2>Error: @error</h2>
-		} @if(cacheResult != null) { @for(repositorys <-
+		@if(cacheResult != null) { @for(repositoryList <-
 		cacheResult.getSearches()){
-		<h2 type="searchResult">Search terms: @repositorys.getQuery()</h2>
+		<h2 type="searchResult">Search terms: @repositoryList.getQuery()</h2>
 		<div style="margin-top: 3%">
-			@for(repository <- repositorys.getRepositorys()) {
+			@for(repository <- repositoryList.getRepositoryList()) {
 			<div style="margin-bottom: 2%">
 				<ul>
 					<li><b>Owner Name:</b> <a href="@routes.UserProfileController.getUserProfile(repository.getOwnerName())">@repository.getOwnerName()</a> &nbsp; |
-						&nbsp;<b> Repository Name:</b> @repository.getRepositoryName()
+						&nbsp;<b> Repository Name:</b> <a href="@routes.RepositoryProfileController.getRepositoryProfile(repository.getOwnerName(), repository.getRepositoryName())">@repository.getRepositoryName()</a>
 						@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
 						<- repository.getTopics()) { (@topic)&nbsp; } }</li>
 				</ul>
@@ -38,4 +44,4 @@
 		} }
 	</div>
 </div>
-}
+

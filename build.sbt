@@ -6,7 +6,7 @@ lazy val root = (project in file("."))
     scalaVersion := "2.13.6",
     libraryDependencies ++= Seq(
       guice,
-      ehcache,                                                    // For enabling HTTP Caching in Play WS
+      ehcache,                                                    // For enabling Caching
       javaWs,                                                     // For calling REST APIs with Play WS
       // Test Database
       "com.h2database" % "h2" % "1.4.199",
@@ -16,6 +16,8 @@ lazy val root = (project in file("."))
       "org.awaitility" % "awaitility" % "4.0.1" % Test,
       "com.googlecode.json-simple" % "json-simple" % "1.1.1",
       "org.mockito" % "mockito-core" % "4.0.0" % Test,
+      "org.powermock" % "powermock-module-junit4" % "2.0.9" % Test,
+"org.powermock" % "powermock-api-mockito2" % "2.0.9" % Test,
     ),
     javacOptions ++= Seq(
       "-encoding", "UTF-8",
