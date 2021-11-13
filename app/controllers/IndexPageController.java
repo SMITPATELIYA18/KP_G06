@@ -7,12 +7,12 @@ import javax.inject.Inject;
 
 import models.SearchCacheStore;
 import models.SearchRepository;
-import play.cache.Cached;
 import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
-import services.MyAPIClient;
+import scala.concurrent.ExecutionContextExecutor;
+import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
 
 /**
@@ -50,7 +50,7 @@ public class IndexPageController extends Controller {
 			return asyncCacheApi.get("search").thenApplyAsync((cacheResult) -> ok(views.html.index.render(null, assetsFinder)));
 		}
 
-		MyAPIClient apiClient = new MyAPIClient(client, config);
+		GitHubAPIImpl apiClient = new GitHubAPIImpl(client, config);
 		CompletionStage<SearchRepository> searchRepoStage = apiClient.getRepositoryFromSearchBar(query.get());
 		CompletionStage<Optional<SearchCacheStore>> cacheDataStage = asyncCacheApi.get("search");
 		return searchRepoStage.thenCombineAsync(cacheDataStage, (searchData, cacheData) -> {

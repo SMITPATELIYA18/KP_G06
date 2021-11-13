@@ -6,6 +6,8 @@ import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
 import services.MyAPIClient;
+import scala.concurrent.ExecutionContextExecutor;
+import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -37,7 +39,6 @@ public class RepositoryProfileController extends Controller {
 	}
 
 	//TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases
-
 	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName) throws ExecutionException, InterruptedException {
 
 		MyAPIClient apiClient = new MyAPIClient(client, config);

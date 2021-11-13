@@ -1,6 +1,10 @@
 package resources;
 
 
+/**
+ * Holds resources required for testing
+ * @author Smit Pateliya, Pradnya Kandarkar
+ */
 public class TestResources {
 	public static final String issueData = "[\r\n"
 			+ "  {\r\n"
@@ -198,4 +202,41 @@ public class TestResources {
 			+ "    \"timeline_url\": \"https://api.github.com/repos/TheAlgorithms/Java/issues/2811/timeline\",\r\n"
 			+ "    \"performed_via_github_app\": null\r\n"
 			+ "  }]";
+
+	public static final String sampleUserProfile = "{\n" +
+			"  \"login\": \"pradnya-git-dev\",\n" +
+			"  \"id\": 20405400,\n" +
+			"  \"node_id\": \"MDQ6VXNlcjIwNDA1NDAw\",\n" +
+			"  \"avatar_url\": \"https://avatars.githubusercontent.com/u/20405400?v=4\",\n" +
+			"  \"gravatar_id\": \"\",\n" +
+			"  \"url\": \"https://api.github.com/users/pradnya-git-dev\",\n" +
+			"  \"html_url\": \"https://github.com/pradnya-git-dev\",\n" +
+			"  \"followers_url\": \"https://api.github.com/users/pradnya-git-dev/followers\",\n" +
+			"  \"following_url\": \"https://api.github.com/users/pradnya-git-dev/following{/other_user}\",\n" +
+			"  \"gists_url\": \"https://api.github.com/users/pradnya-git-dev/gists{/gist_id}\",\n" +
+			"  \"starred_url\": \"https://api.github.com/users/pradnya-git-dev/starred{/owner}{/repo}\",\n" +
+			"  \"subscriptions_url\": \"https://api.github.com/users/pradnya-git-dev/subscriptions\",\n" +
+			"  \"organizations_url\": \"https://api.github.com/users/pradnya-git-dev/orgs\",\n" +
+			"  \"repos_url\": \"https://api.github.com/users/pradnya-git-dev/repos\",\n" +
+			"  \"events_url\": \"https://api.github.com/users/pradnya-git-dev/events{/privacy}\",\n" +
+			"  \"received_events_url\": \"https://api.github.com/users/pradnya-git-dev/received_events\",\n" +
+			"  \"type\": \"User\",\n" +
+			"  \"site_admin\": false,\n" +
+			"  \"name\": null,\n" +
+			"  \"company\": null,\n" +
+			"  \"blog\": \"\",\n" +
+			"  \"location\": null,\n" +
+			"  \"email\": null,\n" +
+			"  \"hireable\": null,\n" +
+			"  \"bio\": null,\n" +
+			"  \"twitter_username\": null,\n" +
+			"  \"public_repos\": 2,\n" +
+			"  \"public_gists\": 0,\n" +
+			"  \"followers\": 0,\n" +
+			"  \"following\": 0,\n" +
+			"  \"created_at\": \"2016-07-11T18:26:26Z\",\n" +
+			"  \"updated_at\": \"2021-11-04T15:44:54Z\"\n" +
+			"}";
+
+	public static final String sampleUserRepositories = "[\"testRepoForPlayProject\",\"testRepositoryForPlayProject2\"]";
 }
