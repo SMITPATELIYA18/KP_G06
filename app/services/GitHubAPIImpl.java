@@ -3,7 +3,9 @@ package services;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,8 +25,7 @@ import com.typesafe.config.Config;
  */
 
 public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAPI {
-	private final WSClient client;
-	private final Config config;
+	private WSClient client;
 	private String baseURL;
 	
 	/**
@@ -35,7 +36,6 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	@Inject
 	public GitHubAPIImpl(WSClient client, Config config) {
 		this.client = client;
-		this.config = config;
 		this.baseURL = config.getString("git.baseUrl");
 	}
 	
@@ -48,6 +48,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
+		System.out.println("Using the actual implementation for getRepositoryFromSearchBar.");
 		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
@@ -56,6 +57,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	}
 	
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) {
+		System.out.println("Using the actual implementation for getRepositoryIssue.");
 		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
 		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
@@ -113,5 +115,31 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.addHeader("accept", "application/vnd.github.v3+json")
 				.get().thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.asJson());
 		return  result;
+	}
+
+	public CompletionStage<List<String>> getRepositories() {
+		return client.url(baseURL + "/repositories")
+				.get()
+				.thenApply(
+						response ->
+								response.asJson().findValues("full_name").stream()
+										.map(JsonNode::asText)
+										.collect(Collectors.toList()));
+	}
+
+	public void setClient(WSClient client) {
+		this.client = client;
+	}
+
+	public void setBaseURL(String baseURL) {
+		this.baseURL = baseURL;
+	}
+
+	public WSClient getClient() {
+		return client;
+	}
+
+	public String getBaseURL() {
+		return baseURL;
 	}
 }
