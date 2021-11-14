@@ -74,6 +74,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	}
 
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
+		System.out.println("Using the actual implementation for getUserProfileByUsername.");
 		String requestURL = this.baseURL + "/users/" + username;
 		return client.url(requestURL)
 				.addHeader("accept", "application/vnd.github.v3+json")

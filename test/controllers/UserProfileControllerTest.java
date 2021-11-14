@@ -1,41 +1,21 @@
 package controllers;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static play.inject.Bindings.bind;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.*;
 
-import play.mvc.Result;
-import play.twirl.api.Content;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.doReturn;
-import static play.inject.Bindings.bind;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
+import play.mvc.Http;
+import play.mvc.Result;
 import play.test.Helpers;
-import static play.test.Helpers.contentAsString;
 
-import resources.TestResources;
 import services.GitHubAPIMock;
-import play.mvc.*;
 import services.github.GitHubAPI;
 
-import org.apache.http.HttpStatus;
 import org.junit.*;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests for the UserProfileController class in controllers package
@@ -56,13 +36,45 @@ public class UserProfileControllerTest {
         userProfileController = testApp.injector().instanceOf(UserProfileController.class);
     }
 
+
+    /**
+     * Cleans up after running test cases
+     * @author Pradnya Kandarkar
+     */
     @AfterClass
     public static void tearDown() {
         Helpers.stop(testApp);
     }
 
+    /**
+     * Validates if HTTP response OK (200) is received for a valid GET request
+     * @author Pradnya Kandarkar
+     */
     @Test
-    public void testGetUserProfile() {
+    public void should_ReturnOK_when_ValidGETRequest() {
+        String sampleUserProfileURL = "/user-profile/sample-username";
 
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(GET)
+                .uri(sampleUserProfileURL);
+        Result result = route(testApp, request);
+
+        assertEquals(OK, result.status());
+    }
+
+    /**
+     * Validates if HTTP response NOT_FOUND (404) is received for a request type that is not implemented for the URL
+     * @author Pradnya Kandarkar
+     */
+    @Test
+    public void should_ReturnNOT_FOUND_when_NotGETRequest() {
+        String sampleUserProfileURL = "/user-profile/sample-username";
+
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(POST)
+                .uri(sampleUserProfileURL);
+        Result result = route(testApp, request);
+
+        assertEquals(NOT_FOUND, result.status());
     }
 }
