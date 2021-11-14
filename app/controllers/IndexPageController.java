@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
@@ -16,7 +17,8 @@ import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
 
 /**
- * @author SmitPateliya This controller contains action for fetching information
+ * @author SmitPateliya, Farheen Jamadar
+ * This controller contains action for fetching information
  *         from Github API and send result to the client.
  *
  */
@@ -47,24 +49,33 @@ public class IndexPageController extends Controller {
 	public CompletionStage<Result> index(Http.Request request) {
 		Optional<String> query = request.queryString("search");
 		if (query.isEmpty() || query.get() == "") {
-			return asyncCacheApi.get("search").thenApplyAsync((cacheResult) -> ok(views.html.index.render(null, assetsFinder)));
+			asyncCacheApi.remove("search");
+			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(null, assetsFinder)));
 		}
 
 		GitHubAPIImpl apiClient = new GitHubAPIImpl(client, config);
-		CompletionStage<SearchRepository> searchRepoStage = apiClient.getRepositoryFromSearchBar(query.get());
-		CompletionStage<Optional<SearchCacheStore>> cacheDataStage = asyncCacheApi.get("search");
-		return searchRepoStage.thenCombineAsync(cacheDataStage, (searchData, cacheData) -> {
-			SearchCacheStore store;
 
-			if (cacheData.isPresent()) {
-				store = cacheData.get();
-			} else {
-				store = new SearchCacheStore();
-			}
-			store.addNewSearch(searchData);
-			asyncCacheApi.set("search", store, 60 * 20);
-			return ok(views.html.index.render(store, assetsFinder));
-		},httpExecutionContext.current());
+		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query.get(), () -> {
+			CompletionStage<SearchRepository> searchRepository = apiClient.getRepositoryFromSearchBar(query.get());
+			asyncCacheApi.set("search_" + query.get(), searchRepository, 60 * 15);
+			return searchRepository;
+		});
+
+		return  newSearchData.thenCombineAsync(
+							 asyncCacheApi.get("search"),
+							 (newData, cacheData) -> {
+								 SearchCacheStore store = new SearchCacheStore();
+								 if(cacheData.isPresent()){
+									 store = (SearchCacheStore) cacheData.get();
+								 }
+								 if(!store.getSearches().contains(newData)){
+									 store.addNewSearch(newData);
+								 }
+								 asyncCacheApi.set("search", store, 60 * 15);
+								 return ok(views.html.index.render(store, assetsFinder));
+							 },
+							 httpExecutionContext.current()
+		 );
 	}
 
 }

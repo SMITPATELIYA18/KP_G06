@@ -3,7 +3,6 @@
 @import java.lang.String
 @(ownerName: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: List[String])(implicit assetsFinder: AssetsFinder)
 
-
 @walkJsonTree(name: String, node: JsonNode) = {
 
 @if(node.isObject()) {
@@ -37,12 +36,23 @@
 }
 
 @listUserRepositories(list: List[String]) = {
-@for(arrayNode <- list) {
-<li><a href="@routes.IssueController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
-}
+    @for(arrayNode <- list) {
+        @if(arrayNode != "No Issues Reported.") {
+            <li><a href="@routes.IssueController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
+        }   else{
+            <li>No Issues Reported.</li>
+        }
+    }
 }
 
 @main("Repository Profile") {
+<script lang="text/javascript">
+    window.onload = function() {
+	    if(list == null){
+            document.getElementById('repositories').style.display = 'none';
+	    }
+	}
+</script>
 
 <section id="top">
     <div class="wrapper">
@@ -61,6 +71,7 @@
         <p>@listUserRepositories(issueList)</p>
     </div>
 </div>
+
 }
 
 
