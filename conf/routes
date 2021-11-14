@@ -23,4 +23,6 @@ GET     /repositoryProfile/:ownerName/:repositoryName		    controllers.Repositor
 
 # User profile routes
 GET 	/user-profile/:username		controllers.UserProfileController.getUserProfile(username: String)
+
+
 GET     /                      controllers.IndexPageController.index(request: Request)

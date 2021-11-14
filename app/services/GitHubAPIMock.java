@@ -45,6 +45,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	// ToDo: Implement
 	@Override
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
+		System.out.println("Using the mock implementation for getUserProfileByUsername");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sampleUserProfile = null;
 		try {
@@ -60,6 +61,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	// ToDo: Implement
 	@Override
 	public CompletionStage<JsonNode> getUserRepositories(String username) {
+		System.out.println("Using the mock implementation for getUserRepositories");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sampleUserRepositories = null;
 		try {
