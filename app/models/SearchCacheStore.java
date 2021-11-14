@@ -23,9 +23,4 @@ public class SearchCacheStore {
 	public List<SearchRepository> getSearches() {
 		return searches;
 	}
-
-	public void setSearches(List<SearchRepository> searches) {
-		this.searches = searches;
-	}
-
 }
