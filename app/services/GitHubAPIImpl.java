@@ -24,7 +24,6 @@ import com.typesafe.config.Config;
 
 public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
-	private final Config config;
 	private String baseURL;
 	
 	/**
@@ -35,7 +34,6 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	@Inject
 	public GitHubAPIImpl(WSClient client, Config config) {
 		this.client = client;
-		this.config = config;
 		this.baseURL = config.getString("git.baseUrl");
 	}
 	
@@ -97,21 +95,13 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				});
 	}
 
-	/*public CompletableFuture<RepositoryProfileModel> getRepositoryProfile(String ownerName, String repositoryName){
-		String finalURL = this.config.getString("git.baseUrl") + "/repos/" + ownerName + "/" + repositoryName;
-		CompletableFuture<RepositoryProfileModel> result = client.url(finalURL).get()
-										.toCompletableFuture().thenApplyAsync(output -> RepositoryProfileModel.initialize(output.asJson()));
-
-		System.out.println("Result: " + result);
-		return  result;
-	}*/
-
-	//TODO: Optimize
-	public CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName){
+	public CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName) {
 		String finalURL = this.baseURL + "/repos/" + ownerName + "/" + repositoryName;
 		CompletionStage<JsonNode> result = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json")
-				.get().thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.asJson());
-		return  result;
+				.setRequestTimeout(Duration.of(1000, ChronoUnit.MILLIS))
+				.get()
+				.thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.asJson());
+		return result;
 	}
 }

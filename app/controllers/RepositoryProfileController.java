@@ -1,19 +1,24 @@
 package controllers;
 
 import javax.inject.Inject;
+
+import models.IssueModel;
 import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
 import services.GitHubAPIImpl;
-import scala.concurrent.ExecutionContextExecutor;
-import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import views.html.RepositoryProfile.*;
+import views.html.repositoryProfile.*;
 
 /**
  * @author Farheen Jamadar
@@ -43,11 +48,11 @@ public class RepositoryProfileController extends Controller {
 	//TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases
 	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName) throws ExecutionException, InterruptedException {
 
-		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)
+		CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)
 				.thenApplyAsync(issueModel -> issueModel,
-						httpExecutionContext.current()));*/
+						httpExecutionContext.current()));
 
-		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
 				() ->  gitHubAPI.getRepositoryProfile(ownerName, repositoryName))
 				.thenCombineAsync(
 						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
@@ -56,26 +61,45 @@ public class RepositoryProfileController extends Controller {
 							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
 							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
 							//TODO: Optimize
-							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetail, issueList.getIssueTitles().stream().limit(20).collect(Collectors.toList()), assetsFinder));
+							return ok(profile.render(ownerName, repositoryName, repositoryProfileDetail, issueList.getIssueTitles().stream().limit(20).collect(Collectors.toList()), assetsFinder));
 						},
 						httpExecutionContext.current()
-				);
+				);*/
 
-		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
 				() -> gitHubAPI.getRepositoryProfile(ownerName, repositoryName)
 						.thenApplyAsync(repositoryProfileDetails -> {
-							List<String> issueList = null;
+							CompletableFuture<List<String>> issueList = CompletableFuture.supplyAsync( () ->
+									{
+										List<String> list = null;
+										try {
+											list = issues.toCompletableFuture()
+													.get()
+													.getIssueTitles()
+													.stream()
+													.limit(20).parallel()
+													.collect(Collectors.toList());
+										} catch (InterruptedException e) {
+											e.printStackTrace();
+										} catch (ExecutionException e) {
+											e.printStackTrace();
+										}
+										//
+										return list;
+									}
+							);
+
+							asyncCacheApi.set(repositoryName + "_20issues", issueList,  60 * 15);
+							asyncCacheApi.set(ownerName + "_" + repositoryName, repositoryProfileDetails,  60 * 15);
+							List<String> list = null;
 							try {
-								//TODO: Optimize
-								issueList = issues.toCompletableFuture().get().getIssueTitles().stream().limit(20).collect(Collectors.toList());
+								list = issueList.get();
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							} catch (ExecutionException e) {
 								e.printStackTrace();
 							}
-							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
-							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-						return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetails, issueList, assetsFinder));
-					}, httpExecutionContext.current()));*/
+							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetails, Optional.ofNullable(list).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
+					}, httpExecutionContext.current()));
 	}
 }
