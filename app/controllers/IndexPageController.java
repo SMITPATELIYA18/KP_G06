@@ -12,15 +12,13 @@ import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
-import scala.concurrent.ExecutionContextExecutor;
 import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
 
 /**
+ * This controller contains an action to handle HTTP requests
+ * to the application's home page i.e. the search repository page
  * @author SmitPateliya, Farheen Jamadar
- * This controller contains action for fetching information
- *         from Github API and send result to the client.
- *
  */
 
 public class IndexPageController extends Controller {
@@ -40,15 +38,18 @@ public class IndexPageController extends Controller {
 	}
 
 	/**
-	 * This method executes when user fetches index page.
-	 * 
-	 * @param request Getting HTTP Request to get search query
-	 * @return Future CompletionStage Object
+	 * An action that renders an HTML page with search input form.
+	 * The configuration in the <code>routes</code> file means that
+	 * this method will be called when the application receives a
+	 * <code>GET</code> request with a path of <code>/</code>.
+	 * @param request HTTP Request containing the search query
+	 * @return Future CompletionStage Result
+	 * @author SmitPateliya, Farheen Jamadar
 	 */
 
 	public CompletionStage<Result> index(Http.Request request) {
 		Optional<String> query = request.queryString("search");
-		if (query.isEmpty() || query.get() == "") {
+		if (query.isEmpty() || query.get().equals("")) {
 			asyncCacheApi.remove("search");
 			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(null, assetsFinder)));
 		}

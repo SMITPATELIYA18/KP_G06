@@ -19,16 +19,16 @@ import com.typesafe.config.Config;
 /**
  * This class handles all API of GitHub.
  * @author SmitPateliya, Pradnya Kandarkar, Farheen Jamadar
- *
  */
 
 public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAPI {
 	private final WSClient client;
 	private String baseURL;
-	
+
 	/**
-	 *  
+	 *
 	 * @param client Constructor gets data from the Controller class.
+	 * @param config Placeholder for external properties
 	 */
 
 	@Inject
@@ -38,11 +38,11 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	}
 	
 	/**
-	 * This method is getting information from user and returns
-	 * all the information regarding the query.
-	 * 
-	 * @param query Gets the query from User to search repositories.
-	 * @return Returns SearchRepository Model containing all Repository information.
+	 * An action that fetches query from user and returns query information
+	 *
+	 * @param query Query string from User to search repositories.
+	 * @return Returns SearchRepository Model containing repository information.
+	 * @author
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
@@ -95,6 +95,13 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				});
 	}
 
+	/**
+	 * An action that fetches all the available details of the repository
+	 * @param ownerName Owner of the repository
+	 * @param repositoryName Repository Name
+	 * @return Returns JsonNode containing Repository information
+	 * @author Farheen Jamadar
+	 */
 	public CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName) {
 		String finalURL = this.baseURL + "/repos/" + ownerName + "/" + repositoryName;
 		CompletionStage<JsonNode> result = client.url(finalURL)
