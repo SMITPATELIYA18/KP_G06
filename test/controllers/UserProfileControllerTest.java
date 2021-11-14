@@ -24,7 +24,6 @@ import org.junit.*;
 public class UserProfileControllerTest {
 
     private static Application testApp;
-    private static UserProfileController userProfileController;
 
     /**
      * Overrides the binding to use mock implementation instead of the actual implematation and creates a fake application
@@ -33,7 +32,6 @@ public class UserProfileControllerTest {
     @BeforeClass
     public static void setUp() {
         testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
-        userProfileController = testApp.injector().instanceOf(UserProfileController.class);
     }
 
 
