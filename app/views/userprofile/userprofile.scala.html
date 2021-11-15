@@ -27,8 +27,13 @@
 }
 
 @listUserRepositories(node: JsonNode) = {
-    @for(arrayNode <- node.elements()) {
-        <li><a href="@routes.GitterificController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
+    @if(userRepositories.size() > 0) {
+        <p>@userRepositories.size() repositories</p>
+        @for(arrayNode <- node.elements()) {
+            <li><a href="@routes.GitterificController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
+        }
+    } else {
+        <p>No public repositories available for this user.</p>
     }
 }
 
@@ -40,11 +45,11 @@
     </section>
     <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
         <div id="user-info" style="padding: 10px 0px">
-            <p>User profile information for @username</p>
+            <p>User profile information for @username:</p>
             <p>@walkJsonTree(null, userProfile) </p>
         </div>
         <div id="user-repositories" style="padding: 10px 0px">
-            <p>@username's repositories</p>
+            <p>@username's repositories:</p>
             <p>@listUserRepositories(userRepositories)</p>
         </div>
     </div>

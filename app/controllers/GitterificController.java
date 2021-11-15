@@ -95,7 +95,7 @@ public class GitterificController extends Controller {
 								(userProfile, userRepositories) -> {
 									asyncCacheApi.set(username + "_profile", userProfile);
 									asyncCacheApi.set(username + "_repositories", userRepositories);
-									return ok(views.html.userprofile.profile.render(username, userProfile, userRepositories, assetsFinder));
+									return ok(views.html.userprofile.userprofile.render(username, userProfile, userRepositories, assetsFinder));
 								},
 								httpExecutionContext.current()
 						);

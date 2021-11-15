@@ -92,14 +92,12 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 					ObjectMapper mapper = new ObjectMapper();
 					ArrayNode userRepoList = mapper.createArrayNode();
 
-					if(userRepos != null){
-						if(userRepos instanceof ArrayNode){
-							ArrayNode arrayNode = (ArrayNode) userRepos;
-							Iterator<JsonNode> nodeIterator = arrayNode.iterator();
-							while (nodeIterator.hasNext()) {
-								JsonNode elementNode = nodeIterator.next();
-								userRepoList.add(elementNode.findValue("name"));
-							}
+					if(userRepos instanceof ArrayNode){
+						ArrayNode arrayNode = (ArrayNode) userRepos;
+						Iterator<JsonNode> nodeIterator = arrayNode.iterator();
+						while (nodeIterator.hasNext()) {
+							JsonNode elementNode = nodeIterator.next();
+							userRepoList.add(elementNode.findValue("name"));
 						}
 					}
 					return userRepoList;
