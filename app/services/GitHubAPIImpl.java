@@ -24,7 +24,7 @@ import com.typesafe.config.Config;
  */
 
 public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAPI {
-	private final WSClient client;
+	private WSClient client;
 	private String baseURL;
 
 	/**
@@ -129,14 +129,6 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), topic));
 		return searchResult;
-	}
-
-	public void setBaseURL(String URL) {
-		this.baseURL = URL;
-	}
-
-	public String getBaseURL() {
-		return this.baseURL;
 	}
 
 
