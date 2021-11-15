@@ -28,7 +28,7 @@
 
 @listUserRepositories(node: JsonNode) = {
     @for(arrayNode <- node.elements()) {
-        <li><a href="@routes.RepositoryProfileController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
+        <li><a href="@routes.GitterificController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
     }
 }
 
