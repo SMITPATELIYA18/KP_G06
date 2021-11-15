@@ -1,23 +1,22 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * This is model class to handle Repositories' search.
- * 
- * @author SmitPateliya
+ * This is model class contains to handle search query.
+ * @author SmitPateliya, Farheen Jamadar
  *
  */
 
 public class SearchRepository {
 	private String query;
-	private List<RepositoryModel> repositoryList = new ArrayList<>();
+	private List<RepositoryModel> repositoryList;
 	/**
 	 * 
 	 * @param data  Gets data from API
@@ -25,34 +24,25 @@ public class SearchRepository {
 	 */
 
 	public SearchRepository(JsonNode data, String query) {
-		this.setQuery(query);
+		this.query = query;
+
 		ArrayNode items = (ArrayNode) data.get("items");
-		java.util.Iterator<JsonNode> iteratorItems = items != null ? items.elements() : Collections.emptyIterator();
-		while (iteratorItems.hasNext()) {
-			JsonNode item = iteratorItems.next();
-			repositoryList.add(new RepositoryModel(item));
-		}
-		System.out.println("Repository: " + repositoryList);
-		repositoryList = repositoryList.stream().limit(10).collect(toList());
+
+		Stream<JsonNode> stream = StreamSupport.stream(Spliterators
+				.spliteratorUnknownSize(items.elements(),
+						Spliterator.ORDERED),false);
+
+		this.repositoryList = stream
+								.map(repository -> new RepositoryModel(repository))
+								.limit(10)
+								.collect(toList());
 	}
 
-	public List<RepositoryModel> getRepositoryList() {
+	public List<RepositoryModel> getRepositoryList(){
 		return repositoryList;
-	}
-
-	public void setRepositoryList(List<RepositoryModel> repositoryList) {
-		this.repositoryList = repositoryList;
-	}
-
-	public void clearRepository() {
-		this.repositoryList.clear();
 	}
 
 	public String getQuery() {
 		return query;
-	}
-
-	public void setQuery(String query) {
-		this.query = query;
 	}
 }

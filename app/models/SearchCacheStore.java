@@ -17,15 +17,10 @@ public class SearchCacheStore {
 	}
 	
 	public void addNewSearch(SearchRepository searchRepository) {
-		this.searches.add(searchRepository);
+		this.searches.add(0, searchRepository);
 	}
 
 	public List<SearchRepository> getSearches() {
 		return searches;
 	}
-
-	public void setSearches(List<SearchRepository> searches) {
-		this.searches = searches;
-	}
-
 }

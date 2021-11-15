@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import com.google.inject.Inject;
@@ -10,8 +9,7 @@ import com.typesafe.config.Config;
 import play.libs.ws.WSClient;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.*;
-import services.MyAPIClient;
-import scala.concurrent.ExecutionContextExecutor;
+import services.GitHubAPIImpl;
 
 /**
  * This class handles all the information regarding the issues.
@@ -52,7 +50,7 @@ public class IssueController extends Controller {
 
 	public CompletionStage<Result> getIssueStat(String repoName) {
 		repoName = repoName.replace("+", "/");
-		MyAPIClient apiClient = new MyAPIClient(client, config);
+		GitHubAPIImpl apiClient = new GitHubAPIImpl(client, config);
 		return apiClient.getRepositoryIssue(repoName).thenApplyAsync(
 				issueModel -> {return ok(views.html.issues.render(issueModel, assetsFinder));},
 				httpExecutionContext.current());

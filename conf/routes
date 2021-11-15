@@ -24,4 +24,6 @@ GET     /topics/:topic              controllers.TopicController.getTopicReposito
 
 # User profile routes
 GET 	/user-profile/:username		controllers.UserProfileController.getUserProfile(username: String)
+
+
 GET     /                      controllers.IndexPageController.index(request: Request)

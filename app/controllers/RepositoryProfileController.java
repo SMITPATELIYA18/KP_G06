@@ -1,74 +1,91 @@
 package controllers;
 
 import javax.inject.Inject;
-import akka.actor.ActorSystem;
+
 import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
-import scala.concurrent.ExecutionContextExecutor;
-import services.MyAPIClient;
+import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
-
-import views.html.RepositoryProfile.*;
+import java.util.stream.Collectors;
 
 /**
+ * This controller contains an action to handle HTTP requests
+ * to the repository profile page.
  * @author Farheen Jamadar
- * This controller contains action for fetching information
- * from Github API and send result to the client.
- *
  */
 
 public class RepositoryProfileController extends Controller {
 	private final Config config;
-	private final ActorSystem actorSystem;
-	//	private final ExecutionContextExecutor executor;
 	private final AssetsFinder assetsFinder;
 	private final WSClient client;
 	private HttpExecutionContext httpExecutionContext;
 	private AsyncCacheApi asyncCacheApi;
-
-	/**
-	 *
-	 * @param actorSystem To run code after delay
-	 * @param executor    To apply the result of the Completable Future.
-	 */
+	private GitHubAPIImpl gitHubAPI;
 
 	@Inject
-	public RepositoryProfileController(HttpExecutionContext httpExecutionContext, WSClient client, ActorSystem actorSystem,
-							   ExecutionContextExecutor executor, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config) {
-		this.actorSystem = actorSystem;
+	public RepositoryProfileController(HttpExecutionContext httpExecutionContext, WSClient client, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config, GitHubAPIImpl githubAPI) {
 		this.assetsFinder = assetsFinder;
 		this.client = client;
 		this.httpExecutionContext = httpExecutionContext;
 		this.asyncCacheApi = cache;
 		this.config = config;
+		this.gitHubAPI = githubAPI;
 	}
 
-	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName) {
+	//TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases
+	/**
+	 * An action that renders an HTML page with repository profile details queried by the user.
+	 * The configuration in the <code>routes</code> file means that
+	 * this method will be called when the application receives a
+	 * <code>GET</code> request with a path of <code>/repositoryProfile/:ownerName/:repositoryName</code>.
+	 * @param ownerName  Owner of the repository
+	 * @param repositoryName  Repository Name
+	 * @return Future CompletionStage Result
+	 * @author Farheen Jamadar
+	 */
 
-		MyAPIClient apiClient = new MyAPIClient(client, config);
-		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName, () -> apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
-						repositoryProfileDetails -> {
-							//System.out.println("Controller: " + repositoryProfileDetails);
-							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-							return ok(repositoryProfile.render(repositoryProfileDetails.asJson(), assetsFinder));
+	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName){
+
+		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)
+				.thenApplyAsync(issueModel -> issueModel,
+						httpExecutionContext.current()));*/
+
+		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+				() ->  gitHubAPI.getRepositoryProfile(ownerName, repositoryName))
+				.thenCombineAsync(
+						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
+								() -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)),
+						(repositoryProfileDetail, issueList) -> {
+							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
+							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
+							List<String> list = issueList.getIssueTitles().stream().limit(20).collect(Collectors.toList());
+							return ok(views.html.repositoryProfile.profile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
 						},
-						httpExecutionContext.current()));
+						httpExecutionContext.current()
+				);
 
-			/*return apiClient.getRepositoryProfile(ownerName, repositoryName).thenApplyAsync(
-					repositoryProfileDetails -> {
-						//System.out.println("Controller: " + repositoryProfileDetails);
-						asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-						return ok(repositoryProfile.render(repositoryProfileDetails.asJson(), assetsFinder));
-					},
-			httpExecutionContext.current());*/
+		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+				() -> gitHubAPI.getRepositoryProfile(ownerName, repositoryName)
+						.thenApplyAsync(repositoryProfileDetails -> {
+							List<String> issueList = null;
+							try {
+								//TODO: Optimize
+								issueList = issues.toCompletableFuture().get().getIssueTitles().stream().limit(20).collect(Collectors.toList());
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch (ExecutionException e) {
+								e.printStackTrace();
+							}
+							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
+							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
+							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetails, Optional.ofNullable(issueList).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
+						}, httpExecutionContext.current()));*/
 	}
-
-	/*public Result repositoryDetails(String ownerName, String repositoryName) {
-		System.out.println("Owner Name1: " + ownerName + " Repository Name: " + repositoryName);
-		return ok(views.html.RepositoryProfile.repositoryProfile.render(ownerName, repositoryName));
-	}*/
 }

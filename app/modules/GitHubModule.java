@@ -2,7 +2,7 @@ package modules;
 
 import com.google.inject.AbstractModule;
 
-import services.MyAPIClient;
+import services.GitHubAPIImpl;
 import services.github.GitHubAPI;
 
 /**
@@ -11,7 +11,8 @@ import services.github.GitHubAPI;
  *
  */
 public class GitHubModule extends AbstractModule {
+	@Override
 	protected final void configure() {
-		bind(GitHubAPI.class).to(MyAPIClient.class);
+		bind(GitHubAPI.class).to(GitHubAPIImpl.class);
 	}
 }

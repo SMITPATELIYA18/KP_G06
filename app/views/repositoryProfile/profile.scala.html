@@ -1,0 +1,77 @@
+
+@import com.fasterxml.jackson.databind.JsonNode
+@import java.lang.String
+@(ownerName: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: List[String])(implicit assetsFinder: AssetsFinder)
+
+@walkJsonTree(name: String, node: JsonNode) = {
+
+@if(node.isObject()) {
+<ul>
+    @for(nodeEntry <- node.fields()) {
+        <li>
+            <b>@nodeEntry.getKey(): </b>
+            @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())
+        </li>
+    }
+</ul>
+}
+@if(node.isArray()) {
+<ul>
+    @for(arrayNode <- node.elements()) {
+    <li>[List]: @walkJsonTree(name, arrayNode)</li>
+    }
+</ul>
+}
+
+@if(node.isValueNode()) {
+    @if(node.asText() == ownerName) {
+        <a href="@routes.UserProfileController.getUserProfile(ownerName)">@ownerName</a>
+    } else{
+        @node.asText()
+    }
+} else {
+    @* other *@
+    @node.asText()
+}
+}
+
+@listUserRepositories(list: List[String]) = {
+    @for(arrayNode <- list) {
+        @if(arrayNode != "No Issues Reported.") {
+            <li><a href="@routes.IssueController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
+        }   else{
+            <li>No Issues Reported.</li>
+        }
+    }
+}
+
+@main("Repository Profile") {
+<script lang="text/javascript">
+    window.onload = function() {
+	    if(list == null){
+            document.getElementById('repositories').style.display = 'none';
+	    }
+	}
+</script>
+
+<section id="top">
+    <div class="wrapper">
+        <h1>Gitterific</h1>
+    </div>
+</section>
+<div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
+    <div style="padding: 10px 0px;">
+        <h3>Repository Profile Data for: <b>@repositoryName</b></h3>
+    </div>
+    <div>
+        @walkJsonTree(null, repositoryProfileDetails)
+    </div>
+    <div id="repositories" style="padding: 10px 0px">
+        <p><b>List to top 20 issues: </b></p>
+        <p>@listUserRepositories(issueList)</p>
+    </div>
+</div>
+
+}
+
+

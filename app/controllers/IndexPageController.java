@@ -1,50 +1,35 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
-import akka.actor.ActorSystem;
 import models.SearchCacheStore;
 import models.SearchRepository;
-import play.cache.Cached;
 import play.mvc.*;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
-import scala.concurrent.ExecutionContextExecutor;
-import services.MyAPIClient;
+import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
 
 /**
- * @author SmitPateliya This controller contains action for fetching information
- *         from Github API and send result to the client.
- *
+ * This controller contains an action to handle HTTP requests
+ * to the application's home page i.e. the search repository page
+ * @author SmitPateliya, Farheen Jamadar
  */
 
 public class IndexPageController extends Controller {
 	private final Config config;
-	private final ActorSystem actorSystem;
-//	private final ExecutionContextExecutor executor;
 	private final AssetsFinder assetsFinder;
 	private final WSClient client;
 	private HttpExecutionContext httpExecutionContext;
 	private AsyncCacheApi asyncCacheApi;
 
-	/**
-	 * 
-	 * @param actorSystem To run code after delay
-	 * @param executor    To apply the result of the Completable Future.
-	 */
-
 	@Inject
-	public IndexPageController(HttpExecutionContext httpExecutionContext, WSClient client, ActorSystem actorSystem,
-			ExecutionContextExecutor executor, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config) {
-		this.actorSystem = actorSystem;
+	public IndexPageController(HttpExecutionContext httpExecutionContext, WSClient client, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config) {
 		this.assetsFinder = assetsFinder;
 		this.client = client;
 		this.httpExecutionContext = httpExecutionContext;
@@ -53,60 +38,45 @@ public class IndexPageController extends Controller {
 	}
 
 	/**
-	 * This method executes when user fetches index page.
-	 * 
-	 * @param request Getting HTTP Request to get search query
-	 * @return Future CompletionStage Object
+	 * An action that renders an HTML page with search input form.
+	 * The configuration in the <code>routes</code> file means that
+	 * this method will be called when the application receives a
+	 * <code>GET</code> request with a path of <code>/</code>.
+	 * @param request HTTP Request containing the search query
+	 * @return Future CompletionStage Result
+	 * @author SmitPateliya, Farheen Jamadar
 	 */
 
 	public CompletionStage<Result> index(Http.Request request) {
 		Optional<String> query = request.queryString("search");
-		if (query.isEmpty() || query.get() == "") {
-			return asyncCacheApi.get("search").thenApplyAsync((cacheResult) -> {
-				// SearchCacheStore answer = (SearchCacheStore) cacheResult.orElse(null);
-				return ok(views.html.index.render(null, assetsFinder));
-			});
+		if (query.isEmpty() || query.get().equals("")) {
+			asyncCacheApi.remove("search");
+			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(null, assetsFinder)));
 		}
 
-		MyAPIClient apiClient = new MyAPIClient(client, config);
-		//apiClient.getRepositoryFromSearchBar(query.get()).thenCompose(searc);
-		CompletionStage<SearchRepository> searchRepoStage = apiClient.getRepositoryFromSearchBar(query.get());
-		CompletionStage<Optional<SearchCacheStore>> cacheDataStage = asyncCacheApi.get("search");
-		return searchRepoStage.thenCombineAsync(cacheDataStage, (searchData, cacheData) -> {
-			SearchCacheStore store;
+		GitHubAPIImpl apiClient = new GitHubAPIImpl(client, config);
 
-			if (cacheData.isPresent()) {
-				store = cacheData.get();
-			} else {
-				store = new SearchCacheStore();
-			}
-			store.addNewSearch(searchData);
-			asyncCacheApi.set("search", store, 60 * 20);
-			return ok(views.html.index.render(store, assetsFinder));
-		},httpExecutionContext.current());
-//		return apiClient.getRepositoryFromSearchBar(query.get()).thenApplyAsync(searchRepository -> {
-//			CompletionStage<Optional<SearchCacheStore>> data = asyncCacheApi.get("search");
-//			Optional<SearchCacheStore> cacheData = Optional.empty();
-//			try {
-//				cacheData = data.toCompletableFuture().get();
-//			} catch (InterruptedException e) {
-//
-//			} catch (ExecutionException e) {
-//
-//			} catch (CancellationException e) {
-//
-//			}
-//			SearchCacheStore store;
-//
-//			if (cacheData.isPresent()) {
-//				store = cacheData.get();
-//			} else {
-//				store = new SearchCacheStore();
-//			}
-//			store.addNewSearch(searchRepository);
-//			asyncCacheApi.set("search", store, 60 * 20);
-//			return ok(views.html.index.render(store, null, assetsFinder));
-//		}, httpExecutionContext.current());
+		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query.get(), () -> {
+			CompletionStage<SearchRepository> searchRepository = apiClient.getRepositoryFromSearchBar(query.get());
+			asyncCacheApi.set("search_" + query.get(), searchRepository, 60 * 15);
+			return searchRepository;
+		});
+
+		return  newSearchData.thenCombineAsync(
+							 asyncCacheApi.get("search"),
+							 (newData, cacheData) -> {
+								 SearchCacheStore store = new SearchCacheStore();
+								 if(cacheData.isPresent()){
+									 store = (SearchCacheStore) cacheData.get();
+								 }
+								 if(!store.getSearches().contains(newData)){
+									 store.addNewSearch(newData);
+								 }
+								 asyncCacheApi.set("search", store, 60 * 15);
+								 return ok(views.html.index.render(store, assetsFinder));
+							 },
+							 httpExecutionContext.current()
+		 );
 	}
 
 }
