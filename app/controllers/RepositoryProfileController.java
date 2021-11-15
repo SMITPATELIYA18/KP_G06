@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
  * to the repository profile page.
  * @author Farheen Jamadar
  */
-
 public class RepositoryProfileController extends Controller {
 	private final Config config;
 	private final AssetsFinder assetsFinder;
