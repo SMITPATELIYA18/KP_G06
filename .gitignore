@@ -6,3 +6,4 @@ logs
 .settings
 project/target
 project/project
+.project

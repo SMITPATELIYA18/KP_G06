@@ -23,6 +23,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	
 	/**
 	 * This function returns IssueModel object when API  will call.
+	 * @author smitpateliya
 	 * @param repoFullName The name of repository name
 	 * @return returns completion stage issue model object 
 	 */

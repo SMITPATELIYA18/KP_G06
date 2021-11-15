@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * This model class stores different search result in the cache.
- * @author smitp
+ * @author smitpateliya
  *
  */
 

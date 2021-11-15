@@ -42,7 +42,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 *
 	 * @param query Query string from User to search repositories.
 	 * @return Returns SearchRepository Model containing repository information.
-	 * @author
+	 * @author SmitPateliya
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
@@ -52,6 +52,13 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), query));
 		return searchResult;
 	}
+	
+	/**
+	 * An action that fetches repository's issues from API
+	 * @author smitpateliya
+	 * @param repoFullName repository's full name
+	 * @return IssueModel's future instance
+	 */
 	
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) {
 		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
