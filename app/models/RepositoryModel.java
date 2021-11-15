@@ -1,49 +1,53 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.List;
-import static java.util.stream.Collectors.toList;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import static java.util.stream.Collectors.toList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+
+/**
+ * This is model class to handle Repositories' search.
+ * @author SmitPateliya, Farheen Jamadar
+ */
+
 
 public class RepositoryModel {
 	private String ownerName;
 	private String repositoryName;
-	private List<String> topics = new ArrayList<>();
+	private List<String> topics;
 	
 	public RepositoryModel(JsonNode data) {
-		//System.out.println(data);
 		this.ownerName = data.get("owner").get("login").asText();
 		this.repositoryName = data.get("name").asText();
+
 		ArrayNode items = (ArrayNode) data.get("topics");
-		java.util.Iterator<JsonNode> iteratorItems = items.elements();
-		while(iteratorItems.hasNext()) {
-			JsonNode item = iteratorItems.next();
-			topics.add(item.asText());
-		}
-		topics = topics.stream().limit(5).collect(toList());
+		Stream<JsonNode> elementStream = StreamSupport.stream(Spliterators
+										    .spliteratorUnknownSize(items.elements(),
+													Spliterator.ORDERED),false);
+
+		this.topics = elementStream
+				.map(topic -> topic.asText())
+				.limit(10)
+				.collect(toList());
 	}
 	
-	public List<String> getTopics() {
-		return topics;
+	public List<String> getTopics(){
+		return this.topics;
 	}
-	public void setTopics(List<String> topics) {
-		this.topics = topics;
-	}
-	public String getRepositoryName() {
+
+	public String getRepositoryName(){
 		return repositoryName;
 	}
-	public void setRepositoryName(String repositoryName) {
-		this.repositoryName = repositoryName;
-	}
-	public String getOwnerName() {
+
+	public String getOwnerName(){
 		return ownerName;
 	}
-	public void setOwnerName(String ownerName) {
-		this.ownerName = ownerName;
-	}
-	
+
 	public String toString() {
 		return ownerName + repositoryName + topics;
 	}

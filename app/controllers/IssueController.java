@@ -25,6 +25,7 @@ public class IssueController extends Controller {
 	
 	/**
 	 * Injects all the different parameter
+	 * @author smitpateliya
 	 * @param actorSystem Creates Actor System
 	 * @param assetsFinder Display UI Part
 	 * @param httpExecutionContext
@@ -44,6 +45,7 @@ public class IssueController extends Controller {
 	
 	/**
 	 * This method gives issues' title statics which are returning from API.
+	 * @author smitpateliya
 	 * @param request Gets repository names.
 	 * @return Future Result which contains issues' title stats.
 	 */

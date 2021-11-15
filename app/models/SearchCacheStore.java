@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * This model class stores different search result in the cache.
- * @author smitp
+ * @author smitpateliya
  *
  */
 
@@ -23,9 +23,4 @@ public class SearchCacheStore {
 	public List<SearchRepository> getSearches() {
 		return searches;
 	}
-
-	public void setSearches(List<SearchRepository> searches) {
-		this.searches = searches;
-	}
-
 }

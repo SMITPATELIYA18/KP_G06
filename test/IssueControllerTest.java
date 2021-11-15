@@ -37,7 +37,7 @@ import models.IssueModel;
  */
 public class IssueControllerTest{
 	private Application testApp;
-//	private GitHubAPI testGitHub;
+	private GitHubAPI testGitHub;
 	private IssueController issueController;
 
 //	@Override
@@ -52,7 +52,7 @@ public class IssueControllerTest{
 	@Before
 	public void setUp() {
 		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
-		//testGitHub = testApp.injector().instanceOf(GitHubAPI.class);
+		testGitHub = testApp.injector().instanceOf(GitHubAPI.class);
 		issueController = testApp.injector().instanceOf(IssueController.class);
 	}
 
@@ -70,8 +70,8 @@ public class IssueControllerTest{
 	public void testIssueController() {
 		Helpers.running(testApp, () -> {
 //			when(testGitHub.getRepositoryIssue("repoName")).thenReturn(mockIssueController());
-			GitHubAPI api = mock(GitHubAPI.class);
-			doReturn(mockIssueController()).when(api).getRepositoryIssue("repoName");
+			//GitHubAPI api = mock(GitHubAPI.class);
+			//doReturn(mockIssueController()).when(testGitHub).getRepositoryIssue("repoName");
 //			IssueController controller = mock(IssueController.class);
 			CompletionStage<Result> issueStat = issueController.getIssueStat("repoName");
 			Result result;
