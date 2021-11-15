@@ -38,7 +38,8 @@
 					<li><b>Owner Name:</b> <a href="@routes.UserProfileController.getUserProfile(repository.getOwnerName())">@repository.getOwnerName()</a> &nbsp; |
 						&nbsp;<b> Repository Name:</b> <a href="@routes.RepositoryProfileController.getRepositoryProfile(repository.getOwnerName(), repository.getRepositoryName())">@repository.getRepositoryName()</a>
 						@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
-						<- repository.getTopics()) { (@topic)&nbsp; } }</li>
+						<- repository.getTopics()) { <a href="@routes.TopicController.getTopicRepository(topic)">(@topic)</a>&nbsp; } }</li>
+
 				</ul>
 			</div>
 			}

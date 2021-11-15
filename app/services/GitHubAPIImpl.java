@@ -111,4 +111,21 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.asJson());
 		return result;
 	}
+
+	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
+		String finalURL = this.baseURL + "/search/repositories?q=topic:" + topic + "&sort=created&order=desc";
+		CompletionStage<SearchRepository> searchResult = client.url(finalURL)
+				.addHeader("accept", "application/vnd.github.v3+json").get()
+				.thenApplyAsync(result -> new SearchRepository(result.asJson(), topic));
+		return searchResult;
+	}
+
+	public void setBaseURL(String URL) {
+		this.baseURL = URL;
+	}
+
+	public String getBaseURL() {
+		return this.baseURL;
+	}
+
 }
