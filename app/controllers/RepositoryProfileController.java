@@ -38,7 +38,7 @@ public class RepositoryProfileController extends Controller {
 		this.gitHubAPI = githubAPI;
 	}
 
-	//TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases
+	/*TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases*/
 	/**
 	 * An action that renders an HTML page with repository profile details queried by the user.
 	 * The configuration in the <code>routes</code> file means that
