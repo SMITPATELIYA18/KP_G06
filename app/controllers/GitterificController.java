@@ -95,7 +95,7 @@ public class GitterificController extends Controller {
 								(userProfile, userRepositories) -> {
 									asyncCacheApi.set(username + "_profile", userProfile);
 									asyncCacheApi.set(username + "_repositories", userRepositories);
-									return ok(views.html.userprofile.profile.render(username, userProfile, userRepositories, assetsFinder));
+									return ok(views.html.userprofile.userprofile.render(username, userProfile, userRepositories, assetsFinder));
 								},
 								httpExecutionContext.current()
 						);
@@ -128,7 +128,7 @@ public class GitterificController extends Controller {
 							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
 							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
 							List<String> list = issueList.getIssueTitles().stream().limit(20).collect(Collectors.toList());
-							return ok(views.html.RepositoryProfile.profile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
+							return ok(views.html.repositoryProfile.profile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
 						},
 						httpExecutionContext.current()
 				);
