@@ -25,7 +25,7 @@
 
 @if(node.isValueNode()) {
     @if(node.asText() == ownerName) {
-        <a href="@routes.UserProfileController.getUserProfile(ownerName)">@ownerName</a>
+        <a href="@routes.GitterificController.getUserProfile(ownerName)">@ownerName</a>
     } else{
         @node.asText()
     }
@@ -38,7 +38,7 @@
 @listUserRepositories(list: List[String]) = {
     @for(arrayNode <- list) {
         @if(arrayNode != "No Issues Reported.") {
-            <li><a href="@routes.IssueController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
+            <li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
         }   else{
             <li>No Issues Reported.</li>
         }
