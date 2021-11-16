@@ -1,5 +1,7 @@
 package services;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -29,6 +31,21 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @return returns completion stage issue model object 
 	 */
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName){
+		if(repoFullName.equals("sadasd/sadsad")) {
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode data = null;
+			try {
+				data = mapper.readTree(TestResources.nullIssueData);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
+			IssueModel modelData = new IssueModel(repoFullName, data);
+			futureModel.complete(modelData);
+//			System.out.println(modelData.getWordLevelData());
+			return futureModel;
+		}
 		System.out.println("Using the mock implementation for getRepositoryIssue.");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode data = null;
@@ -47,7 +64,18 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 
 	@Override
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
-		return null;
+		System.out.println("Using the mock implementation for getRepositoryFromSearchBar");
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode sampleSearchResult = null;
+		try {
+			sampleSearchResult = mapper.readTree(new File("test/resources/searchreposfeature/sampleSearchResult.json"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		CompletableFuture<SearchRepository> futureModel = new CompletableFuture<>();
+		SearchRepository modelData = new SearchRepository(sampleSearchResult, query);
+		futureModel.complete(modelData);
+		return futureModel;
 	}
 
 	@Override
@@ -56,7 +84,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sampleUserProfile = null;
 		try {
-			sampleUserProfile = mapper.readTree(TestResources.sampleUserProfile);
+			sampleUserProfile = mapper.readTree(new File("test/resources/userprofile/validGitHubUserProfile.json"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -68,10 +96,11 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	@Override
 	public CompletionStage<JsonNode> getUserRepositories(String username) {
 		System.out.println("Using the mock implementation for getUserRepositories");
+		String sampleUserRepositoriesData = "[\"testRepoForPlayProject\",\"testRepositoryForPlayProject2\"]";
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sampleUserRepositories = null;
 		try {
-			sampleUserRepositories = mapper.readTree(TestResources.sampleUserRepositories);
+			sampleUserRepositories = mapper.readTree(sampleUserRepositoriesData);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

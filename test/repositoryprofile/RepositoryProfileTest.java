@@ -17,7 +17,6 @@ import play.twirl.api.Content;
 import services.GitHubAPIImpl;
 import services.GitHubAPIMock;
 import services.github.GitHubAPI;
-import views.html.repositoryprofile.repositoryProfile;
 
 import java.io.File;
 import java.io.IOException;

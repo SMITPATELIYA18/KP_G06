@@ -29,13 +29,20 @@ public class IssueModel {
 //		System.out.println(this.repoFullName);
 //		System.out.println(data);
 		this.repoFullName = repoFullName;
+		if(!data.has("message")) {
 		java.util.Iterator<JsonNode> iteratorItems = data.elements() != null ? data.elements()
 				: Collections.emptyIterator();
+		System.out.println(iteratorItems.hasNext());
 		iteratorItems.forEachRemaining(issue -> issueTitles.add(issue.get("title").asText()));
 		Map<String, Long> unsortedData = issueTitles.stream().flatMap(title -> getIndividualWord(title))
 				.collect(groupingBy(Function.identity(), counting()));
 		unsortedData.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
 				.forEachOrdered(result -> worldLevelData.put(result.getKey(), result.getValue()));
+		System.out.println(worldLevelData); 
+		}
+		else {
+			issueTitles.add("Error! Repository does not present!");
+		}
 	}
 
 	private Stream<String> getIndividualWord(String title) {

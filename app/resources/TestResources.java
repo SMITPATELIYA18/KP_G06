@@ -6,6 +6,10 @@ package resources;
  * @author Smit Pateliya, Pradnya Kandarkar
  */
 public class TestResources {
+	public static final String nullIssueData = "{\r\n"
+			+ "  \"message\": \"Not Found\",\r\n"
+			+ "  \"documentation_url\": \"https://docs.github.com/rest/reference/issues#list-repository-issues\"\r\n"
+			+ "}";
 	public static final String issueData = "[\r\n"
 			+ "  {\r\n"
 			+ "    \"url\": \"https://api.github.com/repos/TheAlgorithms/Java/issues/2813\",\r\n"
