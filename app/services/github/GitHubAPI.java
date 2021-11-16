@@ -13,4 +13,5 @@ public interface GitHubAPI {
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName);
 	CompletionStage<JsonNode> getUserProfileByUsername(String username);
 	CompletionStage<JsonNode> getUserRepositories(String username);
+	CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName);
 }

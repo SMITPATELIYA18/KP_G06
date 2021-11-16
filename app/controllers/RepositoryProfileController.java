@@ -8,6 +8,7 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.libs.ws.*;
 import services.GitHubAPIImpl;
 import com.typesafe.config.Config;
+import services.github.GitHubAPI;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,16 +27,18 @@ public class RepositoryProfileController extends Controller {
 	private final WSClient client;
 	private HttpExecutionContext httpExecutionContext;
 	private AsyncCacheApi asyncCacheApi;
-	private GitHubAPIImpl gitHubAPI;
 
 	@Inject
-	public RepositoryProfileController(HttpExecutionContext httpExecutionContext, WSClient client, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config, GitHubAPIImpl githubAPI) {
+	private GitHubAPI gitHubAPIImpl;
+
+	@Inject
+	public RepositoryProfileController(HttpExecutionContext httpExecutionContext, WSClient client, AssetsFinder assetsFinder, AsyncCacheApi cache, Config config, GitHubAPIImpl gitHubAPIImpl) {
 		this.assetsFinder = assetsFinder;
 		this.client = client;
 		this.httpExecutionContext = httpExecutionContext;
 		this.asyncCacheApi = cache;
 		this.config = config;
-		this.gitHubAPI = githubAPI;
+		this.gitHubAPIImpl = gitHubAPIImpl;
 	}
 
 	/*TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases*/
@@ -43,35 +46,35 @@ public class RepositoryProfileController extends Controller {
 	 * An action that renders an HTML page with repository profile details queried by the user.
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
-	 * <code>GET</code> request with a path of <code>/repositoryProfile/:ownerName/:repositoryName</code>.
-	 * @param ownerName  Owner of the repository
+	 * <code>GET</code> request with a path of <code>/repositoryProfile/:username/:repositoryName</code>.
+	 * @param username  Owner of the repository
 	 * @param repositoryName  Repository Name
 	 * @return Future CompletionStage Result
 	 * @author Farheen Jamadar
 	 */
 
-	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName){
+	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
 
-		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)
+		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPI.getRepositoryIssue(username + "/" + repositoryName)
 				.thenApplyAsync(issueModel -> issueModel,
 						httpExecutionContext.current()));*/
 
-		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-				() ->  gitHubAPI.getRepositoryProfile(ownerName, repositoryName))
+		return asyncCacheApi.getOrElseUpdate(username + "/" + repositoryName,
+				() ->  gitHubAPIImpl.getRepositoryProfile(username, repositoryName))
 				.thenCombineAsync(
 						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
-								() -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)),
+								() -> gitHubAPIImpl.getRepositoryIssue(username + "/" + repositoryName)),
 						(repositoryProfileDetail, issueList) -> {
 							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
-							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
+							asyncCacheApi.set(username + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
 							List<String> list = issueList.getIssueTitles().stream().limit(20).collect(Collectors.toList());
-							return ok(views.html.repositoryProfile.profile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
+							return ok(views.html.repositoryProfile.profile.render(username, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
 						},
 						httpExecutionContext.current()
 				);
 
-		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-				() -> gitHubAPI.getRepositoryProfile(ownerName, repositoryName)
+		/*return asyncCacheApi.getOrElseUpdate(username + "/" + repositoryName,
+				() -> gitHubAPI.getRepositoryProfile(username, repositoryName)
 						.thenApplyAsync(repositoryProfileDetails -> {
 							List<String> issueList = null;
 							try {
@@ -83,8 +86,8 @@ public class RepositoryProfileController extends Controller {
 								e.printStackTrace();
 							}
 							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
-							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetails, Optional.ofNullable(issueList).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
+							asyncCacheApi.set(username + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
+							return ok(repositoryProfile.render(username, repositoryName, repositoryProfileDetails, Optional.ofNullable(issueList).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
 						}, httpExecutionContext.current()));*/
 	}
 }
