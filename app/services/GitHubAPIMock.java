@@ -90,6 +90,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		//TODO: Farheen
 		CompletableFuture<JsonNode> futureUserRepositories = new CompletableFuture<>();
 		futureUserRepositories.complete(sampleRepositoryProfile);
 		return futureUserRepositories;
@@ -98,6 +99,17 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	// ToDo: Indraneel
 	@Override
 	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
-		return null;
+		System.out.println("Using the mock implementation for getTopicRepository");
+		ObjectMapper mapper = new ObjectMapper();
+		SearchRepository sampleTopicList = null;
+		try {
+			sampleTopicList = new SearchRepository(mapper.readTree(TestResources.sampleRepositoryProfile), topic);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		CompletableFuture<SearchRepository> futureTopicList = new CompletableFuture<>();
+		futureTopicList.complete(sampleTopicList);
+		return futureTopicList;
 	}
 }
