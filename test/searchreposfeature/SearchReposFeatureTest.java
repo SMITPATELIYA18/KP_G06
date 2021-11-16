@@ -157,7 +157,8 @@ public class SearchReposFeatureTest {
     // Tests for the methods implemented for GitHubAPI that are related to the search repository feature
 
     /**
-     * Checks if 10 search results are returned for a single valid search request
+     * Checks if 10 search results are returned for a single valid search request when <code>getRepositoryFromSearchBar</code>
+     * is called
      * @throws Exception If the call cannot be completed due to an error
      * @author Pradnya Kandarkar
      */
