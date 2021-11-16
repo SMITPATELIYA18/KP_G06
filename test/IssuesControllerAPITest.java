@@ -9,10 +9,13 @@ import services.GitHubAPIMock;
 import services.github.GitHubAPI;
 import static play.inject.Bindings.bind;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 
+import org.assertj.core.util.Arrays;
 import org.junit.*;
 
 import models.IssueModel;
@@ -71,5 +74,19 @@ public class IssuesControllerAPITest {
 		IssueModel resultFromAPI =  result.toCompletableFuture().get();
 		assertEquals(resultFromAPI.getRepoFullName(), issueModel.getRepoFullName());
 		assertEquals(resultFromAPI.getWordLevelData(), issueModel.getWordLevelData());
+	}
+	
+	@Test
+	public void checkNullTestIssues() throws InterruptedException, ExecutionException {
+		IssueModel issueModel = mock(IssueModel.class);
+		when(issueModel.getRepoFullName()).thenReturn("sadasd/sadsad");
+		ArrayList<String> mockList = new ArrayList<>() {{
+			add("Issue does not Present!");
+		}};
+		when(issueModel.getIssueTitles()).thenReturn(mockList);
+		CompletionStage<IssueModel> result = testGitHub.getRepositoryIssue("sadasd/sadsad");
+		IssueModel resultFromAPI =  result.toCompletableFuture().get();
+		assertEquals(resultFromAPI.getRepoFullName(), issueModel.getRepoFullName());
+		assertEquals(resultFromAPI.getIssueTitles(), issueModel.getIssueTitles());
 	}
 }

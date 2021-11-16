@@ -31,6 +31,21 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @return returns completion stage issue model object 
 	 */
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName){
+		if(repoFullName.equals("sadasd/sadsad")) {
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode data = null;
+			try {
+				data = mapper.readTree(TestResources.nullIssueData);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
+			IssueModel modelData = new IssueModel(repoFullName, data);
+			futureModel.complete(modelData);
+//			System.out.println(modelData.getWordLevelData());
+			return futureModel;
+		}
 		System.out.println("Using the mock implementation for getRepositoryIssue.");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode data = null;
