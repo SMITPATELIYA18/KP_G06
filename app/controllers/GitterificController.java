@@ -1,15 +1,16 @@
 package controllers;
 
+import com.google.inject.Inject;
 import models.SearchCacheStore;
 import models.SearchRepository;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.*;
+import services.GitterificService;
 import services.github.GitHubAPI;
 
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,9 +31,8 @@ public class GitterificController extends Controller {
 	private final AssetsFinder assetsFinder;
 	private HttpExecutionContext httpExecutionContext;
 	private AsyncCacheApi asyncCacheApi;
-
-	@Inject
 	private GitHubAPI gitHubAPIInst;
+	private GitterificService gitterificService;
 
 	/**
 	 * @param assetsFinder For finding assets according to configured base path and URL base
@@ -40,10 +40,12 @@ public class GitterificController extends Controller {
 	 * @param asyncCacheApi For utilizing asynchronous cache
 	 */
 	@Inject
-	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi) {
+	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi, GitHubAPI gitHubAPIInst, GitterificService gitterificService) {
 		this.assetsFinder = assetsFinder;
 		this.httpExecutionContext = httpExecutionContext;
 		this.asyncCacheApi = asyncCacheApi;
+		this.gitHubAPIInst = gitHubAPIInst;
+		this.gitterificService = gitterificService;
 	}
 
 	/**
@@ -106,17 +108,12 @@ public class GitterificController extends Controller {
 	 */
 	public CompletionStage<Result> getUserProfile(String username) {
 
-		return asyncCacheApi.getOrElseUpdate(username + "_profile",
-				() -> gitHubAPIInst.getUserProfileByUsername(username))
-						.thenCombineAsync(asyncCacheApi.getOrElseUpdate(username + "_repositories",
-								() -> gitHubAPIInst.getUserRepositories(username)),
-								(userProfile, userRepositories) -> {
-									asyncCacheApi.set(username + "_profile", userProfile);
-									asyncCacheApi.set(username + "_repositories", userRepositories);
-									return ok(views.html.userprofile.userprofile.render(username, userProfile, userRepositories, assetsFinder));
-								},
-								httpExecutionContext.current()
-						);
+		return gitterificService.getUserProfile(username).thenApplyAsync(
+				userInfo -> ok(views.html.userprofile.userprofile.render(username,
+						userInfo.get("profile"),
+						userInfo.get("repositories"),
+						assetsFinder)),
+				httpExecutionContext.current());
 	}
 
 	/*TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases*/
