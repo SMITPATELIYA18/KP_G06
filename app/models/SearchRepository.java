@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
@@ -27,11 +28,17 @@ public class SearchRepository {
 	public SearchRepository(JsonNode data, String query) {
 		this.query = query;
 
-		ArrayNode items = (ArrayNode) data.get("items");
-
-		if(items == null){
-			items = JsonNodeFactory.instance.arrayNode();
+		if(data == null){
+			ObjectMapper mapper = new ObjectMapper();
+			data = mapper.createObjectNode();
 		}
+
+		ArrayNode items = Optional.ofNullable((ArrayNode) data.get("items")).orElse(JsonNodeFactory.instance.arrayNode());
+
+		//TODO: Farheen
+		/*if(items == null){
+			items = JsonNodeFactory.instance.arrayNode();
+		}*/
 
 		Stream<JsonNode> stream = StreamSupport.stream(Spliterators
 				.spliteratorUnknownSize(items.elements(),
