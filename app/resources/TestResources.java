@@ -237,6 +237,4 @@ public class TestResources {
 			"  \"created_at\": \"2016-07-11T18:26:26Z\",\n" +
 			"  \"updated_at\": \"2021-11-04T15:44:54Z\"\n" +
 			"}";
-
-	public static final String sampleUserRepositories = "[\"testRepoForPlayProject\",\"testRepositoryForPlayProject2\"]";
 }
