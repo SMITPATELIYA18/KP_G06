@@ -2,7 +2,8 @@ package userprofile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.Assert.*;
 import static play.inject.Bindings.bind;
 import static play.mvc.Http.Status.OK;
 import static play.mvc.Results.ok;
@@ -77,7 +78,7 @@ public class UserProfileTest {
     }
 
     /**
-     * Validates if HTTP response OK (200) is received for a valid GET request
+     * Checks if HTTP response OK (200) is received for a valid GET request
      * @author Pradnya Kandarkar
      */
     @Test
@@ -93,7 +94,7 @@ public class UserProfileTest {
     }
 
     /**
-     * Validates if HTTP response NOT_FOUND (404) is received for a request type that is not implemented for the URL
+     * Checks if HTTP response NOT_FOUND (404) is received for a request type that is not implemented for the URL
      * @author Pradnya Kandarkar
      */
     @Test
@@ -108,22 +109,80 @@ public class UserProfileTest {
         assertEquals(NOT_FOUND, result.status());
     }
 
+    /**
+     * Checks if a valid response is returned when <code>getUserProfileByUsername</code> is called for an existing
+     * GitHub username
+     * @throws Exception
+     * @author Pradnya Kandarkar
+     */
     @Test
-    public void testGetUserProfileByUsername() throws Exception {
+    public void should_ReturnProfileInfo_when_GitHubUser() throws Exception {
         routePattern = "/users/:username";
-        testResourceName = "sampleUserProfile.json";
-        JsonNode sampleUserProfile = testGitHubAPIImpl.getUserProfileByUsername("test_username").toCompletableFuture().get(10, TimeUnit.SECONDS);
-        // System.out.println(sampleUserProfile);
-        // Asserts will go here
+        testResourceName = "validGitHubUserProfile.json";
+        JsonNode testUserProfile = testGitHubAPIImpl.getUserProfileByUsername("test_username").toCompletableFuture().get(10, TimeUnit.SECONDS);
+        assertEquals("pradnya-git-dev", testUserProfile.get("login").textValue());
     }
 
+    /**
+     * Checks if a "Not Found" response is returned when <code>getUserProfileByUsername</code> is called for a username
+     * which is not registered with GitHub
+     * @throws Exception
+     * @author Pradnya Kandarkar
+     */
     @Test
-    public void testGetUserRepositories() throws Exception {
+    public void should_ReturnNotFoundResponse_when_NotGitHubUser() throws Exception {
+        routePattern = "/users/:username";
+        testResourceName = "noGitHubUserProfile.json";
+        JsonNode testUserProfile = testGitHubAPIImpl.getUserProfileByUsername("test_username").toCompletableFuture().get(10, TimeUnit.SECONDS);
+        assertEquals("Not Found", testUserProfile.get("message").textValue());
+    }
+
+    /**
+     * Checks if a valid non-empty JSON array node is returned when <code>getUserRepositories</code> is called for an existing
+     * GitHub username having at least one public repository
+     * @throws Exception
+     * @author Pradnya Kandarkar
+     */
+    @Test
+    public void should_ReturnReposArray_when_GitHubUserWithPublicRepos() throws Exception {
         routePattern = "/users/:username/repos";
-        testResourceName = "sampleUserRepositories.json";
-        JsonNode sampleUserProfile = testGitHubAPIImpl.getUserRepositories("test_username").toCompletableFuture().get(10, TimeUnit.SECONDS);
-        // System.out.println(sampleUserProfile);
-        // Asserts will go here
+        testResourceName = "GitHubUserWithPublicRepos.json";
+        JsonNode testUserRepos = testGitHubAPIImpl.getUserRepositories("test_username").toCompletableFuture().get(10, TimeUnit.SECONDS);
+        assertTrue(testUserRepos.isArray());
+        assertTrue(testUserRepos.size() > 0);
+        assertEquals("testRepoForPlayProject", testUserRepos.get(0).textValue());
+        assertEquals("testRepositoryForPlayProject2", testUserRepos.get(1).textValue());
+    }
+
+    /**
+     * Checks if an empty JSON array node is returned when <code>getUserRepositories</code> is called for an existing
+     * GitHub username having no public repositories
+     * @throws Exception
+     * @author Pradnya Kandarkar
+     */
+    @Test
+    public void should_ReturnEmptyArray_when_GitHubUserWithNoPublicRepos() throws Exception {
+        routePattern = "/users/:username/repos";
+        testResourceName = "GitHubUserWithNoPublicRepos.json";
+        JsonNode testUserRepos = testGitHubAPIImpl.getUserRepositories("test_username").toCompletableFuture().get(10, TimeUnit.SECONDS);
+        assertTrue(testUserRepos.isArray());
+        assertTrue(testUserRepos.size() == 0);
+        assertTrue(testUserRepos.isEmpty());
+    }
+
+    /**
+     * Checks if a "Not Found" response is returned when <code>getUserRepositories</code> is called for a username
+     * which is not registered with GitHub
+     * @throws Exception
+     * @author Pradnya Kandarkar
+     */
+    @Test
+    public void should_ReturnReposNotFoundResponse_when_NotGitHubUser() throws Exception {
+        routePattern = "/users/:username/repos";
+        testResourceName = "userRepositoriesNotGitHubUser.json";
+        JsonNode testUserRepos = testGitHubAPIImpl.getUserRepositories("test_username").toCompletableFuture().get(10, TimeUnit.SECONDS);
+        assertFalse(testUserRepos.isArray());
+        assertEquals("Not Found", testUserRepos.get("message").textValue());
     }
 }
 
