@@ -2,6 +2,7 @@ package topics;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import models.SearchRepository;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class TopicsTest {
                         (components) ->
                                 RoutingDsl.fromComponents(components)
                                         .GET(routePattern)
-                                        .routingTo((request, topic) -> ok().sendResource(testResourceName))
+                                        .routingTo((request) -> ok().sendResource(testResourceName))
                                         .build());
         wsClient = play.test.WSTestClient.newClient(server.httpPort());
 
@@ -73,20 +74,20 @@ public class TopicsTest {
         Helpers.stop(testApp);
     }
 
-    /*Controller*/
+    //Controller
     @Test
     public void should_ReturnOK_when_ValidGETRequest() {
-        String sampleTopicListURL = "/topics/python";
+        String sampleTopicRepositoryListURL = "/topics/python";
 
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .method(GET)
-                .uri(sampleTopicListURL);
+                .uri(sampleTopicRepositoryListURL);
         Result result = route(testApp, request);
 
         assertEquals(OK, result.status());
     }
 
-    /*@Test
+    @Test
     public void should_ReturnNOT_FOUND_when_NotGETRequest() {
         String sampleRepositoryProfileURL = "/topics/python";
 
@@ -96,77 +97,54 @@ public class TopicsTest {
         Result result = route(testApp, request);
 
         assertEquals(NOT_FOUND, result.status());
-    }*/
+    }
 
-    /*Actual Method*/
-   /* @Test
-    public void should_ReturnRepositoryProfileDetails_provided_UserNameRepositoryName() throws Exception {
-        routePattern = "/search/repositories?q=topic:Python&sort=created&order=desc";
-        testResourceName = "repositoryprofile/validRepositoryProfileDetails.json";
-        JsonNode testRepositoryProfile = testGitHubAPIImpl.getRepositoryProfile("sampleUsername", "sampleRepository")
+    //Testing Actual Implementations
+    @Test
+    public void should_ReturnTopicRepositoryList_provided_Topic() throws Exception {
+        routePattern = "/search/repositories";
+        testResourceName = "topicfeature/validTopicRepositoryList.json";
+        SearchRepository testRepositoryProfile = testGitHubAPIImpl.getTopicRepository("sampleTopic")
                 .toCompletableFuture().get(10, TimeUnit.SECONDS);
-        assertEquals("greyli/helloflask", testRepositoryProfile.get("full_name").textValue());
+        assertEquals(Arrays.asList("goofing", "play", "test"), testRepositoryProfile.getRepositoryList().get(0).getTopics());
     }
 
     @Test
-    public void shouldNot_ReturnRepositoryProfileDetails_provided_invalidUserNameRepositoryName() throws Exception {
-        routePattern = "/repos/:username/:repositoryName";
-        testResourceName = "repositoryprofile/invalidRepositoryProfileDetails.json";
-        JsonNode testRepositoryProfile = testGitHubAPIImpl.getRepositoryProfile("sampleUsername", "sampleRepository")
+    public void should_ReturnEmptyTopicList_provided_InvalidTopic() throws Exception {
+        routePattern = "/search/repositories";
+        testResourceName = "topicfeature/invalidTopicRepositoryList.json";
+        SearchRepository testRepositoryProfile = testGitHubAPIImpl.getTopicRepository("sampleTopic")
                 .toCompletableFuture().get(10, TimeUnit.SECONDS);
-        assertEquals("Not Found", testRepositoryProfile.get("message").textValue());
+
+        assertEquals(new ArrayList<>(), testRepositoryProfile.getRepositoryList());
     }
 
 
     //UI
     @Test
-    public void should_DisplayRepositoryProfileDetails_provided_UserRepositoryNameList() throws Exception {
+    public void should_DisplayTopicRepositoryList_provided_Topic() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
+        JsonNode topicRepositoryList = mapper.readTree(new File("test/resources/topicfeature/validTopicRepositoryList.json"));
 
-        File fileObject = new File("test/resources/repositoryprofile/validIssueListDetails.txt");
-        Scanner readObject = new Scanner(fileObject);
-        List<String> list = List.of(readObject.nextLine().split(","));
-        readObject.close();
-
-        String username = "greyli";
-        String repositoryName = "helloflask";
-
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder);
-
+        Content html = views.html.topics.topics.render(new SearchRepository(topicRepositoryList, "sampleTopic"), assetsFinder);
         assertEquals("text/html", html.contentType());
-        assertTrue(contentAsString(html).contains("List to top 5 issues:"));
+        assertTrue(contentAsString(html).contains("iamstillal"));
     }
 
     @Test
-    public void should_DisplayIssueMessage_provided_InvalidUserRepositoryName() throws Exception {
+    public void should_NoResultFound_provided_InvalidTopic() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
+        JsonNode topicRepositoryList = mapper.readTree(new File("test/resources/topicfeature/invalidTopicRepositoryList.json"));
 
-        List<String> list = null;
-
-        String username = "sampleusername";
-        String repositoryName = "samplerepositoryname";
-
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder);
-
+        Content html = views.html.topics.topics.render(new SearchRepository(topicRepositoryList, "sampleTopic"), assetsFinder);
         assertEquals("text/html", html.contentType());
-        assertTrue(contentAsString(html).contains("Not Found"));
+        assertTrue(contentAsString(html).contains("No Results found"));
     }
 
     @Test
-    public void should_DisplayDetails_with_IssueMessage_provided_UserRepositoryName_noList() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
-
-        List<String> list = null;
-
-        String username = "sampleusername";
-        String repositoryName = "samplerepositoryname";
-
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder);
-
+    public void should_DisplayNoResultFound_when_GitHubResponseNull(){
+        Content html = views.html.topics.topics.render(new SearchRepository(null, "sampleTopic"), assetsFinder);
         assertEquals("text/html", html.contentType());
-        assertTrue(contentAsString(html).contains("No Issues Reported."));
-    }*/
+        assertTrue(contentAsString(html).contains("No Results found"));
+    }
 }

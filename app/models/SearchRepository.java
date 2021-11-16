@@ -6,7 +6,9 @@ import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
  * This is model class contains to handle search query.
@@ -18,7 +20,7 @@ public class SearchRepository {
 	private String query;
 	private List<RepositoryModel> repositoryList;
 	/**
-	 * 
+	 *
 	 * @param data  Gets data from API
 	 * @param query Search query of user
 	 */
@@ -26,7 +28,13 @@ public class SearchRepository {
 	public SearchRepository(JsonNode data, String query) {
 		this.query = query;
 
-		ArrayNode items = (ArrayNode) data.get("items");
+		if(data == null){
+			ObjectMapper mapper = new ObjectMapper();
+			data = mapper.createObjectNode();
+		}
+
+		ArrayNode items = Optional.ofNullable((ArrayNode) data.get("items")).orElse(JsonNodeFactory.instance.arrayNode());
+
 
 		Stream<JsonNode> stream = StreamSupport.stream(Spliterators
 				.spliteratorUnknownSize(items.elements(),
