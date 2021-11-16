@@ -3,9 +3,7 @@ package services;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -131,17 +129,6 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), topic));
 		return searchResult;
 	}
-
-	//TODO: Pradnya: Remove
-	/*public CompletionStage<List<String>> getRepositories() {
-		return client.url(baseURL + "/repositories")
-				.get()
-				.thenApply(
-						response ->
-								response.asJson().findValues("full_name").stream()
-										.map(JsonNode::asText)
-										.collect(Collectors.toList()));
-	}*/
 
 	public void setClient(WSClient client) {
 		this.client = client;
