@@ -5,6 +5,7 @@ import models.SearchRepository;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static play.inject.Bindings.bind;
 import static play.mvc.Http.Status.OK;
 import static play.mvc.Results.ok;
@@ -30,6 +31,8 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Holds tests related to the search repositories feature
@@ -162,13 +165,25 @@ public class SearchReposFeatureTest {
      * @author Pradnya Kandarkar
      */
     @Test
-    public void should_Return10Repos_when_ValidSearchRequest() throws Exception {
+    public void should_Return10ReposList_when_ValidSearchRequest() throws Exception {
         routePattern = "/search/repositories";
         testResourceName = "searchreposfeature/sampleSearchResult.json";
 
-        SearchRepository testSearchResult = testGitHubAPIImpl.getRepositoryFromSearchBar("test_query")
+        SearchRepository testSearchResult1 = testGitHubAPIImpl.getRepositoryFromSearchBar("test_query")
                 .toCompletableFuture().get(10, TimeUnit.SECONDS);
-        assertEquals(10, testSearchResult.getRepositoryList().size());
+        SearchRepository testSearchResult2 = testGitHubAPIImpl.getRepositoryFromSearchBar("multiple words query")
+                        .toCompletableFuture().get(10, TimeUnit.SECONDS);
+
+        assertAll(
+                () -> assertEquals(10, testSearchResult1.getRepositoryList().size()),
+                () -> assertEquals(10, testSearchResult2.getRepositoryList().size()),
+                () -> assertThat(testSearchResult1.getRepositoryList(), everyItem(hasProperty("repositoryName", is(notNullValue())))),
+                () -> assertThat(testSearchResult1.getRepositoryList(), everyItem(hasProperty("ownerName", is(notNullValue())))),
+                () -> assertThat(testSearchResult1.getRepositoryList(), everyItem(hasProperty("topics"))),
+                () -> assertThat(testSearchResult2.getRepositoryList(), everyItem(hasProperty("repositoryName", is(notNullValue())))),
+                () -> assertThat(testSearchResult2.getRepositoryList(), everyItem(hasProperty("ownerName", is(notNullValue())))),
+                () -> assertThat(testSearchResult2.getRepositoryList(), everyItem(hasProperty("topics")))
+        );
     }
 }
 

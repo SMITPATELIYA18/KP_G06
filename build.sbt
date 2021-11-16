@@ -13,6 +13,7 @@ lazy val root = (project in file("."))
       // Testing libraries for dealing with CompletionStage...
       "org.assertj" % "assertj-core" % "3.14.0" % Test,
       "org.awaitility" % "awaitility" % "4.0.1" % Test,
+      "org.hamcrest" % "hamcrest-core" % "2.2" % Test,
       "com.googlecode.json-simple" % "json-simple" % "1.1.1",
       "org.mockito" % "mockito-core" % "4.0.0" % Test,                // For tests that depend on external resources
       "org.powermock" % "powermock-module-junit4" % "2.0.9" % Test,
