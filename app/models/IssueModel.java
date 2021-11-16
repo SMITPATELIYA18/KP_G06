@@ -15,6 +15,11 @@ import static java.util.stream.Collectors.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * This model class is for displaying issues statistics 
+ * @author smitpateliya
+ *
+ */
 public class IssueModel {
 	private String repoFullName;
 	private List<String> issueTitles = new ArrayList<>();

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.IssueModel;
+import models.SearchRepository;
 import play.libs.ws.WSBodyReadables;
 import play.libs.ws.WSBodyWritables;
 import resources.TestResources;
@@ -23,10 +24,12 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	
 	/**
 	 * This function returns IssueModel object when API  will call.
+	 * @author smitpateliya
 	 * @param repoFullName The name of repository name
 	 * @return returns completion stage issue model object 
 	 */
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName){
+		System.out.println("Using the mock implementation for getRepositoryIssue.");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode data = null;
 		try {
@@ -42,7 +45,11 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return futureModel;
 	}
 
-	// ToDo: Implement
+	@Override
+	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
+		return null;
+	}
+
 	@Override
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
 		System.out.println("Using the mock implementation for getUserProfileByUsername");
@@ -58,7 +65,6 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return futureUserProfile;
 	}
 
-	// ToDo: Implement
 	@Override
 	public CompletionStage<JsonNode> getUserRepositories(String username) {
 		System.out.println("Using the mock implementation for getUserRepositories");
@@ -72,5 +78,17 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		CompletableFuture<JsonNode> futureUserRepositories = new CompletableFuture<JsonNode>();
 		futureUserRepositories.complete(sampleUserRepositories);
 		return futureUserRepositories;
+	}
+
+	// ToDo: Farheen
+	@Override
+	public CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName) {
+		return null;
+	}
+
+	// ToDo: Indraneel
+	@Override
+	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
+		return null;
 	}
 }

@@ -3,24 +3,24 @@
 # ~~~~
 
 # An example controller showing a sample home page
-#POST     /                           controllers.IndexPageController.index(request: Request)
+#POST     /                           controllers.GitterificController.index(request: Request)
 # An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
+# GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+# GET     /message                    controllers.AsyncController.message
 
-GET     /issues/*repoName			controllers.IssueController.getIssueStat(repoName: String)
+GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoName: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(file)
 
 #Repository Profile Controller
-GET     /repositoryProfile/:username/:repositoryName		    controllers.RepositoryProfileController.getRepositoryProfile(username: String, repositoryName: String)
+GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String)
 
-GET     /topics/:topic              controllers.TopicController.getTopicRepository(topic:String)
+GET     /topics/:topic              controllers.GitterificController.getTopicRepository(topic:String)
 
 # User profile routes
-GET 	/user-profile/:username		controllers.UserProfileController.getUserProfile(username: String)
+GET 	/user-profile/:username		controllers.GitterificController.getUserProfile(username: String)
 
 
-GET     /                      controllers.IndexPageController.index(request: Request)
+GET     /                      controllers.GitterificController.index(request: Request)
