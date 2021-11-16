@@ -4,45 +4,41 @@
 @(ownerName: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: List[String])(implicit assetsFinder: AssetsFinder)
 
 @walkJsonTree(name: String, node: JsonNode) = {
-
-@if(node.isObject()) {
-<ul>
-    @for(nodeEntry <- node.fields()) {
-    <li>
-        <b>@nodeEntry.getKey(): </b>
-        @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())
-    </li>
+    @if(node.isObject()) {
+        <ul>
+            @for(nodeEntry <- node.fields()) {
+            <li>
+                <b>@nodeEntry.getKey(): </b>
+                @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())
+            </li>
+            }
+        </ul>
     }
-</ul>
-}
-@if(node.isArray()) {
-<ul>
-    @for(arrayNode <- node.elements()) {
-    <li>[List]: @walkJsonTree(name, arrayNode)</li>
+    @if(node.isArray()) {
+        <ol>
+            @for(arrayNode <- node.elements()) {
+                <li><a href="@routes.GitterificController.getTopicRepository(arrayNode.asText())">@arrayNode</a>&nbsp;</li>
+            }
+        </ol>
     }
-</ul>
-}
 
-@if(node.isValueNode()) {
-@if(node.asText() == ownerName) {
-<a href="@routes.GitterificController.getUserProfile(ownerName)">@ownerName</a>
-} else{
-@node.asText()
-}
-} else {
-@* other *@
-@node.asText()
-}
+    @if(node.isValueNode()) {
+        @if(node.asText() == ownerName) {
+            <a href="@routes.GitterificController.getUserProfile(ownerName)">@ownerName</a>
+        } else{
+            @node.asText()
+        }
+    }
 }
 
 @listUserRepositories(list: List[String]) = {
-@if(list.size() > 0){
-@for(arrayNode <- list) {
-<li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
-}
-} else{
-<p>No Issues Reported.</p>
-}
+    @if(list.size() > 0){
+        @for(arrayNode <- list) {
+            <li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
+        }
+    } else{
+        <p>No Issues Reported.</p>
+    }
 }
 
 @main("Repository Profile") {
@@ -51,17 +47,17 @@
         <h1>Gitterific</h1>
     </div>
 </section>
-<div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
-    <div style="padding: 10px 0px;">
-        <h3>Repository Profile Data for: <b>@repositoryName</b></h3>
+    <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
+        <div style="padding: 10px 0px;">
+            <h3>Repository Profile Data for: <b>@repositoryName</b></h3>
+        </div>
+        <div>
+            @walkJsonTree(null, repositoryProfileDetails)
+        </div>
+        <div id="repositories" style="padding: 10px 0px">
+            <p><b>List to top @issueList.length issues: </b></p>
+            <p>@listUserRepositories(issueList)</p>
+        </div>
     </div>
-    <div>
-        @walkJsonTree(null, repositoryProfileDetails)
-    </div>
-    <div id="repositories" style="padding: 10px 0px">
-        <p><b>List to top @issueList.length issues: </b></p>
-        <p>@listUserRepositories(issueList)</p>
-    </div>
-</div>
 }
 

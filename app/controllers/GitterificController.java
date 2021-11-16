@@ -85,6 +85,8 @@ public class GitterificController extends Controller {
 					if(!store.getSearches().contains(newData)){
 						store.addNewSearch(newData);
 					}
+
+
 					asyncCacheApi.set("search", store, 60 * 15);
 					return ok(views.html.index.render(store, assetsFinder));
 				},
@@ -146,7 +148,7 @@ public class GitterificController extends Controller {
 
 							//TODO: Optimize
 							List<String> list = issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
-							if(list.get(0) == "Issue does not Present!"){
+							if(list.get(0) == "Issue does not Present!" || list.get(0) == "Error! Repository does not present!"){
 								list = null;
 							}
 							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder));
