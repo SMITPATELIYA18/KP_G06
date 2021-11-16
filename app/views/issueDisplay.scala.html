@@ -18,13 +18,18 @@
 	<div>
 		<h2 style="margin-bottom: 3%">Repository Name:
 			@issues.getRepoFullName()</h2>
+		@if(issues.getWordLevelData().isEmpty()) {
+			<div style="margin-bottom: 2%">
+				<h4>@{issues.getIssueTitles().get(0)}</h4>
+		</div>
+		} else {
 		@for(words <- {issues.getWordLevelData()}) {
 		<div style="margin-bottom: 2%">
 			<ul>
 				<li><b>@{words._1}</b> : : @{words._2}</li>
 			</ul>
 		</div>
-		}
+		}}
 	</div>
 </div>
 }

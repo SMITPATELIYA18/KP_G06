@@ -38,9 +38,10 @@ public class IssueModel {
 				.collect(groupingBy(Function.identity(), counting()));
 		unsortedData.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
 				.forEachOrdered(result -> worldLevelData.put(result.getKey(), result.getValue()));
-		System.out.println(worldLevelData); }
+		System.out.println(worldLevelData); 
+		}
 		else {
-			issueTitles.add("Issue does not Present!");
+			issueTitles.add("Error! Repository does not present!");
 		}
 	}
 
