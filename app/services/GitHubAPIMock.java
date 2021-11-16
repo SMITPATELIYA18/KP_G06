@@ -130,15 +130,15 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
 		System.out.println("Using the mock implementation for getTopicRepository");
 		ObjectMapper mapper = new ObjectMapper();
-		SearchRepository sampleTopicList = null;
+		SearchRepository sampleTopicRepositoryListURL = null;
 		try {
-			sampleTopicList = new SearchRepository(mapper.readTree(TestResources.sampleRepositoryProfile), topic);
+			sampleTopicRepositoryListURL = new SearchRepository(mapper.readTree(TestResources.sampleRepositoryProfile), topic);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		CompletableFuture<SearchRepository> futureTopicList = new CompletableFuture<>();
-		futureTopicList.complete(sampleTopicList);
-		return futureTopicList;
+		CompletableFuture<SearchRepository> futureTopicRepositoryList = new CompletableFuture<>();
+		futureTopicRepositoryList.complete(sampleTopicRepositoryListURL);
+		return futureTopicRepositoryList;
 	}
 }
