@@ -5,34 +5,34 @@
 
 @walkJsonTree(name: String, node: JsonNode) = {
 
-@if(node.isObject()) {
-<ul>
-    @for(nodeEntry <- node.fields()) {
+    @if(node.isObject()) {
+    <ul>
+        @for(nodeEntry <- node.fields()) {
         <li>
             <b>@nodeEntry.getKey(): </b>
             @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())
         </li>
+        }
+    </ul>
     }
-</ul>
-}
-@if(node.isArray()) {
-<ul>
-    @for(arrayNode <- node.elements()) {
-    <li>[List]: @walkJsonTree(name, arrayNode)</li>
+    @if(node.isArray()) {
+    <ul>
+        @for(arrayNode <- node.elements()) {
+        <li>[List]: @walkJsonTree(name, arrayNode)</li>
+        }
+    </ul>
     }
-</ul>
-}
 
-@if(node.isValueNode()) {
-    @if(node.asText() == ownerName) {
-        <a href="@routes.GitterificController.getUserProfile(ownerName)">@ownerName</a>
-    } else{
+    @if(node.isValueNode()) {
+        @if(node.asText() == ownerName) {
+            <a href="@routes.GitterificController.getUserProfile(ownerName)">@ownerName</a>
+        } else{
+            @node.asText()
+        }
+    } else {
+        @* other *@
         @node.asText()
     }
-} else {
-    @* other *@
-    @node.asText()
-}
 }
 
 @listUserRepositories(list: List[String]) = {
@@ -46,8 +46,6 @@
 }
 
 @main("Repository Profile") {
-<script lang="text/javascript">
-
 <section id="top">
     <div class="wrapper">
         <h1>Gitterific</h1>
@@ -65,7 +63,6 @@
         <p>@listUserRepositories(issueList)</p>
     </div>
 </div>
-
 }
 
 
