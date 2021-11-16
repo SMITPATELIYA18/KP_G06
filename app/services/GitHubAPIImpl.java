@@ -120,9 +120,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.addHeader("accept", "application/vnd.github.v3+json")
 				.setRequestTimeout(Duration.of(1000, ChronoUnit.MILLIS))
 				.get()
-				.thenApplyAsync(repositoryProfileDetails -> {
-					return repositoryProfileDetails.getBody(json());
-				});
+				.thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.getBody(json()));
 		return result;
 	}
 

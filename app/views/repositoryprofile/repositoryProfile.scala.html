@@ -47,13 +47,6 @@
 
 @main("Repository Profile") {
 <script lang="text/javascript">
-@* TODO *@
-    window.onload = function() {
-	    if(list == null){
-            document.getElementById('repositories').style.display = 'none';
-	    }
-	}
-</script>
 
 <section id="top">
     <div class="wrapper">
@@ -68,7 +61,7 @@
         @walkJsonTree(null, repositoryProfileDetails)
     </div>
     <div id="repositories" style="padding: 10px 0px">
-        <p><b>List to top 20 issues: </b></p>
+        <p><b>List to top @issueList.length issues: </b></p>
         <p>@listUserRepositories(issueList)</p>
     </div>
 </div>
