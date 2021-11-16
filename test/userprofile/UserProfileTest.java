@@ -42,12 +42,12 @@ public class UserProfileTest {
     private static GitHubAPIImpl testGitHubAPIImpl;
     private static WSClient wsClient;
     private static Server server;
-    private static String routePattern;                 /* For holding the route pattern. Chnages for every test depending on the test case. */
+    private static String routePattern;                 /* For holding the route pattern. Changes for every test depending on the test case. */
     private static String testResourceName;             /* For returning the resources */
 
     /**
-     * Overrides the binding to use mock implementation instead of the actual implematation and creates a fake application.
-     * Sets up an embedded server for testing.
+     * Overrides the binding to use mock implementation instead of the actual implementation and creates a fake
+     * application. Sets up an embedded server for testing.
      * @author Pradnya Kandarkar
      */
     @BeforeClass

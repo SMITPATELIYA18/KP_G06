@@ -32,8 +32,13 @@ public class GitterificController extends Controller {
 	private AsyncCacheApi asyncCacheApi;
 
 	@Inject
-	private GitHubAPI gitHubAPIImpl;
+	private GitHubAPI gitHubAPIInst;
 
+	/**
+	 * @param assetsFinder For finding assets according to configured base path and URL base
+	 * @param httpExecutionContext For managing Play Java HTTP thread local state
+	 * @param asyncCacheApi For utilizing asynchronous cache
+	 */
 	@Inject
 	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi) {
 		this.assetsFinder = assetsFinder;
@@ -54,12 +59,18 @@ public class GitterificController extends Controller {
 	public CompletionStage<Result> index(Http.Request request) {
 		Optional<String> query = request.queryString("search");
 		if (query.isEmpty() || query.get().equals("")) {
+			/*if(query.isEmpty()) {
+				System.out.println("Received query.isEmpty()");
+			}
+			if(query.get().equals("")) {
+				System.out.println("Received query.get().equals(\"\")");
+			}*/
 			asyncCacheApi.remove("search");
 			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(null, assetsFinder)));
 		}
 
 		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query.get(), () -> {
-			CompletionStage<SearchRepository> searchRepository = gitHubAPIImpl.getRepositoryFromSearchBar(query.get());
+			CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(query.get());
 			asyncCacheApi.set("search_" + query.get(), searchRepository, 60 * 15);
 			return searchRepository;
 		});
@@ -94,9 +105,9 @@ public class GitterificController extends Controller {
 	public CompletionStage<Result> getUserProfile(String username) {
 
 		return asyncCacheApi.getOrElseUpdate(username + "_profile",
-				() -> gitHubAPIImpl.getUserProfileByUsername(username))
+				() -> gitHubAPIInst.getUserProfileByUsername(username))
 						.thenCombineAsync(asyncCacheApi.getOrElseUpdate(username + "_repositories",
-								() -> gitHubAPIImpl.getUserRepositories(username)),
+								() -> gitHubAPIInst.getUserRepositories(username)),
 								(userProfile, userRepositories) -> {
 									asyncCacheApi.set(username + "_profile", userProfile);
 									asyncCacheApi.set(username + "_repositories", userRepositories);
@@ -125,10 +136,10 @@ public class GitterificController extends Controller {
 						httpExecutionContext.current()));*/
 
 		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-						() ->  gitHubAPIImpl.getRepositoryProfile(ownerName, repositoryName))
+						() ->  gitHubAPIInst.getRepositoryProfile(ownerName, repositoryName))
 				.thenCombineAsync(
 						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
-								() -> gitHubAPIImpl.getRepositoryIssue(ownerName + "/" + repositoryName)),
+								() -> gitHubAPIInst.getRepositoryIssue(ownerName + "/" + repositoryName)),
 						(repositoryProfileDetail, issueList) -> {
 							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
 							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
@@ -167,7 +178,7 @@ public class GitterificController extends Controller {
 
 	public CompletionStage<Result> getIssueStat(String repoName) {
 		repoName = repoName.replace("+", "/");
-		return gitHubAPIImpl.getRepositoryIssue(repoName).thenApplyAsync(
+		return gitHubAPIInst.getRepositoryIssue(repoName).thenApplyAsync(
 				issueModel -> {return ok(views.html.issues.render(issueModel, assetsFinder));},
 				httpExecutionContext.current());
 	}
@@ -184,7 +195,7 @@ public class GitterificController extends Controller {
 	public CompletionStage<Result> getTopicRepository(String topic) {
 		return asyncCacheApi.getOrElseUpdate(
 						"topic_" + topic,
-						() -> gitHubAPIImpl.getTopicRepository(topic))
+						() -> gitHubAPIInst.getTopicRepository(topic))
 				.thenApplyAsync((searchResult) -> {
 							asyncCacheApi.set("topic_" + topic, searchResult,  60 * 15);
 							return ok(views.html.topics.topics.render(searchResult, assetsFinder));
