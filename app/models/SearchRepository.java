@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import static java.util.stream.Collectors.toList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
  * This is model class contains to handle search query.
@@ -27,6 +28,10 @@ public class SearchRepository {
 		this.query = query;
 
 		ArrayNode items = (ArrayNode) data.get("items");
+
+		if(items == null){
+			items = JsonNodeFactory.instance.arrayNode();
+		}
 
 		Stream<JsonNode> stream = StreamSupport.stream(Spliterators
 				.spliteratorUnknownSize(items.elements(),
