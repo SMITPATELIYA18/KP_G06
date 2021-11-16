@@ -36,17 +36,18 @@
 }
 
 @listUserRepositories(list: List[String]) = {
-    @for(arrayNode <- list) {
-        @if(arrayNode != "No Issues Reported.") {
+    @if(list.size() > 0){
+        @for(arrayNode <- list) {
             <li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
-        }   else{
-            <li>No Issues Reported.</li>
         }
+    } else{
+        <p>No Issues Reported.</p>
     }
 }
 
 @main("Repository Profile") {
 <script lang="text/javascript">
+@* TODO *@
     window.onload = function() {
 	    if(list == null){
             document.getElementById('repositories').style.display = 'none';

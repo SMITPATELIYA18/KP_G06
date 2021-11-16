@@ -35,9 +35,9 @@
 			@for(repository <- repositoryList.getRepositoryList()) {
 			<div style="margin-bottom: 2%">
 				<ul>
-					<li><b>Owner Name:</b> <a href="@routes.GitterificController.getUserProfile(repository.getOwnerName())">@repository.getOwnerName()</a> &nbsp; |
-						&nbsp;<b> Repository Name:</b> <a href="@routes.GitterificController.getRepositoryProfile(repository.getOwnerName(), repository.getRepositoryName())">@repository.getRepositoryName()</a>
-						@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
+					<li> <b> Repository Name:</b> <a href="@routes.GitterificController.getRepositoryProfile(repository.getOwnerName(), repository.getRepositoryName())">@repository.getRepositoryName()</a> &nbsp; |
+						&nbsp; <b>Owner Name:</b> <a href="@routes.GitterificController.getUserProfile(repository.getOwnerName())">@repository.getOwnerName()</a>
+						@if(!repository.getTopics().isEmpty()){ &nbsp;  | <b> Topic List:</b> &nbsp; @for(topic
 						<- repository.getTopics()) { <a href="@routes.GitterificController.getTopicRepository(topic)">(@topic)</a>&nbsp; } }</li>
 
 				</ul>
