@@ -94,10 +94,19 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return futureUserRepositories;
 	}
 
-	// ToDo: Farheen
 	@Override
 	public CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName) {
-		return null;
+		System.out.println("Using the mock implementation for getRepositoryProfile");
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode sampleRepositoryProfile = null;
+		try {
+			sampleRepositoryProfile = mapper.readTree(TestResources.sampleRepositoryProfile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		CompletableFuture<JsonNode> futureUserRepositories = new CompletableFuture<>();
+		futureUserRepositories.complete(sampleRepositoryProfile);
+		return futureUserRepositories;
 	}
 
 	// ToDo: Indraneel

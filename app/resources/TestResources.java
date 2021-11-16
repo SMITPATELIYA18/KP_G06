@@ -237,4 +237,119 @@ public class TestResources {
 			"  \"created_at\": \"2016-07-11T18:26:26Z\",\n" +
 			"  \"updated_at\": \"2021-11-04T15:44:54Z\"\n" +
 			"}";
+
+	public static final String sampleRepositoryProfile = "{\n" +
+			"  \"id\": 137044405,\n" +
+			"  \"node_id\": \"MDEwOlJlcG9zaXRvcnkxMzcwNDQ0MDU=\",\n" +
+			"  \"name\": \"helloflask\",\n" +
+			"  \"full_name\": \"greyli/helloflask\",\n" +
+			"  \"private\": false,\n" +
+			"  \"owner\": {\n" +
+			"    \"login\": \"greyli\",\n" +
+			"    \"id\": 12967000,\n" +
+			"    \"node_id\": \"MDQ6VXNlcjEyOTY3MDAw\",\n" +
+			"    \"avatar_url\": \"https://avatars.githubusercontent.com/u/12967000?v=4\",\n" +
+			"    \"gravatar_id\": \"\",\n" +
+			"    \"url\": \"https://api.github.com/users/greyli\",\n" +
+			"    \"html_url\": \"https://github.com/greyli\",\n" +
+			"    \"followers_url\": \"https://api.github.com/users/greyli/followers\",\n" +
+			"    \"following_url\": \"https://api.github.com/users/greyli/following{/other_user}\",\n" +
+			"    \"gists_url\": \"https://api.github.com/users/greyli/gists{/gist_id}\",\n" +
+			"    \"starred_url\": \"https://api.github.com/users/greyli/starred{/owner}{/repo}\",\n" +
+			"    \"subscriptions_url\": \"https://api.github.com/users/greyli/subscriptions\",\n" +
+			"    \"organizations_url\": \"https://api.github.com/users/greyli/orgs\",\n" +
+			"    \"repos_url\": \"https://api.github.com/users/greyli/repos\",\n" +
+			"    \"events_url\": \"https://api.github.com/users/greyli/events{/privacy}\",\n" +
+			"    \"received_events_url\": \"https://api.github.com/users/greyli/received_events\",\n" +
+			"    \"type\": \"User\",\n" +
+			"    \"site_admin\": false\n" +
+			"  },\n" +
+			"  \"html_url\": \"https://github.com/greyli/helloflask\",\n" +
+			"  \"description\": \"Hello, Flask!\",\n" +
+			"  \"fork\": false,\n" +
+			"  \"url\": \"https://api.github.com/repos/greyli/helloflask\",\n" +
+			"  \"forks_url\": \"https://api.github.com/repos/greyli/helloflask/forks\",\n" +
+			"  \"keys_url\": \"https://api.github.com/repos/greyli/helloflask/keys{/key_id}\",\n" +
+			"  \"collaborators_url\": \"https://api.github.com/repos/greyli/helloflask/collaborators{/collaborator}\",\n" +
+			"  \"teams_url\": \"https://api.github.com/repos/greyli/helloflask/teams\",\n" +
+			"  \"hooks_url\": \"https://api.github.com/repos/greyli/helloflask/hooks\",\n" +
+			"  \"issue_events_url\": \"https://api.github.com/repos/greyli/helloflask/issues/events{/number}\",\n" +
+			"  \"events_url\": \"https://api.github.com/repos/greyli/helloflask/events\",\n" +
+			"  \"assignees_url\": \"https://api.github.com/repos/greyli/helloflask/assignees{/user}\",\n" +
+			"  \"branches_url\": \"https://api.github.com/repos/greyli/helloflask/branches{/branch}\",\n" +
+			"  \"tags_url\": \"https://api.github.com/repos/greyli/helloflask/tags\",\n" +
+			"  \"blobs_url\": \"https://api.github.com/repos/greyli/helloflask/git/blobs{/sha}\",\n" +
+			"  \"git_tags_url\": \"https://api.github.com/repos/greyli/helloflask/git/tags{/sha}\",\n" +
+			"  \"git_refs_url\": \"https://api.github.com/repos/greyli/helloflask/git/refs{/sha}\",\n" +
+			"  \"trees_url\": \"https://api.github.com/repos/greyli/helloflask/git/trees{/sha}\",\n" +
+			"  \"statuses_url\": \"https://api.github.com/repos/greyli/helloflask/statuses/{sha}\",\n" +
+			"  \"languages_url\": \"https://api.github.com/repos/greyli/helloflask/languages\",\n" +
+			"  \"stargazers_url\": \"https://api.github.com/repos/greyli/helloflask/stargazers\",\n" +
+			"  \"contributors_url\": \"https://api.github.com/repos/greyli/helloflask/contributors\",\n" +
+			"  \"subscribers_url\": \"https://api.github.com/repos/greyli/helloflask/subscribers\",\n" +
+			"  \"subscription_url\": \"https://api.github.com/repos/greyli/helloflask/subscription\",\n" +
+			"  \"commits_url\": \"https://api.github.com/repos/greyli/helloflask/commits{/sha}\",\n" +
+			"  \"git_commits_url\": \"https://api.github.com/repos/greyli/helloflask/git/commits{/sha}\",\n" +
+			"  \"comments_url\": \"https://api.github.com/repos/greyli/helloflask/comments{/number}\",\n" +
+			"  \"issue_comment_url\": \"https://api.github.com/repos/greyli/helloflask/issues/comments{/number}\",\n" +
+			"  \"contents_url\": \"https://api.github.com/repos/greyli/helloflask/contents/{+path}\",\n" +
+			"  \"compare_url\": \"https://api.github.com/repos/greyli/helloflask/compare/{base}...{head}\",\n" +
+			"  \"merges_url\": \"https://api.github.com/repos/greyli/helloflask/merges\",\n" +
+			"  \"archive_url\": \"https://api.github.com/repos/greyli/helloflask/{archive_format}{/ref}\",\n" +
+			"  \"downloads_url\": \"https://api.github.com/repos/greyli/helloflask/downloads\",\n" +
+			"  \"issues_url\": \"https://api.github.com/repos/greyli/helloflask/issues{/number}\",\n" +
+			"  \"pulls_url\": \"https://api.github.com/repos/greyli/helloflask/pulls{/number}\",\n" +
+			"  \"milestones_url\": \"https://api.github.com/repos/greyli/helloflask/milestones{/number}\",\n" +
+			"  \"notifications_url\": \"https://api.github.com/repos/greyli/helloflask/notifications{?since,all,participating}\",\n" +
+			"  \"labels_url\": \"https://api.github.com/repos/greyli/helloflask/labels{/name}\",\n" +
+			"  \"releases_url\": \"https://api.github.com/repos/greyli/helloflask/releases{/id}\",\n" +
+			"  \"deployments_url\": \"https://api.github.com/repos/greyli/helloflask/deployments\",\n" +
+			"  \"created_at\": \"2018-06-12T08:54:57Z\",\n" +
+			"  \"updated_at\": \"2021-11-14T15:48:34Z\",\n" +
+			"  \"pushed_at\": \"2021-10-30T04:11:28Z\",\n" +
+			"  \"git_url\": \"git://github.com/greyli/helloflask.git\",\n" +
+			"  \"ssh_url\": \"git@github.com:greyli/helloflask.git\",\n" +
+			"  \"clone_url\": \"https://github.com/greyli/helloflask.git\",\n" +
+			"  \"svn_url\": \"https://github.com/greyli/helloflask\",\n" +
+			"  \"homepage\": \"https://docs.helloflask.com\",\n" +
+			"  \"size\": 2323,\n" +
+			"  \"stargazers_count\": 1289,\n" +
+			"  \"watchers_count\": 1289,\n" +
+			"  \"language\": null,\n" +
+			"  \"has_issues\": true,\n" +
+			"  \"has_projects\": true,\n" +
+			"  \"has_downloads\": true,\n" +
+			"  \"has_wiki\": false,\n" +
+			"  \"has_pages\": false,\n" +
+			"  \"forks_count\": 2017,\n" +
+			"  \"mirror_url\": null,\n" +
+			"  \"archived\": false,\n" +
+			"  \"disabled\": false,\n" +
+			"  \"open_issues_count\": 9,\n" +
+			"  \"license\": {\n" +
+			"    \"key\": \"mit\",\n" +
+			"    \"name\": \"MIT License\",\n" +
+			"    \"spdx_id\": \"MIT\",\n" +
+			"    \"url\": \"https://api.github.com/licenses/mit\",\n" +
+			"    \"node_id\": \"MDc6TGljZW5zZTEz\"\n" +
+			"  },\n" +
+			"  \"allow_forking\": true,\n" +
+			"  \"is_template\": false,\n" +
+			"  \"topics\": [\n" +
+			"    \"flask\",\n" +
+			"    \"helloflask\",\n" +
+			"    \"python\",\n" +
+			"    \"web\"\n" +
+			"  ],\n" +
+			"  \"visibility\": \"public\",\n" +
+			"  \"forks\": 2017,\n" +
+			"  \"open_issues\": 9,\n" +
+			"  \"watchers\": 1289,\n" +
+			"  \"default_branch\": \"master\",\n" +
+			"  \"temp_clone_token\": null,\n" +
+			"  \"network_count\": 2017,\n" +
+			"  \"subscribers_count\": 47\n" +
+			"}";
+
+	public static final String sampleUserRepositories = "[\"testRepoForPlayProject\",\"testRepositoryForPlayProject2\"]";
 }

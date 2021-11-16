@@ -108,18 +108,19 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 
 	/**
 	 * An action that fetches all the available details of the repository
-	 * @param ownerName Owner of the repository
+	 * @param username Owner of the repository
 	 * @param repositoryName Repository Name
 	 * @return Returns JsonNode containing Repository information
 	 * @author Farheen Jamadar
 	 */
-	public CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName) {
-		String finalURL = this.baseURL + "/repos/" + ownerName + "/" + repositoryName;
+	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
+		System.out.println("Using the actual implementation for getRepositoryProfile.");
+		String finalURL = this.baseURL + "/repos/" + username + "/" + repositoryName;
 		CompletionStage<JsonNode> result = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json")
 				.setRequestTimeout(Duration.of(1000, ChronoUnit.MILLIS))
 				.get()
-				.thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.asJson());
+				.thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.getBody(json()));
 		return result;
 	}
 
@@ -131,8 +132,8 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return searchResult;
 	}
 
-
-	public CompletionStage<List<String>> getRepositories() {
+	//TODO: Pradnya: Remove
+	/*public CompletionStage<List<String>> getRepositories() {
 		return client.url(baseURL + "/repositories")
 				.get()
 				.thenApply(
@@ -140,7 +141,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 								response.asJson().findValues("full_name").stream()
 										.map(JsonNode::asText)
 										.collect(Collectors.toList()));
-	}
+	}*/
 
 	public void setClient(WSClient client) {
 		this.client = client;
@@ -152,9 +153,5 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 
 	public WSClient getClient() {
 		return client;
-	}
-
-	public String getBaseURL() {
-		return baseURL;
 	}
 }

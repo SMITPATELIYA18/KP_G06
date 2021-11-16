@@ -15,7 +15,7 @@ GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoNa
 GET     /assets/*file               controllers.Assets.versioned(file)
 
 #Repository Profile Controller
-GET     /repositoryProfile/:ownerName/:repositoryName		    controllers.GitterificController.getRepositoryProfile(ownerName: String, repositoryName: String)
+GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String)
 
 GET     /topics/:topic              controllers.GitterificController.getTopicRepository(topic:String)
 
