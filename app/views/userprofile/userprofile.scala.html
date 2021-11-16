@@ -2,19 +2,12 @@
 
 @import com.fasterxml.jackson.databind.JsonNode;
 
-@walkJsonTree(name: String, node: JsonNode) = {
+@displayUserProfile(name: String, node: JsonNode) = {
 
     @if(node.isObject()) {
     <ul>
         @for(nodeEntry <- node.fields()) {
-            <li>@nodeEntry.getKey(): @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())</li>
-        }
-    </ul>
-    }
-    @if(node.isArray()) {
-    <ul>
-        @for(arrayNode <- node.elements()) {
-            <li>[List]: @walkJsonTree(name, arrayNode)</li>
+            <li>@nodeEntry.getKey(): @displayUserProfile(nodeEntry.getKey(), nodeEntry.getValue())</li>
         }
     </ul>
     }
@@ -29,7 +22,7 @@
 @listUserRepositories(node: JsonNode) = {
     @if(node.isArray()) {
         @if(userRepositories.size() > 0) {
-            <p>@userRepositories.size() repositories</p>
+            <p>@userRepositories.size() repositories available for this user.</p>
             @for(arrayNode <- node.elements()) {
                 <li><a href="@routes.GitterificController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
             }
@@ -37,7 +30,7 @@
             <p>No public repositories available for this user.</p>
         }
     } else {
-        <p>No repositories available for this user.</p>
+        <p>No repositories available for this username.</p>
     }
 }
 
@@ -50,7 +43,7 @@
     <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
         <div id="user-info" style="padding: 10px 0px">
             <p>User profile information for @username:</p>
-            <p>@walkJsonTree(null, userProfile) </p>
+            <p>@displayUserProfile(null, userProfile) </p>
         </div>
         <div id="user-repositories" style="padding: 10px 0px">
             <p>@username's repositories:</p>

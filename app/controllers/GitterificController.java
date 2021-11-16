@@ -82,9 +82,13 @@ public class GitterificController extends Controller {
 	}
 
 	/**
-	 * Gets the user profile information
-	 * @param username
-	 * @return
+	 * Renders an HTML page containing all available public profile information about a user, as well as all the
+	 * repositories of that user
+	 *
+	 * The configuration in the <code>routes</code> file means that this method will be called when the application
+	 * receives a <code>GET</code> request with a path of <code>/user-profile/:username</code>
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;Result&gt; which contains available public profile information and repositories for a user
 	 * @author Pradnya Kandarkar
 	 */
 	public CompletionStage<Result> getUserProfile(String username) {
