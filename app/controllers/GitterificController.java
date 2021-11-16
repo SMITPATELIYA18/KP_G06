@@ -146,6 +146,9 @@ public class GitterificController extends Controller {
 
 							//TODO: Optimize
 							List<String> list = issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
+							if(list.get(0) == "Issue does not Present!"){
+								list = null;
+							}
 							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder));
 						},
 						httpExecutionContext.current()
