@@ -6,17 +6,18 @@ import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.*;
-import services.GitHubAPIImpl;
 import services.github.GitHubAPI;
 
 
 import javax.inject.Inject;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
+
+import views.html.repositoryprofile.*;
 
 /**
  * This controller contains actions to handle HTTP requests to the application
@@ -119,7 +120,7 @@ public class GitterificController extends Controller {
 
 	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName){
 
-		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPI.getRepositoryIssue(ownerName + "/" + repositoryName)
+		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPIImpl.getRepositoryIssue(ownerName + "/" + repositoryName)
 				.thenApplyAsync(issueModel -> issueModel,
 						httpExecutionContext.current()));*/
 
@@ -131,14 +132,16 @@ public class GitterificController extends Controller {
 						(repositoryProfileDetail, issueList) -> {
 							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
 							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
-							List<String> list = issueList.getIssueTitles().stream().limit(20).collect(Collectors.toList());
-							return ok(views.html.RepositoryProfile.profile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
+
+							//TODO: Optimize
+							List<String> list = issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
+							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder));
 						},
 						httpExecutionContext.current()
 				);
 
 		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-				() -> gitHubAPI.getRepositoryProfile(ownerName, repositoryName)
+				() -> gitHubAPIImpl.getRepositoryProfile(ownerName, repositoryName)
 						.thenApplyAsync(repositoryProfileDetails -> {
 							List<String> issueList = null;
 							try {
@@ -151,14 +154,14 @@ public class GitterificController extends Controller {
 							}
 							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
 							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetails, Optional.ofNullable(issueList).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
+							return ok(views.html.repositoryProfile.profile.render(ownerName, repositoryName, repositoryProfileDetails, Optional.ofNullable(issueList).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
 						}, httpExecutionContext.current()));*/
 	}
 
 	/**
 	 * This method gives issues' title statics which are returning from API.
 	 * @author smitpateliya
-	 * @param request Gets repository names.
+	 * @param repoName Gets repository names.
 	 * @return Future Result which contains issues' title stats.
 	 */
 

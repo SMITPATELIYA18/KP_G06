@@ -17,5 +17,4 @@ public interface GitHubAPI {
 	CompletionStage<JsonNode> getRepositoryProfile(String ownerName, String repositoryName);
 	CompletionStage<IssueModel> getRepositoryIssue(String repoFullName);
 	CompletionStage<SearchRepository> getTopicRepository(String topic);
-
 }
