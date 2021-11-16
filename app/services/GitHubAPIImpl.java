@@ -99,8 +99,10 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 							JsonNode elementNode = nodeIterator.next();
 							userRepoList.add(elementNode.findValue("name"));
 						}
+						return userRepoList;
+					} else {
+						return userRepos;
 					}
-					return userRepoList;
 				});
 	}
 

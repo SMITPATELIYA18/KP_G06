@@ -27,13 +27,17 @@
 }
 
 @listUserRepositories(node: JsonNode) = {
-    @if(userRepositories.size() > 0) {
-        <p>@userRepositories.size() repositories</p>
-        @for(arrayNode <- node.elements()) {
-            <li><a href="@routes.GitterificController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
+    @if(node.isArray()) {
+        @if(userRepositories.size() > 0) {
+            <p>@userRepositories.size() repositories</p>
+            @for(arrayNode <- node.elements()) {
+                <li><a href="@routes.GitterificController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
+            }
+        } else {
+            <p>No public repositories available for this user.</p>
         }
     } else {
-        <p>No public repositories available for this user.</p>
+        <p>No repositories available for this user.</p>
     }
 }
 
