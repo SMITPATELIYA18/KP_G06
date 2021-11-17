@@ -23,4 +23,4 @@ GET     /topics/:topic              controllers.GitterificController.getTopicRep
 GET 	/user-profile/:username		controllers.GitterificController.getUserProfile(username: String)
 
 
-GET     /                      controllers.GitterificController.index(request: Request)
+GET     /                      controllers.GitterificController.index(search: String ?= "")
