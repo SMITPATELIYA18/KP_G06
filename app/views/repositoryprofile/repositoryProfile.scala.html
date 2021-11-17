@@ -1,7 +1,7 @@
 
 @import com.fasterxml.jackson.databind.JsonNode
 @import java.lang.String
-@(ownerName: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: List[String])(implicit assetsFinder: AssetsFinder)
+@(ownerName: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: JsonNode)(implicit assetsFinder: AssetsFinder)
 
 @walkJsonTree(name: String, node: JsonNode) = {
     @if(node.isObject()) {
@@ -17,7 +17,7 @@
     @if(node.isArray()) {
         <ol>
             @for(arrayNode <- node.elements()) {
-                <li><a href="@routes.GitterificController.getTopicRepository(arrayNode.asText())">@arrayNode</a>&nbsp;</li>
+                <li><a href="@routes.GitterificController.getTopicRepository(arrayNode.asText())">@arrayNode.asText()</a>&nbsp;</li>
             }
         </ol>
     }
@@ -31,15 +31,14 @@
     }
 }
 
-@listUserRepositories(list: List[String]) = {
-    @if(list.size() > 0){
-        @for(arrayNode <- list) {
-            <li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode</a></li>
-        }
-    } else{
-        <p>No Issues Reported.</p>
+@listUserRepositories(list: JsonNode) = {
+    @for(arrayNode <- list.elements()) {
+        <li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode.asText()</a></li>
     }
 }
+
+
+
 
 @main("Repository Profile") {
 <section id="top">
@@ -55,7 +54,7 @@
             @walkJsonTree(null, repositoryProfileDetails)
         </div>
         <div id="repositories" style="padding: 10px 0px">
-            <p><b>List to top @issueList.length issues: </b></p>
+            <p><b>List to top @issueList.size() issues: </b></p>
             <p>@listUserRepositories(issueList)</p>
         </div>
     </div>

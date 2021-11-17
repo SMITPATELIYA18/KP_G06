@@ -122,19 +122,19 @@ public class GitterificController extends Controller {
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/repositoryProfile/:ownerName/:repositoryName</code>.
-	 * @param ownerName  Owner of the repository
+	 * @param username  Owner of the repository
 	 * @param repositoryName  Repository Name
 	 * @return Future CompletionStage Result
 	 * @author Farheen Jamadar
 	 */
 
-	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName){
+	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
 
 		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPIImpl.getRepositoryIssue(ownerName + "/" + repositoryName)
 				.thenApplyAsync(issueModel -> issueModel,
 						httpExecutionContext.current()));*/
 
-		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
 						() ->  gitHubAPIInst.getRepositoryProfile(ownerName, repositoryName))
 				.thenCombineAsync(
 						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
@@ -151,24 +151,14 @@ public class GitterificController extends Controller {
 							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder));
 						},
 						httpExecutionContext.current()
-				);
-
-		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-				() -> gitHubAPIImpl.getRepositoryProfile(ownerName, repositoryName)
-						.thenApplyAsync(repositoryProfileDetails -> {
-							List<String> issueList = null;
-							try {
-								//TODO: Optimize
-								issueList = issues.toCompletableFuture().get().getIssueTitles().stream().limit(20).collect(Collectors.toList());
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch (ExecutionException e) {
-								e.printStackTrace();
-							}
-							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
-							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-							return ok(views.html.repositoryProfile.profile.render(ownerName, repositoryName, repositoryProfileDetails, Optional.ofNullable(issueList).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
-						}, httpExecutionContext.current()));*/
+				);*/
+		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
+				repositoryData -> ok(repositoryProfile.render(username,
+						repositoryName,
+						repositoryData.get("repositoryProfile"),
+						repositoryData.get("issueList"),
+						assetsFinder)),
+				httpExecutionContext.current());
 	}
 
 	/**
