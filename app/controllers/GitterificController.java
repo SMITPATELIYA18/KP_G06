@@ -58,22 +58,15 @@ public class GitterificController extends Controller {
 	 * @author SmitPateliya, Farheen Jamadar
 	 */
 
-	public CompletionStage<Result> index(Http.Request request) {
-		Optional<String> query = request.queryString("search");
-		if (query.isEmpty() || query.get().equals("")) {
-			/*if(query.isEmpty()) {
-				System.out.println("Received query.isEmpty()");
-			}
-			if(query.get().equals("")) {
-				System.out.println("Received query.get().equals(\"\")");
-			}*/
+	public CompletionStage<Result> index(String query) {
+		if (query.isEmpty()) {
 			asyncCacheApi.remove("search");
 			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(null, assetsFinder)));
 		}
 
-		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query.get(), () -> {
-			CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(query.get());
-			asyncCacheApi.set("search_" + query.get(), searchRepository, 60 * 15);
+		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query, () -> {
+			CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(query);
+			asyncCacheApi.set("search_" + query, searchRepository, 60 * 15);
 			return searchRepository;
 		});
 
