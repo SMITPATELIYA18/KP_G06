@@ -2,6 +2,7 @@ package repositoryprofile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -130,26 +131,22 @@ public class RepositoryProfileTest {
     }
 
     //UI
-    /*@Test
+    @Test
     public void should_DisplayRepositoryProfileDetails_provided_UserRepositoryIssueList() throws Exception {
-        File fileObject = new File("test/resources/repositoryprofile/validIssueListDetails.txt");
-        Scanner readObject = new Scanner(fileObject);
-        List<String> list = List.of(readObject.nextLine().split(","));
-        readObject.close();
 
         String username = "sampleUsername";
         String repositoryName = "sampleRepositoryName";
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
-
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, list, assetsFinder);
+        ArrayNode issueList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/validIssueListDetails.txt"));
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issueList, assetsFinder);
 
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("List to top 5 issues:"));
     }
 
-    @Test
+   /* @Test
     public void should_DisplayRepositoryProfileDetails_provided_SameUsernameAndLoginName() throws Exception {
         File fileObject = new File("test/resources/repositoryprofile/validIssueListDetails.txt");
         Scanner readObject = new Scanner(fileObject);

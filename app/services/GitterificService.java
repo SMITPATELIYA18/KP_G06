@@ -70,7 +70,6 @@ public class GitterificService {
 
                             ArrayNode arrayNode = mapper.createArrayNode();
 
-                            System.out.println("List: " + list);
                                 list.forEach(element -> {
 
                                     if(element == "Issue does not Present!"|| element == "Error! Repository does not present!"){
@@ -81,7 +80,9 @@ public class GitterificService {
                                     }
                                 });
 
+                            System.out.println("List: " + list);
 
+                            System.out.println("ArrayNode: " + arrayNode);
                             repositoryData.set("repositoryProfile", repositoryProfileDetail);
                             repositoryData.set("issueList", arrayNode);
 
