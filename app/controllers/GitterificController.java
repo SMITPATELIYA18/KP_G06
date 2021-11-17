@@ -84,9 +84,10 @@ public class GitterificController extends Controller {
 					if(cacheData.isPresent()){
 						store = (SearchCacheStore) cacheData.get();
 					}
-					if(!store.getSearches().contains(newData)){
+					/*if(!store.getSearches().contains(newData)){
 						store.addNewSearch(newData);
-					}
+					}*/
+					store.addNewSearch(newData);
 
 
 					asyncCacheApi.set("search", store, 60 * 15);
@@ -129,11 +130,6 @@ public class GitterificController extends Controller {
 	 */
 
 	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
-
-		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPIImpl.getRepositoryIssue(ownerName + "/" + repositoryName)
-				.thenApplyAsync(issueModel -> issueModel,
-						httpExecutionContext.current()));*/
-
 		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
 						() ->  gitHubAPIInst.getRepositoryProfile(ownerName, repositoryName))
 				.thenCombineAsync(
