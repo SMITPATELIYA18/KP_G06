@@ -18,6 +18,9 @@ public class SearchCacheStore {
 	
 	public void addNewSearch(SearchRepository searchRepository) {
 		this.searches.add(0, searchRepository);
+		if(this.searches.size() > 10){
+			this.searches.remove(10);
+		}
 	}
 
 	public List<SearchRepository> getSearches() {
