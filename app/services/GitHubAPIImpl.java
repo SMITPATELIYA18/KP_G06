@@ -71,6 +71,12 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return searchResult;
 	}
 
+	/**
+	 * Retrieves all available public profile information about a user
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;JsonNode&gt; which contains available public profile information for a user
+	 * @author Pradnya Kandarkar
+	 */
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
 		System.out.println("Using the actual implementation for getUserProfileByUsername.");
 		String requestURL = this.baseURL + "/users/" + username;
@@ -80,6 +86,12 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.thenApplyAsync(r -> r.getBody(json()));
 	}
 
+	/**
+	 * Retrieves all available public repositories of a user
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;JsonNode&gt; which contains a list of available public repositories for a user
+	 * @author Pradnya Kandarkar
+	 */
 	public CompletionStage<JsonNode> getUserRepositories(String username) {
 		String requestURL = this.baseURL + "/users/" + username + "/repos";
 		return client.url(requestURL)

@@ -1,3 +1,4 @@
+/*
 package controllers;
 
 import com.google.inject.Inject;
@@ -20,13 +21,15 @@ import java.util.stream.Collectors;
 
 import views.html.repositoryprofile.*;
 
+*/
 /**
  * This controller contains actions to handle HTTP requests to the application
  * @author Smit Pateliya
  * @author Farheen Jamadar
  * @author Indraneel Rachakonda
  * @author Pradnya Kandarkar
- */
+ *//*
+
 public class GitterificController extends Controller {
 	private final AssetsFinder assetsFinder;
 	private HttpExecutionContext httpExecutionContext;
@@ -34,11 +37,13 @@ public class GitterificController extends Controller {
 	private GitHubAPI gitHubAPIInst;
 	private GitterificService gitterificService;
 
-	/**
+	*/
+/**
 	 * @param assetsFinder For finding assets according to configured base path and URL base
 	 * @param httpExecutionContext For managing Play Java HTTP thread local state
 	 * @param asyncCacheApi For utilizing asynchronous cache
-	 */
+	 *//*
+
 	@Inject
 	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi, GitHubAPI gitHubAPIInst, GitterificService gitterificService) {
 		this.assetsFinder = assetsFinder;
@@ -48,7 +53,8 @@ public class GitterificController extends Controller {
 		this.gitterificService = gitterificService;
 	}
 
-	/**
+	*/
+/**
 	 * An action that renders an HTML page with search input form.
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
@@ -56,24 +62,18 @@ public class GitterificController extends Controller {
 	 * @param request HTTP Request containing the search query
 	 * @return Future CompletionStage Result
 	 * @author SmitPateliya, Farheen Jamadar
-	 */
+	 *//*
 
-	public CompletionStage<Result> index(Http.Request request) {
-		Optional<String> query = request.queryString("search");
-		if (query.isEmpty() || query.get().equals("")) {
-			/*if(query.isEmpty()) {
-				System.out.println("Received query.isEmpty()");
-			}
-			if(query.get().equals("")) {
-				System.out.println("Received query.get().equals(\"\")");
-			}*/
+
+	public CompletionStage<Result> index(String query) {
+		if (query.isEmpty()) {
 			asyncCacheApi.remove("search");
 			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(null, assetsFinder)));
 		}
 
-		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query.get(), () -> {
-			CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(query.get());
-			asyncCacheApi.set("search_" + query.get(), searchRepository, 60 * 15);
+		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query, () -> {
+			CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(query);
+			asyncCacheApi.set("search_" + query, searchRepository, 60 * 15);
 			return searchRepository;
 		});
 
@@ -84,9 +84,11 @@ public class GitterificController extends Controller {
 					if(cacheData.isPresent()){
 						store = (SearchCacheStore) cacheData.get();
 					}
-					/*if(!store.getSearches().contains(newData)){
+					*/
+/*if(!store.getSearches().contains(newData)){
 						store.addNewSearch(newData);
-					}*/
+					}*//*
+
 					store.addNewSearch(newData);
 
 
@@ -97,7 +99,8 @@ public class GitterificController extends Controller {
 		);
 	}
 
-	/**
+	*/
+/**
 	 * Renders an HTML page containing all available public profile information about a user, as well as all the
 	 * repositories of that user
 	 *
@@ -106,7 +109,8 @@ public class GitterificController extends Controller {
 	 * @param username Username to fetch the details for
 	 * @return CompletionStage&lt;Result&gt; which contains available public profile information and repositories for a user
 	 * @author Pradnya Kandarkar
-	 */
+	 *//*
+
 	public CompletionStage<Result> getUserProfile(String username) {
 
 		return gitterificService.getUserProfile(username).thenApplyAsync(
@@ -117,8 +121,11 @@ public class GitterificController extends Controller {
 				httpExecutionContext.current());
 	}
 
-	/*TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases*/
-	/**
+	*/
+/*TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases*//*
+
+	*/
+/**
 	 * An action that renders an HTML page with repository profile details queried by the user.
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
@@ -127,10 +134,12 @@ public class GitterificController extends Controller {
 	 * @param repositoryName  Repository Name
 	 * @return Future CompletionStage Result
 	 * @author Farheen Jamadar
-	 */
+	 *//*
+
 
 	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
-		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+		*/
+/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
 						() ->  gitHubAPIInst.getRepositoryProfile(ownerName, repositoryName))
 				.thenCombineAsync(
 						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
@@ -147,7 +156,8 @@ public class GitterificController extends Controller {
 							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder));
 						},
 						httpExecutionContext.current()
-				);*/
+				);*//*
+
 		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
 				repositoryData -> ok(repositoryProfile.render(username,
 						repositoryName,
@@ -157,12 +167,14 @@ public class GitterificController extends Controller {
 				httpExecutionContext.current());
 	}
 
-	/**
+	*/
+/**
 	 * This method gives issues' title statics which are returning from API.
 	 * @author smitpateliya
 	 * @param repoName Gets repository names.
 	 * @return Future Result which contains issues' title stats.
-	 */
+	 *//*
+
 
 	public CompletionStage<Result> getIssueStat(String repoName) {
 		repoName = repoName.replace("+", "/");
@@ -171,7 +183,8 @@ public class GitterificController extends Controller {
 				httpExecutionContext.current());
 	}
 
-	/**
+	*/
+/**
 	 * An action that renders an HTML page with the top 10 repositories containing the topic provided by the user.
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
@@ -179,7 +192,8 @@ public class GitterificController extends Controller {
 	 * @param topic  Topic based on which the repositories will be retrieved
 	 * @return Future CompletionStage Result
 	 * @author Indraneel Rachakonda
-	 */
+	 *//*
+
 	public CompletionStage<Result> getTopicRepository(String topic) {
 		return asyncCacheApi.getOrElseUpdate(
 						"topic_" + topic,
@@ -191,3 +205,4 @@ public class GitterificController extends Controller {
 				);
 	}
 }
+*/
