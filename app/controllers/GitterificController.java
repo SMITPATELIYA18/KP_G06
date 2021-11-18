@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
-import views.html.repositoryprofile.*;
+//import views.html.repositoryprofile.*;
 
 /**
  * This controller contains actions to handle HTTP requests to the application
@@ -53,7 +53,7 @@ public class GitterificController extends Controller {
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/</code>.
-	 * @param request HTTP Request containing the search query
+	 * @param query request HTTP Request containing the search query
 	 * @return Future CompletionStage Result
 	 * @author SmitPateliya, Farheen Jamadar
 	 */

@@ -36,7 +36,7 @@ import static play.test.Helpers.*;
 import controllers.AssetsFinder;
 
 
-import views.html.repositoryprofile.*;
+//import views.html.repositoryprofile.*;
 
 public class RepositoryProfileTest {
     private static AssetsFinder assetsFinder;
