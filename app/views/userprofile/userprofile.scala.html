@@ -7,7 +7,7 @@
     @if(node.isObject()) {
     <ul>
         @for(nodeEntry <- node.fields()) {
-            <li>@nodeEntry.getKey(): @displayUserProfile(nodeEntry.getKey(), nodeEntry.getValue())</li>
+        <li><b>@nodeEntry.getKey():</b> @displayUserProfile(nodeEntry.getKey(), nodeEntry.getValue())</li>
         }
     </ul>
     }
@@ -42,11 +42,12 @@
     </section>
     <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
         <div id="user-info" style="padding: 10px 0px">
-            <p>User profile information for @username:</p>
+            <h3>User profile information for @username:</h3>
             <p>@displayUserProfile(null, userProfile) </p>
         </div>
+        <hr>
         <div id="user-repositories" style="padding: 10px 0px">
-            <p>@username's repositories:</p>
+            <h3>@username's repositories:</h3>
             <p>@listUserRepositories(userRepositories)</p>
         </div>
     </div>
