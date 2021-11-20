@@ -129,7 +129,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		String finalURL = this.baseURL + "/repos/" + username + "/" + repositoryName;
 		CompletionStage<JsonNode> result = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json")
-				.setRequestTimeout(Duration.of(1000, ChronoUnit.MILLIS))
+				.setRequestTimeout(Duration.of(7000, ChronoUnit.MILLIS))
 				.get()
 				.thenApplyAsync(repositoryProfileDetails -> repositoryProfileDetails.getBody(json()));
 		return result;
