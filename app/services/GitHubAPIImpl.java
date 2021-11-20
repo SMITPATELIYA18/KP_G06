@@ -157,15 +157,19 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return searchResult;
 	}
 
+	/**
+	 * Sets the <code>WSClient</code> value
+	 * @param client <code>WSClient</code> value to be set
+	 */
 	public void setClient(WSClient client) {
 		this.client = client;
 	}
 
+	/**
+	 * Sets the base URL for the application
+	 * @param baseURL <code>String</code> value to be set for the base URL
+	 */
 	public void setBaseURL(String baseURL) {
 		this.baseURL = baseURL;
-	}
-
-	public WSClient getClient() {
-		return client;
 	}
 }

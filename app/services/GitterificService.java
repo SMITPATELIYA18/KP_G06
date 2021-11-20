@@ -8,11 +8,9 @@ import com.google.inject.Inject;
 import models.SearchCacheStore;
 import models.SearchRepository;
 import play.cache.AsyncCacheApi;
-import play.libs.Json;
 import services.github.GitHubAPI;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 

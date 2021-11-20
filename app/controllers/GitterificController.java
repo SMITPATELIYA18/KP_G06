@@ -1,8 +1,6 @@
 package controllers;
 
 import com.google.inject.Inject;
-import models.SearchCacheStore;
-import models.SearchRepository;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;

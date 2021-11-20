@@ -1,9 +1,6 @@
 package services.github;
 
-import java.io.IOException;
 import java.util.concurrent.CompletionStage;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.IssueModel;
 import models.SearchRepository;
