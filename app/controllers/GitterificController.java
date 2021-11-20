@@ -9,6 +9,7 @@ import play.mvc.Controller;
 import play.mvc.*;
 import services.GitterificService;
 import services.github.GitHubAPI;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -57,30 +58,11 @@ public class GitterificController extends Controller {
 			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(null, assetsFinder)));
 		}
 
-		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query, () -> {
-			CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(query);
-			asyncCacheApi.set("search_" + query, searchRepository, 60 * 15);
-			return searchRepository;
-		});
+		return gitterificService.getRepositoryFromSearch(query).thenApplyAsync(
+				searchResults -> ok(views.html.index.render(searchResults,
+						assetsFinder)),
+				httpExecutionContext.current());
 
-		return  newSearchData.thenCombineAsync(
-				asyncCacheApi.get("search"),
-				(newData, cacheData) -> {
-					SearchCacheStore store = new SearchCacheStore();
-					if(cacheData.isPresent()){
-						store = (SearchCacheStore) cacheData.get();
-					}
-					/*if(!store.getSearches().contains(newData)){
-						store.addNewSearch(newData);
-					}*/
-					store.addNewSearch(newData);
-
-
-					asyncCacheApi.set("search", store, 60 * 15);
-					return ok(views.html.index.render(store, assetsFinder));
-				},
-				httpExecutionContext.current()
-		);
 	}
 
 	/**
@@ -136,10 +118,10 @@ public class GitterificController extends Controller {
 				);*/
 		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
 				repositoryData -> ok(repositoryProfile.render(username,
-						repositoryName,
-						repositoryData.get("repositoryProfile"),
-						repositoryData.get("issueList"),
-						assetsFinder)),
+							repositoryName,
+							repositoryData.get("repositoryProfile"),
+							repositoryData.get("issueList"),
+							assetsFinder)),
 				httpExecutionContext.current());
 	}
 
