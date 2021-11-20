@@ -35,11 +35,6 @@ public class SearchRepository {
 
 		ArrayNode items = Optional.ofNullable((ArrayNode) data.get("items")).orElse(JsonNodeFactory.instance.arrayNode());
 
-		//TODO: Farheen
-		/*if(items == null){
-			items = JsonNodeFactory.instance.arrayNode();
-		}*/
-
 		Stream<JsonNode> stream = StreamSupport.stream(Spliterators
 				.spliteratorUnknownSize(items.elements(),
 						Spliterator.ORDERED),false);

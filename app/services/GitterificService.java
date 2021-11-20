@@ -5,10 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
+import models.SearchCacheStore;
+import models.SearchRepository;
 import play.cache.AsyncCacheApi;
+import play.libs.Json;
 import services.github.GitHubAPI;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
@@ -27,6 +31,25 @@ public class GitterificService {
         this.gitHubAPIInst = gitHubAPIInst;
     }
 
+    public CompletionStage<SearchCacheStore> getRepositoryFromSearch(String username) {
+        CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + username, () -> {
+            CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(username);
+            asyncCacheApi.set("search_" + username, searchRepository, 60 * 15);
+            return searchRepository;
+        });
+
+        return newSearchData.thenCombineAsync(
+                asyncCacheApi.get("search"),
+                (newData, cacheData) -> {
+                    SearchCacheStore store = new SearchCacheStore();
+                    if (cacheData.isPresent()) {
+                        store = (SearchCacheStore) cacheData.get();
+                    }
+                    store.addNewSearch(newData);
+                    asyncCacheApi.set("search", store, 60 * 15);
+                    return store;
+                });
+    }
 
     /**
      * Retrieves all available public profile information about a user, as well as all the repositories of that user
@@ -54,35 +77,26 @@ public class GitterificService {
 
     public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
         return asyncCacheApi.getOrElseUpdate(username + "/" + repositoryName,
-                        () ->  gitHubAPIInst.getRepositoryProfile(username, repositoryName))
+                        () -> gitHubAPIInst.getRepositoryProfile(username, repositoryName))
                 .thenCombineAsync(
-                        asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
+                        asyncCacheApi.getOrElseUpdate(username + repositoryName + "/20issues",
                                 () -> gitHubAPIInst.getRepositoryIssue(username + "/" + repositoryName)),
                         (repositoryProfileDetail, issueList) -> {
-                            asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
+                            asyncCacheApi.set(username + repositoryName + "/20issues", issueList,  60 * 15);
                             asyncCacheApi.set(username + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
 
                             //TODO: Optimize
                             List<String> list = issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
-
+                            System.out.println("List :" + list);
                             ObjectMapper mapper = new ObjectMapper();
                             ObjectNode repositoryData = mapper.createObjectNode();
 
                             ArrayNode arrayNode = mapper.createArrayNode();
 
-                                list.forEach(element -> {
+                            list.forEach(element -> {
+                                arrayNode.add(element);
+                            });
 
-                                    if(element == "Issue does not Present!"|| element == "Error! Repository does not present!"){
-                                        arrayNode.add("No Issue Reported.");
-                                    }
-                                    else{
-                                        arrayNode.add(element);
-                                    }
-                                });
-
-                            System.out.println("List: " + list);
-
-                            System.out.println("ArrayNode: " + arrayNode);
                             repositoryData.set("repositoryProfile", repositoryProfileDetail);
                             repositoryData.set("issueList", arrayNode);
 
