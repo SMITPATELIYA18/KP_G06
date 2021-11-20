@@ -43,9 +43,9 @@ public class GitterificController extends Controller {
 
 	/**
 	 * Renders an HTML page with search input form.
-	 * The configuration in the <code>routes</code> file means that
-	 * this method will be called when the application receives a
-	 * <code>GET</code> request with a path of <code>/</code>.
+	 *
+	 * The configuration in the <code>routes</code> file means that this method will be called when the application
+	 * receives a <code>GET</code> request with a path of <code>/</code>.
 	 * @param query request HTTP Request containing the search query
 	 * @return Future CompletionStage Result
 	 * @author SmitPateliya, Farheen Jamadar
@@ -83,18 +83,16 @@ public class GitterificController extends Controller {
 				httpExecutionContext.current());
 	}
 
-	/*TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases*/
 	/**
 	 * Renders an HTML page with repository profile details queried by the user.
-	 * The configuration in the <code>routes</code> file means that
-	 * this method will be called when the application receives a
-	 * <code>GET</code> request with a path of <code>/repositoryProfile/:ownerName/:repositoryName</code>.
+	 *
+	 * The configuration in the <code>routes</code> file means that this method will be called when the application
+	 * receives a <code>GET</code> request with a path of <code>/repositoryProfile/:ownerName/:repositoryName</code>.
 	 * @param username  Owner of the repository
 	 * @param repositoryName  Repository Name
 	 * @return Future CompletionStage Result
 	 * @author Farheen Jamadar
 	 */
-
 	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
 		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
 				repositoryData -> ok(repositoryProfile.render(username,
