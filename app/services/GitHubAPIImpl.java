@@ -62,12 +62,10 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 
 	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) {
-		System.out.println("Using the actual implementation for getRepositoryIssue.");
 		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
 		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
-		System.out.println("Result issues: " + searchResult);
 		return searchResult;
 	}
 

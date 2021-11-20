@@ -1,3 +1,4 @@
+package repositoryissues;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -71,11 +72,16 @@ public class IssueControllerTest {
 	 */
 
 	@Test
-	public void testIssueController() {
+	public void testIssueController() throws Exception {
 		Helpers.running(testApp, () -> {
 			GitterificController gitterificController = mock(GitterificController.class);
 //			when(gitterificController.getIssueStat("repoName")).thenReturn(mockIssueController());
-			doReturn(mockIssueController()).when(gitterificController).getIssueStat("repoName");
+			try {
+				doReturn(mockIssueController()).when(gitterificController).getIssueStat("repoName");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			CompletionStage<Result> issueStat = issueController.getIssueStat("repoName");
 			Result result;
 			try {
@@ -98,15 +104,15 @@ public class IssueControllerTest {
 	 * @return Completion Stage IssueModel object
 	 */
 
-	private CompletionStage<Result> mockIssueController() {
+	private CompletionStage<Result> mockIssueController() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode data = null;
-		try {
+		//try {
 			data = mapper.readTree(TestResources.issueData);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		CompletableFuture<Result> futureModel = new CompletableFuture<>();
 		IssueModel modelData = new IssueModel("TheAlgorithms/Java", data);
 		AssetsFinder asset = mock(AssetsFinder.class);
