@@ -9,7 +9,11 @@
             @for(nodeEntry <- node.fields()) {
             <li>
                 <b>@nodeEntry.getKey(): </b>
-                @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())
+                    @if(nodeEntry.getKey()=="login"){
+                        <a href="@routes.GitterificController.getUserProfile(ownerName)">@walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())</a>
+                    } else{
+                        @walkJsonTree(nodeEntry.getKey(), nodeEntry.getValue())
+                    }
             </li>
             }
         </ul>
@@ -23,27 +27,22 @@
     }
 
     @if(node.isValueNode()) {
-        @if(node.asText() == ownerName) {
-            <a href="@routes.GitterificController.getUserProfile(ownerName)">@ownerName</a>
-        } else{
-            @node.asText()
-        }
+        @node.asText()
     }
 }
 
 @listUserRepositories(list: JsonNode) = {
-    if(list.size() == 0 ){
-
+    @if(list.size() == 0){
+        <li>No Issues Found</li>
     } else {
         @for(arrayNode <- list.elements()) {
-            @if(arrayNode.asText() == "Issue does not Present!" ||  arrayNode.asText() == "Error! Repository does not present!"){
+            @if(arrayNode.asText() == "Issue does not Present!" || arrayNode.asText() == "Error! Repository does not present!"){
                 <li>No Issues Found</li>
-            } else{
+            } else {
                 <li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode.asText()</a></li>
             }
         }
     }
-
 }
 
 

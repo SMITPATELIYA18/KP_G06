@@ -91,9 +91,7 @@ public class GitterificService {
 
                             ArrayNode arrayNode = mapper.createArrayNode();
 
-                            list.forEach(element -> {
-                                arrayNode.add(element);
-                            });
+                            list.forEach(arrayNode::add);
 
                             repositoryData.set("repositoryProfile", repositoryProfileDetail);
                             repositoryData.set("issueList", arrayNode);
