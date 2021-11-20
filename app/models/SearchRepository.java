@@ -20,7 +20,7 @@ public class SearchRepository {
 	private String query;
 	private List<RepositoryModel> repositoryList;
 	/**
-	 * 
+	 *
 	 * @param data  Gets data from API
 	 * @param query Search query of user
 	 */

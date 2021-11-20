@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -137,10 +138,22 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	}
 
 	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
-		String finalURL = this.baseURL + "/search/repositories?q=topic:" + topic + "&sort=created&order=desc";
+		System.out.println("Using the actual implementation for getTopicRepository.");
+
+		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL)
+				.addQueryParameter("q", topic)
+				.addQueryParameter("sort", "created")
+				.addQueryParameter("order", "desc")
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), topic));
+		try {
+			System.out.println("Result: " + searchResult.toCompletableFuture().get());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
 		return searchResult;
 	}
 
