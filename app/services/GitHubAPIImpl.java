@@ -118,7 +118,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	}
 
 	/**
-	 * An action that fetches all the available details of the repository
+	 * Fetches all the available details of the repository
 	 * @param username Owner of the repository
 	 * @param repositoryName Repository Name
 	 * @return Returns JsonNode containing Repository information
@@ -147,9 +147,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), topic));
 		try {
 			System.out.println("Result: " + searchResult.toCompletableFuture().get());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
+		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
 		return searchResult;
