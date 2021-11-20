@@ -119,7 +119,6 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 	@Override
 	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) throws Exception{
-		System.out.println("Using the mock implementation for getRepositoryProfile");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sampleRepositoryProfile = mapper.readTree(TestResources.sampleRepositoryProfile);
 		CompletableFuture<JsonNode> futureUserRepositories = new CompletableFuture<>();
