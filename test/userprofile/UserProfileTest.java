@@ -77,6 +77,8 @@ public class UserProfileTest {
     public static void tearDown() throws IOException{
         try {
             wsClient.close();
+        }catch(IOException e) {
+        	e.printStackTrace();
         } finally {
             server.stop();
         }

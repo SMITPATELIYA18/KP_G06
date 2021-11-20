@@ -2,6 +2,7 @@ package repositoryprofile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,7 +77,7 @@ public class RepositoryProfileTest {
         Helpers.stop(testApp);
     }
 
-    /*Controller*/
+  /*  //Controller
     @Test
     public void should_ReturnOK_when_ValidGETRequest() {
         String sampleRepositoryProfileURL = "/repositoryProfile/sampleUsername/sampleRepository";
@@ -89,7 +90,7 @@ public class RepositoryProfileTest {
         assertEquals(OK, result.status());
     }
 
-    @Test
+   @Test
     public void should_ReturnNOT_FOUND_when_NotGETRequest() {
         String sampleRepositoryProfileURL = "/repositoryProfile/sampleUsername/sampleRepository";
 
@@ -101,7 +102,7 @@ public class RepositoryProfileTest {
         assertEquals(NOT_FOUND, result.status());
     }
 
-    /*Actual Method*/
+    //implementation
     @Test
     public void should_ReturnRepositoryProfileDetails_provided_UserNameRepositoryName() throws Exception {
         routePattern = "/repos/:username/:repositoryName";
@@ -112,64 +113,110 @@ public class RepositoryProfileTest {
     }
 
     @Test
-    public void shouldNot_ReturnRepositoryProfileDetails_provided_invalidUserNameRepositoryName() throws Exception {
-        routePattern = "/repos/:username/:repositoryName";
+    public void should_ReturnNotFound_provided_invalidUserName() throws Exception {
+        routePattern = "/repos/:invalidUsername/:repositoryName";
         testResourceName = "repositoryprofile/invalidRepositoryProfileDetails.json";
         JsonNode testRepositoryProfile = testGitHubAPIImpl.getRepositoryProfile("sampleUsername", "sampleRepository")
                 .toCompletableFuture().get(10, TimeUnit.SECONDS);
         assertEquals("Not Found", testRepositoryProfile.get("message").textValue());
     }
 
+    @Test
+    public void should_ReturnNotFound_provided_invalidRepositoryName() throws Exception {
+        routePattern = "/repos/:username/:invalid";
+        testResourceName = "repositoryprofile/invalidRepositoryProfileDetails.json";
+        JsonNode testRepositoryProfile = testGitHubAPIImpl.getRepositoryProfile("sampleUsername", "sampleRepository")
+                .toCompletableFuture().get(10, TimeUnit.SECONDS);
+        assertEquals("Not Found", testRepositoryProfile.get("message").textValue());
+    }
 
     //UI
     @Test
-    public void should_DisplayRepositoryProfileDetails_provided_UserRepositoryNameList() throws Exception {
+    public void should_DisplayRepositoryProfileDetails_provided_UserRepositoryIssueList() throws Exception {
+        String username = "sampleUsername";
+        String repositoryName = "sampleRepositoryName";
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
-
-        File fileObject = new File("test/resources/repositoryprofile/validIssueListDetails.txt");
-        Scanner readObject = new Scanner(fileObject);
-        List<String> list = List.of(readObject.nextLine().split(","));
-        readObject.close();
-
-        String username = "greyli";
-        String repositoryName = "helloflask";
-
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder);
+        ArrayNode issueList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/validIssueListDetails.json"));
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issueList, assetsFinder);
 
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("List to top 5 issues:"));
     }
 
     @Test
-    public void should_DisplayIssueMessage_provided_InvalidUserRepositoryName() throws Exception {
+    public void should_DisplayRepositoryProfileDetails_provided_SameUsernameAndLoginName() throws Exception {
+        String username = "greyli";
+        String repositoryName = "sampleRepositoryName";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
+        ArrayNode issueList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/validIssueListDetails.json"));
+
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issueList, assetsFinder);
+
+        assertEquals("text/html", html.contentType());
+        System.out.println(html);
+        assertTrue(contentAsString(html).contains(""));
+    }
+
+    @Test
+    public void should_DisplayNotFound_provided_InvalidUsername() throws Exception {
+        String username = "invalidUsername";
+        String repositoryName = "sampleRepositoryName";
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
+        ArrayNode issueList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/validIssueListDetails.json"));
 
-        List<String> list = null;
-
-        String username = "sampleusername";
-        String repositoryName = "samplerepositoryname";
-
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder);
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issueList, assetsFinder);
 
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("Not Found"));
     }
 
     @Test
-    public void should_DisplayDetails_with_IssueMessage_provided_UserRepositoryName_noList() throws Exception {
+    public void should_DisplayNotFound_provided_InvalidRepository() throws Exception {
+        String username = "sampleUsername";
+        String repositoryName = "invalidRepositoryName";
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
+        ArrayNode issueList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/validIssueListDetails.json"));
 
-        List<String> list = null;
-
-        String username = "sampleusername";
-        String repositoryName = "samplerepositoryname";
-
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder);
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issueList, assetsFinder);
 
         assertEquals("text/html", html.contentType());
-        assertTrue(contentAsString(html).contains("No Issues Reported."));
+        assertTrue(contentAsString(html).contains("Not Found"));
+    }*/
+
+    @Test
+    public void should_returnNoIssuesFoundwithProfile_when_NoIssues_1() throws Exception {
+        String username = "sampleUsername";
+        String repositoryName = "sampleRepositoryName";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
+        ArrayNode issueList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/noIssueList_1.json"));
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issueList, assetsFinder);
+
+        assertEquals("text/html", html.contentType());
+        System.out.println(html);
+        assertTrue(contentAsString(html).contains("No Issues Found."));
     }
+
+    /*@Test
+    public void should_DisplayNoIssuesFound_when_NoIssues_2() throws Exception {
+        String username = "sampleUsername";
+        String repositoryName = "sampleRepositoryName";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
+        ArrayNode issueList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/noIssueList_2.json"));
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issueList, assetsFinder);
+
+        assertEquals("text/html", html.contentType());
+        assertTrue(contentAsString(html).contains("No Issues Found."));
+    }*/
 }

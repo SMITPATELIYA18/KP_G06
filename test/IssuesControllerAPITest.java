@@ -81,7 +81,7 @@ public class IssuesControllerAPITest {
 		IssueModel issueModel = mock(IssueModel.class);
 		when(issueModel.getRepoFullName()).thenReturn("sadasd/sadsad");
 		ArrayList<String> mockList = new ArrayList<>() {{
-			add("Issue does not Present!");
+			add("Error! Repository does not present!");
 		}};
 		when(issueModel.getIssueTitles()).thenReturn(mockList);
 		CompletionStage<IssueModel> result = testGitHub.getRepositoryIssue("sadasd/sadsad");

@@ -143,17 +143,6 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return searchResult;
 	}
 
-	//TODO: Pradnya: Remove
-	/*public CompletionStage<List<String>> getRepositories() {
-		return client.url(baseURL + "/repositories")
-				.get()
-				.thenApply(
-						response ->
-								response.asJson().findValues("full_name").stream()
-										.map(JsonNode::asText)
-										.collect(Collectors.toList()));
-	}*/
-
 	public void setClient(WSClient client) {
 		this.client = client;
 	}

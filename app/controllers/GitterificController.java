@@ -1,21 +1,17 @@
 package controllers;
 
+import com.google.inject.Inject;
 import models.SearchCacheStore;
 import models.SearchRepository;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.*;
+import services.GitterificService;
 import services.github.GitHubAPI;
 
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
 import views.html.repositoryprofile.*;
 
@@ -30,9 +26,8 @@ public class GitterificController extends Controller {
 	private final AssetsFinder assetsFinder;
 	private HttpExecutionContext httpExecutionContext;
 	private AsyncCacheApi asyncCacheApi;
-
-	@Inject
 	private GitHubAPI gitHubAPIInst;
+	private GitterificService gitterificService;
 
 	/**
 	 * @param assetsFinder For finding assets according to configured base path and URL base
@@ -40,10 +35,12 @@ public class GitterificController extends Controller {
 	 * @param asyncCacheApi For utilizing asynchronous cache
 	 */
 	@Inject
-	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi) {
+	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi, GitHubAPI gitHubAPIInst, GitterificService gitterificService) {
 		this.assetsFinder = assetsFinder;
 		this.httpExecutionContext = httpExecutionContext;
 		this.asyncCacheApi = asyncCacheApi;
+		this.gitHubAPIInst = gitHubAPIInst;
+		this.gitterificService = gitterificService;
 	}
 
 	/**
@@ -51,45 +48,21 @@ public class GitterificController extends Controller {
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/</code>.
-	 * @param request HTTP Request containing the search query
+	 * @param query request HTTP Request containing the search query
 	 * @return Future CompletionStage Result
 	 * @author SmitPateliya, Farheen Jamadar
 	 */
-
-	public CompletionStage<Result> index(Http.Request request) {
-		Optional<String> query = request.queryString("search");
-		if (query.isEmpty() || query.get().equals("")) {
-			/*if(query.isEmpty()) {
-				System.out.println("Received query.isEmpty()");
-			}
-			if(query.get().equals("")) {
-				System.out.println("Received query.get().equals(\"\")");
-			}*/
+	public CompletionStage<Result> index(String query) {
+		if (query.isEmpty()) {
 			asyncCacheApi.remove("search");
 			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(null, assetsFinder)));
 		}
 
-		CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + query.get(), () -> {
-			CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(query.get());
-			asyncCacheApi.set("search_" + query.get(), searchRepository, 60 * 15);
-			return searchRepository;
-		});
+		return gitterificService.getRepositoryFromSearch(query).thenApplyAsync(
+				searchResults -> ok(views.html.index.render(searchResults,
+						assetsFinder)),
+				httpExecutionContext.current());
 
-		return  newSearchData.thenCombineAsync(
-				asyncCacheApi.get("search"),
-				(newData, cacheData) -> {
-					SearchCacheStore store = new SearchCacheStore();
-					if(cacheData.isPresent()){
-						store = (SearchCacheStore) cacheData.get();
-					}
-					if(!store.getSearches().contains(newData)){
-						store.addNewSearch(newData);
-					}
-					asyncCacheApi.set("search", store, 60 * 15);
-					return ok(views.html.index.render(store, assetsFinder));
-				},
-				httpExecutionContext.current()
-		);
 	}
 
 	/**
@@ -104,17 +77,12 @@ public class GitterificController extends Controller {
 	 */
 	public CompletionStage<Result> getUserProfile(String username) {
 
-		return asyncCacheApi.getOrElseUpdate(username + "_profile",
-				() -> gitHubAPIInst.getUserProfileByUsername(username))
-						.thenCombineAsync(asyncCacheApi.getOrElseUpdate(username + "_repositories",
-								() -> gitHubAPIInst.getUserRepositories(username)),
-								(userProfile, userRepositories) -> {
-									asyncCacheApi.set(username + "_profile", userProfile);
-									asyncCacheApi.set(username + "_repositories", userRepositories);
-									return ok(views.html.userprofile.userprofile.render(username, userProfile, userRepositories, assetsFinder));
-								},
-								httpExecutionContext.current()
-						);
+		return gitterificService.getUserProfile(username).thenApplyAsync(
+				userInfo -> ok(views.html.userprofile.userprofile.render(username,
+						userInfo.get("profile"),
+						userInfo.get("repositories"),
+						assetsFinder)),
+				httpExecutionContext.current());
 	}
 
 	/*TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases*/
@@ -123,19 +91,14 @@ public class GitterificController extends Controller {
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/repositoryProfile/:ownerName/:repositoryName</code>.
-	 * @param ownerName  Owner of the repository
+	 * @param username  Owner of the repository
 	 * @param repositoryName  Repository Name
 	 * @return Future CompletionStage Result
 	 * @author Farheen Jamadar
 	 */
 
-	public CompletionStage<Result> getRepositoryProfile(String ownerName, String repositoryName){
-
-		/*CompletionStage<IssueModel> issues = asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues", () -> gitHubAPIImpl.getRepositoryIssue(ownerName + "/" + repositoryName)
-				.thenApplyAsync(issueModel -> issueModel,
-						httpExecutionContext.current()));*/
-
-		return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
+	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
+		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
 						() ->  gitHubAPIInst.getRepositoryProfile(ownerName, repositoryName))
 				.thenCombineAsync(
 						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
@@ -146,30 +109,20 @@ public class GitterificController extends Controller {
 
 							//TODO: Optimize
 							List<String> list = issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
-							if(list.get(0) == "Issue does not Present!"){
+							if(list.get(0) == "Issue does not Present!" || list.get(0) == "Error! Repository does not present!"){
 								list = null;
 							}
 							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder));
 						},
 						httpExecutionContext.current()
-				);
-
-		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-				() -> gitHubAPIImpl.getRepositoryProfile(ownerName, repositoryName)
-						.thenApplyAsync(repositoryProfileDetails -> {
-							List<String> issueList = null;
-							try {
-								//TODO: Optimize
-								issueList = issues.toCompletableFuture().get().getIssueTitles().stream().limit(20).collect(Collectors.toList());
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch (ExecutionException e) {
-								e.printStackTrace();
-							}
-							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
-							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetails,  60 * 15);
-							return ok(views.html.repositoryProfile.profile.render(ownerName, repositoryName, repositoryProfileDetails, Optional.ofNullable(issueList).orElse(Arrays.asList("No Issues Reported.")), assetsFinder));
-						}, httpExecutionContext.current()));*/
+				);*/
+		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
+				repositoryData -> ok(repositoryProfile.render(username,
+							repositoryName,
+							repositoryData.get("repositoryProfile"),
+							repositoryData.get("issueList"),
+							assetsFinder)),
+				httpExecutionContext.current());
 	}
 
 	/**

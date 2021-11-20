@@ -85,8 +85,8 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		JsonNode sampleUserProfile = null;
 		try {
 			sampleUserProfile = mapper.readTree(new File("test/resources/userprofile/validGitHubUserProfile.json"));
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		}
 		CompletableFuture<JsonNode> futureUserProfile = new CompletableFuture<JsonNode>();
 		futureUserProfile.complete(sampleUserProfile);
@@ -101,8 +101,8 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		JsonNode sampleUserRepositories = null;
 		try {
 			sampleUserRepositories = mapper.readTree(sampleUserRepositoriesData);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		}
 		CompletableFuture<JsonNode> futureUserRepositories = new CompletableFuture<JsonNode>();
 		futureUserRepositories.complete(sampleUserRepositories);
