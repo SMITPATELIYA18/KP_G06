@@ -47,9 +47,5 @@ public class RepositoryModel {
 	public String getOwnerName(){
 		return ownerName;
 	}
-
-	public String toString() {
-		return ownerName + repositoryName + topics;
-	}
 	
 }

@@ -26,8 +26,6 @@ public class IssueModel {
 	private LinkedHashMap<String, Long> worldLevelData = new LinkedHashMap<>();
 
 	public IssueModel(String repoFullName, JsonNode data) {
-//		System.out.println(this.repoFullName);
-//		System.out.println(data);
 		this.repoFullName = repoFullName;
 		if(!data.has("message")) {
 		java.util.Iterator<JsonNode> iteratorItems = data.elements() != null ? data.elements()
@@ -53,32 +51,12 @@ public class IssueModel {
 		return repoFullName;
 	}
 
-	public void setRepoFullName(String repoFullName) {
-		this.repoFullName = repoFullName;
-	}
-
 	public List<String> getIssueTitles() {
 		return issueTitles;
-	}
-
-	public void setIssueTitles(List<String> issueTitles) {
-		this.issueTitles = issueTitles;
-	}
-
-	public Set<String> getAllKeys() {
-		return this.worldLevelData.keySet();
-	}
-	
-	public String getStatValue(String key) {
-		return this.worldLevelData.get(key).toString();
 	}
 	
 	public LinkedHashMap<String,Long> getWordLevelData() {
 		return this.worldLevelData;
-	}
-
-	public void setWorldLevelData(LinkedHashMap<String, Long> worldLevelData) {
-		this.worldLevelData = worldLevelData;
 	}
 
 }

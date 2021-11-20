@@ -9,16 +9,10 @@ import play.mvc.Controller;
 import play.mvc.*;
 import services.GitterificService;
 import services.github.GitHubAPI;
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
-//import views.html.repositoryprofile.*;
+import views.html.repositoryprofile.*;
 
 /**
  * This controller contains actions to handle HTTP requests to the application
@@ -57,7 +51,6 @@ public class GitterificController extends Controller {
 	 * @return Future CompletionStage Result
 	 * @author SmitPateliya, Farheen Jamadar
 	 */
-
 	public CompletionStage<Result> index(String query) {
 		if (query.isEmpty()) {
 			asyncCacheApi.remove("search");
