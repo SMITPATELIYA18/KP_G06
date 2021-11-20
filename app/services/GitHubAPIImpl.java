@@ -47,7 +47,6 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
-		System.out.println("Using the actual implementation for getRepositoryFromSearchBar.");
 		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
@@ -80,7 +79,6 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @author Pradnya Kandarkar
 	 */
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) throws Exception {
-		System.out.println("Using the actual implementation for getUserProfileByUsername.");
 		String requestURL = this.baseURL + "/users/" + username;
 		return client.url(requestURL)
 				.addHeader("accept", "application/vnd.github.v3+json")
