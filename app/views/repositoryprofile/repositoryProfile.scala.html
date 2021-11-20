@@ -32,9 +32,18 @@
 }
 
 @listUserRepositories(list: JsonNode) = {
-    @for(arrayNode <- list.elements()) {
-        <li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode.asText()</a></li>
+    if(list.size() == 0 ){
+
+    } else {
+        @for(arrayNode <- list.elements()) {
+            @if(arrayNode.asText() == "Issue does not Present!" ||  arrayNode.asText() == "Error! Repository does not present!"){
+                <li>No Issues Found</li>
+            } else{
+                <li><a href="@routes.GitterificController.getIssueStat(ownerName + '/' + repositoryName)">@arrayNode.asText()</a></li>
+            }
+        }
     }
+
 }
 
 
