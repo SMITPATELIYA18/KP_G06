@@ -45,7 +45,6 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 //			System.out.println(modelData.getWordLevelData());
 			return futureModel;
 		}
-		System.out.println("Using the mock implementation for getRepositoryIssue.");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode data = null;
 		try {
