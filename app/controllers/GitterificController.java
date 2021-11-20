@@ -1,8 +1,6 @@
 package controllers;
 
 import com.google.inject.Inject;
-import models.SearchCacheStore;
-import models.SearchRepository;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
@@ -16,7 +14,7 @@ import java.util.concurrent.CompletionStage;
 import views.html.repositoryprofile.*;
 
 /**
- * This controller contains actions to handle HTTP requests to the application
+ * Contains actions to handle HTTP requests to the application
  * @author Smit Pateliya
  * @author Farheen Jamadar
  * @author Indraneel Rachakonda
@@ -44,7 +42,7 @@ public class GitterificController extends Controller {
 	}
 
 	/**
-	 * An action that renders an HTML page with search input form.
+	 * Renders an HTML page with search input form.
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/</code>.
@@ -87,7 +85,7 @@ public class GitterificController extends Controller {
 
 	/*TODO: Optimize, get IssueList from Cache as well -> Map, timeouts, CompletableFuture, javadoc, test cases*/
 	/**
-	 * An action that renders an HTML page with repository profile details queried by the user.
+	 * Renders an HTML page with repository profile details queried by the user.
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/repositoryProfile/:ownerName/:repositoryName</code>.
@@ -98,24 +96,6 @@ public class GitterificController extends Controller {
 	 */
 
 	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
-		/*return asyncCacheApi.getOrElseUpdate(ownerName + "/" + repositoryName,
-						() ->  gitHubAPIInst.getRepositoryProfile(ownerName, repositoryName))
-				.thenCombineAsync(
-						asyncCacheApi.getOrElseUpdate(repositoryName + "/20issues",
-								() -> gitHubAPIInst.getRepositoryIssue(ownerName + "/" + repositoryName)),
-						(repositoryProfileDetail, issueList) -> {
-							asyncCacheApi.set(repositoryName + "/20issues", issueList,  60 * 15);
-							asyncCacheApi.set(ownerName + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
-
-							//TODO: Optimize
-							List<String> list = issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
-							if(list.get(0) == "Issue does not Present!" || list.get(0) == "Error! Repository does not present!"){
-								list = null;
-							}
-							return ok(repositoryProfile.render(ownerName, repositoryName, repositoryProfileDetail, Optional.ofNullable(list).orElse(new ArrayList<String>()), assetsFinder));
-						},
-						httpExecutionContext.current()
-				);*/
 		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
 				repositoryData -> ok(repositoryProfile.render(username,
 							repositoryName,
@@ -140,7 +120,7 @@ public class GitterificController extends Controller {
 	}
 
 	/**
-	 * An action that renders an HTML page with the top 10 repositories containing the topic provided by the user.
+	 * Renders an HTML page with the top 10 repositories containing the topic provided by the user.
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/topics/:topic</code>.

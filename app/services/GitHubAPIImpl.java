@@ -111,7 +111,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @return Returns JsonNode containing Repository information
 	 * @author Farheen Jamadar
 	 */
-	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
+	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) throws Exception{
 		System.out.println("Using the actual implementation for getRepositoryProfile.");
 		String finalURL = this.baseURL + "/repos/" + username + "/" + repositoryName;
 		CompletionStage<JsonNode> result = client.url(finalURL)
