@@ -45,7 +45,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @author SmitPateliya
 	 */
 
-	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
+	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
 		System.out.println("Using the actual implementation for getRepositoryFromSearchBar.");
 		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
@@ -71,7 +71,14 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return searchResult;
 	}
 
-	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
+	/**
+	 * Retrieves all available public profile information about a user
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;JsonNode&gt; which contains available public profile information for a user
+	 * @throws Exception If the call cannot be completed due to an error
+	 * @author Pradnya Kandarkar
+	 */
+	public CompletionStage<JsonNode> getUserProfileByUsername(String username) throws Exception {
 		System.out.println("Using the actual implementation for getUserProfileByUsername.");
 		String requestURL = this.baseURL + "/users/" + username;
 		return client.url(requestURL)
@@ -80,7 +87,14 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.thenApplyAsync(r -> r.getBody(json()));
 	}
 
-	public CompletionStage<JsonNode> getUserRepositories(String username) {
+	/**
+	 * Retrieves all available public repositories of a user
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;JsonNode&gt; which contains available public repositories for a user
+	 * @throws Exception If the call cannot be completed due to an error
+	 * @author Pradnya Kandarkar
+	 */
+	public CompletionStage<JsonNode> getUserRepositories(String username) throws Exception {
 		String requestURL = this.baseURL + "/users/" + username + "/repos";
 		return client.url(requestURL)
 				.addHeader("accept", "application/vnd.github.v3+json")

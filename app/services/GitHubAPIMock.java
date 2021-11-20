@@ -62,48 +62,54 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return futureModel;
 	}
 
+	/**
+	 * Mock method for an action that fetches query from user and returns query information
+	 * @param query Query string from User to search repositories
+	 * @return Returns SearchRepository Model containing repository information
+	 * @throws Exception If the call cannot be completed due to an error
+	 * @author Pradnya Kandarkar
+	 */
 	@Override
-	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
+	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
 		System.out.println("Using the mock implementation for getRepositoryFromSearchBar");
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode sampleSearchResult = null;
-		try {
-			sampleSearchResult = mapper.readTree(new File("test/resources/searchreposfeature/sampleSearchResult.json"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JsonNode sampleSearchResult = mapper.readTree(new File("test/resources/searchreposfeature/sampleSearchResult.json"));
 		CompletableFuture<SearchRepository> futureModel = new CompletableFuture<>();
 		SearchRepository modelData = new SearchRepository(sampleSearchResult, query);
 		futureModel.complete(modelData);
 		return futureModel;
 	}
 
+	/**
+	 * Mock method for fetching all available public profile information about a user
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;JsonNode&gt; which contains sample data for available public profile information of a user
+	 * @throws Exception If the call cannot be completed due to an error
+	 * @author Pradnya Kandarkar
+	 */
 	@Override
-	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
+	public CompletionStage<JsonNode> getUserProfileByUsername(String username) throws Exception {
 		System.out.println("Using the mock implementation for getUserProfileByUsername");
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode sampleUserProfile = null;
-		try {
-			sampleUserProfile = mapper.readTree(new File("test/resources/userprofile/validGitHubUserProfile.json"));
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
+		JsonNode sampleUserProfile = mapper.readTree(new File("test/resources/userprofile/validGitHubUserProfile.json"));
 		CompletableFuture<JsonNode> futureUserProfile = new CompletableFuture<JsonNode>();
 		futureUserProfile.complete(sampleUserProfile);
 		return futureUserProfile;
 	}
 
+	/**
+	 * Mock method for fetching all available public repositories of a user
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;JsonNode&gt; which contains sample data for available public repositories of a user
+	 * @throws Exception If the call cannot be completed due to an error
+	 * @author Pradnya Kandarkar
+	 */
 	@Override
-	public CompletionStage<JsonNode> getUserRepositories(String username) {
+	public CompletionStage<JsonNode> getUserRepositories(String username) throws Exception {
 		System.out.println("Using the mock implementation for getUserRepositories");
 		String sampleUserRepositoriesData = "[\"testRepoForPlayProject\",\"testRepositoryForPlayProject2\"]";
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode sampleUserRepositories = null;
-		try {
-			sampleUserRepositories = mapper.readTree(sampleUserRepositoriesData);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
+		JsonNode sampleUserRepositories = mapper.readTree(sampleUserRepositoriesData);
 		CompletableFuture<JsonNode> futureUserRepositories = new CompletableFuture<JsonNode>();
 		futureUserRepositories.complete(sampleUserRepositories);
 		return futureUserRepositories;
