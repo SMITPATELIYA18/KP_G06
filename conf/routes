@@ -2,25 +2,24 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# An example controller showing a sample home page
-#POST     /                           controllers.GitterificController.index(request: Request)
-# An example controller showing how to use dependency injection
-# GET     /count                      controllers.CountController.count
-# An example controller showing how to write asynchronous code
-# GET     /message                    controllers.AsyncController.message
+# Search repository feature route(s):
+GET     /                      controllers.GitterificController.index(search: String ?= "")
 
-GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoName: String)
-
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(file)
-
-#Repository Profile Controller
-GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String)
-
-GET     /topics/:topic              controllers.GitterificController.getTopicRepository(topic:String)
-
-# User profile routes
+# User profile feature route(s):
 GET 	/user-profile/:username		controllers.GitterificController.getUserProfile(username: String)
 
+# Repository profile feature route(s):
+GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String)
 
-GET     /                      controllers.GitterificController.index(search: String ?= "")
+# Repository issues feature route(s):
+GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoName: String)
+
+# Tpoics feature route(s):
+GET     /topics/:topic              controllers.GitterificController.getTopicRepository(topic:String)
+
+# Map static resources from the /public folder to the /assets URL path:
+GET     /assets/*file               controllers.Assets.versioned(file)
+
+
+
+

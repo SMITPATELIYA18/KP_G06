@@ -52,7 +52,6 @@ public class GitterificController extends Controller {
 	 * @return Future CompletionStage Result
 	 * @author SmitPateliya, Farheen Jamadar
 	 */
-
 	public CompletionStage<Result> index(String query) {
 		if (query.isEmpty()) {
 			asyncCacheApi.remove("search");
