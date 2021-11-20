@@ -1,9 +1,8 @@
 package resources;
 
-
 /**
  * Holds resources required for testing
- * @author Smit Pateliya, Pradnya Kandarkar
+ * @author Smit Pateliya
  */
 public class TestResources {
 	public static final String nullIssueData = "{\r\n"
@@ -207,7 +206,6 @@ public class TestResources {
 			+ "    \"performed_via_github_app\": null\r\n"
 			+ "  }]";
 
-	// ToDo: Farheen
 	public static final String sampleRepositoryProfile = "{\n" +
 			"  \"id\": 137044405,\n" +
 			"  \"node_id\": \"MDEwOlJlcG9zaXRvcnkxMzcwNDQ0MDU=\",\n" +
@@ -319,6 +317,219 @@ public class TestResources {
 			"  \"temp_clone_token\": null,\n" +
 			"  \"network_count\": 2017,\n" +
 			"  \"subscribers_count\": 47\n" +
+			"}";
+
+	public static final String sampleTopicRepositories = "{\n" +
+			"  \"total_count\": 2,\n" +
+			"  \"incomplete_results\": false,\n" +
+			"  \"items\": [\n" +
+			"    {\n" +
+			"      \"id\": 84576994,\n" +
+			"      \"node_id\": \"MDEwOlJlcG9zaXRvcnk4NDU3Njk5NA==\",\n" +
+			"      \"name\": \"crud-laravel-produtos\",\n" +
+			"      \"full_name\": \"vitorhugosg/crud-laravel-produtos\",\n" +
+			"      \"private\": false,\n" +
+			"      \"owner\": {\n" +
+			"        \"login\": \"vitorhugosg\",\n" +
+			"        \"id\": 17458174,\n" +
+			"        \"node_id\": \"MDQ6VXNlcjE3NDU4MTc0\",\n" +
+			"        \"avatar_url\": \"https://avatars.githubusercontent.com/u/17458174?v=4\",\n" +
+			"        \"gravatar_id\": \"\",\n" +
+			"        \"url\": \"https://api.github.com/users/vitorhugosg\",\n" +
+			"        \"html_url\": \"https://github.com/vitorhugosg\",\n" +
+			"        \"followers_url\": \"https://api.github.com/users/vitorhugosg/followers\",\n" +
+			"        \"following_url\": \"https://api.github.com/users/vitorhugosg/following{/other_user}\",\n" +
+			"        \"gists_url\": \"https://api.github.com/users/vitorhugosg/gists{/gist_id}\",\n" +
+			"        \"starred_url\": \"https://api.github.com/users/vitorhugosg/starred{/owner}{/repo}\",\n" +
+			"        \"subscriptions_url\": \"https://api.github.com/users/vitorhugosg/subscriptions\",\n" +
+			"        \"organizations_url\": \"https://api.github.com/users/vitorhugosg/orgs\",\n" +
+			"        \"repos_url\": \"https://api.github.com/users/vitorhugosg/repos\",\n" +
+			"        \"events_url\": \"https://api.github.com/users/vitorhugosg/events{/privacy}\",\n" +
+			"        \"received_events_url\": \"https://api.github.com/users/vitorhugosg/received_events\",\n" +
+			"        \"type\": \"User\",\n" +
+			"        \"site_admin\": false\n" +
+			"      },\n" +
+			"      \"html_url\": \"https://github.com/vitorhugosg/crud-laravel-produtos\",\n" +
+			"      \"description\": \"Esse é um crud feito em laravel starter feito por mim! ;)\",\n" +
+			"      \"fork\": false,\n" +
+			"      \"url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos\",\n" +
+			"      \"forks_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/forks\",\n" +
+			"      \"keys_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/keys{/key_id}\",\n" +
+			"      \"collaborators_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/collaborators{/collaborator}\",\n" +
+			"      \"teams_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/teams\",\n" +
+			"      \"hooks_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/hooks\",\n" +
+			"      \"issue_events_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/issues/events{/number}\",\n" +
+			"      \"events_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/events\",\n" +
+			"      \"assignees_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/assignees{/user}\",\n" +
+			"      \"branches_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/branches{/branch}\",\n" +
+			"      \"tags_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/tags\",\n" +
+			"      \"blobs_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/git/blobs{/sha}\",\n" +
+			"      \"git_tags_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/git/tags{/sha}\",\n" +
+			"      \"git_refs_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/git/refs{/sha}\",\n" +
+			"      \"trees_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/git/trees{/sha}\",\n" +
+			"      \"statuses_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/statuses/{sha}\",\n" +
+			"      \"languages_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/languages\",\n" +
+			"      \"stargazers_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/stargazers\",\n" +
+			"      \"contributors_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/contributors\",\n" +
+			"      \"subscribers_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/subscribers\",\n" +
+			"      \"subscription_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/subscription\",\n" +
+			"      \"commits_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/commits{/sha}\",\n" +
+			"      \"git_commits_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/git/commits{/sha}\",\n" +
+			"      \"comments_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/comments{/number}\",\n" +
+			"      \"issue_comment_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/issues/comments{/number}\",\n" +
+			"      \"contents_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/contents/{+path}\",\n" +
+			"      \"compare_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/compare/{base}...{head}\",\n" +
+			"      \"merges_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/merges\",\n" +
+			"      \"archive_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/{archive_format}{/ref}\",\n" +
+			"      \"downloads_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/downloads\",\n" +
+			"      \"issues_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/issues{/number}\",\n" +
+			"      \"pulls_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/pulls{/number}\",\n" +
+			"      \"milestones_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/milestones{/number}\",\n" +
+			"      \"notifications_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/notifications{?since,all,participating}\",\n" +
+			"      \"labels_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/labels{/name}\",\n" +
+			"      \"releases_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/releases{/id}\",\n" +
+			"      \"deployments_url\": \"https://api.github.com/repos/vitorhugosg/crud-laravel-produtos/deployments\",\n" +
+			"      \"created_at\": \"2017-03-10T16:04:19Z\",\n" +
+			"      \"updated_at\": \"2017-03-10T17:19:00Z\",\n" +
+			"      \"pushed_at\": \"2017-03-11T01:57:26Z\",\n" +
+			"      \"git_url\": \"git://github.com/vitorhugosg/crud-laravel-produtos.git\",\n" +
+			"      \"ssh_url\": \"git@github.com:vitorhugosg/crud-laravel-produtos.git\",\n" +
+			"      \"clone_url\": \"https://github.com/vitorhugosg/crud-laravel-produtos.git\",\n" +
+			"      \"svn_url\": \"https://github.com/vitorhugosg/crud-laravel-produtos\",\n" +
+			"      \"homepage\": null,\n" +
+			"      \"size\": 178,\n" +
+			"      \"stargazers_count\": 0,\n" +
+			"      \"watchers_count\": 0,\n" +
+			"      \"language\": \"PHP\",\n" +
+			"      \"has_issues\": true,\n" +
+			"      \"has_projects\": true,\n" +
+			"      \"has_downloads\": true,\n" +
+			"      \"has_wiki\": true,\n" +
+			"      \"has_pages\": false,\n" +
+			"      \"forks_count\": 2,\n" +
+			"      \"mirror_url\": null,\n" +
+			"      \"archived\": false,\n" +
+			"      \"disabled\": false,\n" +
+			"      \"open_issues_count\": 0,\n" +
+			"      \"license\": null,\n" +
+			"      \"allow_forking\": true,\n" +
+			"      \"is_template\": false,\n" +
+			"      \"topics\": [\n" +
+			"        \"hellow\",\n" +
+			"        \"laravel\",\n" +
+			"        \"world\"\n" +
+			"      ],\n" +
+			"      \"visibility\": \"public\",\n" +
+			"      \"forks\": 2,\n" +
+			"      \"open_issues\": 0,\n" +
+			"      \"watchers\": 0,\n" +
+			"      \"default_branch\": \"master\",\n" +
+			"      \"score\": 1.0\n" +
+			"    },\n" +
+			"    {\n" +
+			"      \"id\": 106901083,\n" +
+			"      \"node_id\": \"MDEwOlJlcG9zaXRvcnkxMDY5MDEwODM=\",\n" +
+			"      \"name\": \"hello-world\",\n" +
+			"      \"full_name\": \"PaulCaloianu/hello-world\",\n" +
+			"      \"private\": false,\n" +
+			"      \"owner\": {\n" +
+			"        \"login\": \"PaulCaloianu\",\n" +
+			"        \"id\": 32766351,\n" +
+			"        \"node_id\": \"MDQ6VXNlcjMyNzY2MzUx\",\n" +
+			"        \"avatar_url\": \"https://avatars.githubusercontent.com/u/32766351?v=4\",\n" +
+			"        \"gravatar_id\": \"\",\n" +
+			"        \"url\": \"https://api.github.com/users/PaulCaloianu\",\n" +
+			"        \"html_url\": \"https://github.com/PaulCaloianu\",\n" +
+			"        \"followers_url\": \"https://api.github.com/users/PaulCaloianu/followers\",\n" +
+			"        \"following_url\": \"https://api.github.com/users/PaulCaloianu/following{/other_user}\",\n" +
+			"        \"gists_url\": \"https://api.github.com/users/PaulCaloianu/gists{/gist_id}\",\n" +
+			"        \"starred_url\": \"https://api.github.com/users/PaulCaloianu/starred{/owner}{/repo}\",\n" +
+			"        \"subscriptions_url\": \"https://api.github.com/users/PaulCaloianu/subscriptions\",\n" +
+			"        \"organizations_url\": \"https://api.github.com/users/PaulCaloianu/orgs\",\n" +
+			"        \"repos_url\": \"https://api.github.com/users/PaulCaloianu/repos\",\n" +
+			"        \"events_url\": \"https://api.github.com/users/PaulCaloianu/events{/privacy}\",\n" +
+			"        \"received_events_url\": \"https://api.github.com/users/PaulCaloianu/received_events\",\n" +
+			"        \"type\": \"User\",\n" +
+			"        \"site_admin\": false\n" +
+			"      },\n" +
+			"      \"html_url\": \"https://github.com/PaulCaloianu/hello-world\",\n" +
+			"      \"description\": \"First project\",\n" +
+			"      \"fork\": false,\n" +
+			"      \"url\": \"https://api.github.com/repos/PaulCaloianu/hello-world\",\n" +
+			"      \"forks_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/forks\",\n" +
+			"      \"keys_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/keys{/key_id}\",\n" +
+			"      \"collaborators_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/collaborators{/collaborator}\",\n" +
+			"      \"teams_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/teams\",\n" +
+			"      \"hooks_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/hooks\",\n" +
+			"      \"issue_events_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/issues/events{/number}\",\n" +
+			"      \"events_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/events\",\n" +
+			"      \"assignees_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/assignees{/user}\",\n" +
+			"      \"branches_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/branches{/branch}\",\n" +
+			"      \"tags_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/tags\",\n" +
+			"      \"blobs_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/git/blobs{/sha}\",\n" +
+			"      \"git_tags_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/git/tags{/sha}\",\n" +
+			"      \"git_refs_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/git/refs{/sha}\",\n" +
+			"      \"trees_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/git/trees{/sha}\",\n" +
+			"      \"statuses_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/statuses/{sha}\",\n" +
+			"      \"languages_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/languages\",\n" +
+			"      \"stargazers_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/stargazers\",\n" +
+			"      \"contributors_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/contributors\",\n" +
+			"      \"subscribers_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/subscribers\",\n" +
+			"      \"subscription_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/subscription\",\n" +
+			"      \"commits_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/commits{/sha}\",\n" +
+			"      \"git_commits_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/git/commits{/sha}\",\n" +
+			"      \"comments_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/comments{/number}\",\n" +
+			"      \"issue_comment_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/issues/comments{/number}\",\n" +
+			"      \"contents_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/contents/{+path}\",\n" +
+			"      \"compare_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/compare/{base}...{head}\",\n" +
+			"      \"merges_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/merges\",\n" +
+			"      \"archive_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/{archive_format}{/ref}\",\n" +
+			"      \"downloads_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/downloads\",\n" +
+			"      \"issues_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/issues{/number}\",\n" +
+			"      \"pulls_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/pulls{/number}\",\n" +
+			"      \"milestones_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/milestones{/number}\",\n" +
+			"      \"notifications_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/notifications{?since,all,participating}\",\n" +
+			"      \"labels_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/labels{/name}\",\n" +
+			"      \"releases_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/releases{/id}\",\n" +
+			"      \"deployments_url\": \"https://api.github.com/repos/PaulCaloianu/hello-world/deployments\",\n" +
+			"      \"created_at\": \"2017-10-14T05:28:52Z\",\n" +
+			"      \"updated_at\": \"2017-10-20T03:26:05Z\",\n" +
+			"      \"pushed_at\": \"2017-10-22T05:34:44Z\",\n" +
+			"      \"git_url\": \"git://github.com/PaulCaloianu/hello-world.git\",\n" +
+			"      \"ssh_url\": \"git@github.com:PaulCaloianu/hello-world.git\",\n" +
+			"      \"clone_url\": \"https://github.com/PaulCaloianu/hello-world.git\",\n" +
+			"      \"svn_url\": \"https://github.com/PaulCaloianu/hello-world\",\n" +
+			"      \"homepage\": null,\n" +
+			"      \"size\": 1,\n" +
+			"      \"stargazers_count\": 0,\n" +
+			"      \"watchers_count\": 0,\n" +
+			"      \"language\": \"HTML\",\n" +
+			"      \"has_issues\": true,\n" +
+			"      \"has_projects\": true,\n" +
+			"      \"has_downloads\": true,\n" +
+			"      \"has_wiki\": true,\n" +
+			"      \"has_pages\": false,\n" +
+			"      \"forks_count\": 0,\n" +
+			"      \"mirror_url\": null,\n" +
+			"      \"archived\": false,\n" +
+			"      \"disabled\": false,\n" +
+			"      \"open_issues_count\": 0,\n" +
+			"      \"license\": null,\n" +
+			"      \"allow_forking\": true,\n" +
+			"      \"is_template\": false,\n" +
+			"      \"topics\": [\n" +
+			"        \"hellow\",\n" +
+			"        \"topic\",\n" +
+			"        \"world\"\n" +
+			"      ],\n" +
+			"      \"visibility\": \"public\",\n" +
+			"      \"forks\": 0,\n" +
+			"      \"open_issues\": 0,\n" +
+			"      \"watchers\": 0,\n" +
+			"      \"default_branch\": \"master\",\n" +
+			"      \"score\": 1.0\n" +
+			"    }\n" +
+			"  ]\n" +
 			"}";
 
 }

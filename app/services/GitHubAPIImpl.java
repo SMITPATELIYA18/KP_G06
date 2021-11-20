@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -45,8 +46,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @author SmitPateliya
 	 */
 
-	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) {
-		System.out.println("Using the actual implementation for getRepositoryFromSearchBar.");
+	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
 		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
@@ -71,8 +71,14 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return searchResult;
 	}
 
-	public CompletionStage<JsonNode> getUserProfileByUsername(String username) {
-		System.out.println("Using the actual implementation for getUserProfileByUsername.");
+	/**
+	 * Retrieves all available public profile information about a user
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;JsonNode&gt; which contains available public profile information for a user
+	 * @throws Exception If the call cannot be completed due to an error
+	 * @author Pradnya Kandarkar
+	 */
+	public CompletionStage<JsonNode> getUserProfileByUsername(String username) throws Exception {
 		String requestURL = this.baseURL + "/users/" + username;
 		return client.url(requestURL)
 				.addHeader("accept", "application/vnd.github.v3+json")
@@ -80,7 +86,14 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.thenApplyAsync(r -> r.getBody(json()));
 	}
 
-	public CompletionStage<JsonNode> getUserRepositories(String username) {
+	/**
+	 * Retrieves all available public repositories of a user
+	 * @param username Username to fetch the details for
+	 * @return CompletionStage&lt;JsonNode&gt; which contains available public repositories for a user
+	 * @throws Exception If the call cannot be completed due to an error
+	 * @author Pradnya Kandarkar
+	 */
+	public CompletionStage<JsonNode> getUserRepositories(String username) throws Exception {
 		String requestURL = this.baseURL + "/users/" + username + "/repos";
 		return client.url(requestURL)
 				.addHeader("accept", "application/vnd.github.v3+json")
@@ -123,22 +136,38 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	}
 
 	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
-		String finalURL = this.baseURL + "/search/repositories?q=topic:" + topic + "&sort=created&order=desc";
+		System.out.println("Using the actual implementation for getTopicRepository.");
+
+		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL)
+				.addQueryParameter("q", topic)
+				.addQueryParameter("sort", "created")
+				.addQueryParameter("order", "desc")
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), topic));
+		try {
+			System.out.println("Result: " + searchResult.toCompletableFuture().get());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
 		return searchResult;
 	}
 
+	/**
+	 * Sets the <code>WSClient</code> value
+	 * @param client <code>WSClient</code> value to be set
+	 */
 	public void setClient(WSClient client) {
 		this.client = client;
 	}
 
+	/**
+	 * Sets the base URL for the application
+	 * @param baseURL <code>String</code> value to be set for the base URL
+	 */
 	public void setBaseURL(String baseURL) {
 		this.baseURL = baseURL;
-	}
-
-	public WSClient getClient() {
-		return client;
 	}
 }

@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.*;
 
 /**
  * Holds tests related to the search repositories feature
- * @author 
+ * @author Pradnya Kandarkar
  */
 public class SearchReposFeatureTest {
 
@@ -49,7 +49,7 @@ public class SearchReposFeatureTest {
     /**
      * Overrides the binding to use mock implementation instead of the actual implementation and creates a fake
      * application. Sets up an embedded server for testing.
-     * @author 
+     * @author Pradnya Kandarkar
      */
     @BeforeClass
     public static void setUp() {
@@ -89,7 +89,7 @@ public class SearchReposFeatureTest {
 
     /**
      * Validates if HTTP response OK (200) is received for valid GET request(s)
-     * @author
+     * @author Pradnya Kandarkar
      */
     @Test
     public void should_ReturnOK_when_ValidGETRequest() {
@@ -113,7 +113,7 @@ public class SearchReposFeatureTest {
 
     /**
      * Validates if HTTP response NOT_FOUND (404) is received for a request type that is not implemented for the URL
-     * @author 
+     * @author Pradnya Kandarkar
      */
     @Test
     public void should_ReturnNOT_FOUND_when_NotGETRequest() {
@@ -127,7 +127,10 @@ public class SearchReposFeatureTest {
         assertEquals(NOT_FOUND, result.status());
     }
 
-    // ToDo: Pradnya
+    /**
+     * Makes the same request twice and tests whether the second request's response is returned faster than the first one
+     * @author Pradnya Kandarkar
+     */
     @Test
     public void testCachedData() {
         String requestURL1 = "/?search=github";
@@ -151,7 +154,7 @@ public class SearchReposFeatureTest {
 
         assertEquals(OK, result1.status());
         assertEquals(OK, result2.status());
-        assertTrue(timeRequest1 > timeRequest2 * 5);
+        assertTrue(timeRequest1 > timeRequest2 * 3);
     }
 
     // Tests for the methods implemented for GitHubAPI that are related to the search repository feature
