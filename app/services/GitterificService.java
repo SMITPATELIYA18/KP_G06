@@ -73,6 +73,13 @@ public class GitterificService {
                 );
     }
 
+    /**
+     * Retrieves repository profile details with corresponding top 20 issues
+     * @param username Owner of the repository
+     * @param repositoryName  Repository Name
+     * @return Future CompletionStage JsonNode
+     * @author Farheen Jamadar
+     */
     public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
         return asyncCacheApi.getOrElseUpdate(username + "/" + repositoryName,
                         () -> gitHubAPIInst.getRepositoryProfile(username, repositoryName))
@@ -83,21 +90,15 @@ public class GitterificService {
                             asyncCacheApi.set(username + repositoryName + "/20issues", issueList,  60 * 15);
                             asyncCacheApi.set(username + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
 
-                            //TODO: Optimize
                             List<String> list = issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
-                            System.out.println("List :" + list);
+
                             ObjectMapper mapper = new ObjectMapper();
                             ObjectNode repositoryData = mapper.createObjectNode();
-
                             ArrayNode arrayNode = mapper.createArrayNode();
-
-                            list.forEach(element -> {
-                                arrayNode.add(element);
-                            });
+                            list.forEach(arrayNode::add);
 
                             repositoryData.set("repositoryProfile", repositoryProfileDetail);
                             repositoryData.set("issueList", arrayNode);
-
                             return repositoryData;
                         }
                 );
