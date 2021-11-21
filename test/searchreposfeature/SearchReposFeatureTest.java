@@ -75,7 +75,7 @@ public class SearchReposFeatureTest {
     /**
      * Performs clean up activities after all tests are performed
      * @author Pradnya Kandarkar
-     * @throws Exception If the call cannot be completed due to an error
+     * @throws IOException If the call cannot be completed due to an error
      */
     @AfterClass
     public static void tearDown() throws IOException{
