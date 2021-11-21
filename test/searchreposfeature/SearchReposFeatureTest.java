@@ -203,19 +203,18 @@ public class SearchReposFeatureTest {
             SearchRepository testSearchResult = testGitHubAPIImpl.getRepositoryFromSearchBar("test_query")
                     .toCompletableFuture().get(10, TimeUnit.SECONDS);
             testSearchStore.addNewSearch(testSearchResult);
-            System.out.println("Extracted value: " + testSearchStore.getSearches().size());
             assertTrue(testSearchStore.getSearches().size() <= 10);
         }
     }
 
     /**
-     * Checks if home page results are displayed as expected
+     * Checks if home page results are displayed as expected via index.scala.html
      * is called
      * @throws Exception If the call cannot be completed due to an error
      * @author Indraneel Rachakonda
      */
     @Test
-    public void homePageDisplayTest() throws Exception {
+    public void homePageDisplayTest_index() throws Exception {
         routePattern = "/search/repositories";
         testResourceName = "searchreposfeature/sampleSearchResult.json";
         SearchRepository testSearchResult = testGitHubAPIImpl.getRepositoryFromSearchBar("test_query")
@@ -225,6 +224,32 @@ public class SearchReposFeatureTest {
 
         Content homePageBeforeSearch = views.html.index.render(null, assetsFinder);
         Content homePageAfterSearch = views.html.index.render(testSearchStore, assetsFinder);
+
+        assertEquals("text/html", homePageBeforeSearch.contentType());
+        assertTrue(contentAsString(homePageBeforeSearch).contains("Enter Search Terms"));
+        assertFalse(contentAsString(homePageBeforeSearch).contains("Search terms:"));
+        assertEquals("text/html", homePageAfterSearch.contentType());
+        assertTrue(contentAsString(homePageAfterSearch).contains("Enter Search Terms"));
+        assertTrue(contentAsString(homePageAfterSearch).contains("Search terms:"));
+    }
+
+    /**
+     * Checks if home page results are displayed as expected via welcome.scala.html
+     * is called
+     * @throws Exception If the call cannot be completed due to an error
+     * @author Indraneel Rachakonda
+     */
+    @Test
+    public void homePageDisplayTest_welcome() throws Exception {
+        routePattern = "/search/repositories";
+        testResourceName = "searchreposfeature/sampleSearchResult.json";
+        SearchRepository testSearchResult = testGitHubAPIImpl.getRepositoryFromSearchBar("test_query")
+                .toCompletableFuture().get(10, TimeUnit.SECONDS);
+        SearchCacheStore testSearchStore = new SearchCacheStore();
+        testSearchStore.addNewSearch(testSearchResult);
+
+        Content homePageBeforeSearch = views.html.welcome.render(null, "java");
+        Content homePageAfterSearch = views.html.welcome.render(testSearchStore, "java");
 
         assertEquals("text/html", homePageBeforeSearch.contentType());
         assertTrue(contentAsString(homePageBeforeSearch).contains("Enter Search Terms"));

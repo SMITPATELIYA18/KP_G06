@@ -141,8 +141,6 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @author Indraneel Rachakonda
 	 */
 	public CompletionStage<SearchRepository> getTopicRepository(String topic) throws Exception {
-		System.out.println("Using the actual implementation for getTopicRepository.");
-
 		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL)
 				.addQueryParameter("q", topic)
