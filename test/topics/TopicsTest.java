@@ -35,6 +35,10 @@ import static play.test.Helpers.*;
 
 import controllers.AssetsFinder;
 
+/**
+ * Tests for the topics feature
+ * @author Indraneel Rachakonda
+ */
 public class TopicsTest {
     private static AssetsFinder assetsFinder;
     private static Application testApp;
@@ -44,6 +48,10 @@ public class TopicsTest {
     private static String routePattern;
     private static String testResourceName;
 
+    /**
+     * Sets up mock server for testing
+     * @author Indraneel Rachakonda
+     */
     @BeforeClass
     public static void setUp() {
         testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
@@ -64,6 +72,11 @@ public class TopicsTest {
         testGitHubAPIImpl.setClient(wsClient);
     }
 
+    /**
+     * Cleans up after all test cases are executed
+     * @throws IOException In case of an error
+     * @author Indraneel Rachakonda
+     */
     @AfterClass
     public static void tearDown() throws IOException {
         try {
@@ -75,6 +88,11 @@ public class TopicsTest {
     }
 
     //Controller
+
+    /**
+     * Checks if OK (200) status is returned for valid GET requests
+     * @author Indraneel Rachakonda
+     */
     @Test
     public void should_ReturnOK_when_ValidGETRequest() {
         String sampleTopicRepositoryListURL = "/topics/python";
@@ -87,6 +105,10 @@ public class TopicsTest {
         assertEquals(OK, result.status());
     }
 
+    /**
+     * Checks if NOT_FOUND (404) status is returned when the request is not a GET request
+     * @author Indraneel Rachakonda
+     */
     @Test
     public void should_ReturnNOT_FOUND_when_NotGETRequest() {
         String sampleRepositoryProfileURL = "/topics/python";
@@ -99,7 +121,13 @@ public class TopicsTest {
         assertEquals(NOT_FOUND, result.status());
     }
 
+
     //Testing Actual Implementations
+    /**
+     * Checks if repository list is returned for provided topic
+     * @throws Exception In case of an error
+     * @author Indraneel Rachakonda
+     */
     @Test
     public void should_ReturnTopicRepositoryList_provided_Topic() throws Exception {
         routePattern = "/search/repositories";
@@ -109,6 +137,11 @@ public class TopicsTest {
         assertEquals(Arrays.asList("goofing", "play", "test"), testRepositoryProfile.getRepositoryList().get(0).getTopics());
     }
 
+    /**
+     * Checks if empty repository list is returned when no repositories are available for a topic name
+     * @throws Exception In case of an error
+     * @author Indraneel Rachakonda
+     */
     @Test
     public void should_ReturnEmptyTopicList_provided_InvalidTopic() throws Exception {
         routePattern = "/search/repositories";
@@ -121,6 +154,11 @@ public class TopicsTest {
 
 
     //UI
+    /**
+     * Checks if repository list is displayed for provided topic via topics.scala.html
+     * @throws Exception In case of an error
+     * @author Indraneel Rachakonda
+     */
     @Test
     public void should_DisplayTopicRepositoryList_provided_Topic() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
@@ -131,6 +169,27 @@ public class TopicsTest {
         assertTrue(contentAsString(html).contains("iamstillal"));
     }
 
+    /**
+     * Checks if repository list is displayed for provided topic via topicsDisplay.scala.html
+     * @throws Exception In case of an error
+     * @author Indraneel Rachakonda
+     */
+    @Test
+    public void should_DisplayTopicRepositoryList_provided_Topic_TopicsDisplay() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode topicRepositoryList = mapper.readTree(new File("test/resources/topicfeature/validTopicRepositoryList.json"));
+
+        Content html = views.html.topics.topicsDisplay.render(new SearchRepository(topicRepositoryList, "sampleTopic") , "java");
+        assertEquals("text/html", html.contentType());
+        assertTrue(contentAsString(html).contains("iamstillal"));
+    }
+
+    /**
+     * Checks if "No Results found" is displayed when no repositories are available for a topic name
+     * via topics.scala.html
+     * @throws Exception In case of an error
+     * @author Indraneel Rachakonda
+     */
     @Test
     public void should_NoResultFound_provided_InvalidTopic() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
@@ -141,9 +200,18 @@ public class TopicsTest {
         assertTrue(contentAsString(html).contains("No Results found"));
     }
 
+    /**
+     * Checks if "No Results found" is displayed when no repositories are available for a topic name
+     * via topicsDisplay.scala.html
+     * @throws Exception In case of an error
+     * @author Indraneel Rachakonda
+     */
     @Test
-    public void should_DisplayNoResultFound_when_GitHubResponseNull(){
-        Content html = views.html.topics.topics.render(new SearchRepository(null, "sampleTopic"), assetsFinder);
+    public void should_NoResultFound_provided_InvalidTopic_TopicsDisplay() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode topicRepositoryList = mapper.readTree(new File("test/resources/topicfeature/invalidTopicRepositoryList.json"));
+
+        Content html = views.html.topics.topicsDisplay.render(new SearchRepository(topicRepositoryList, "sampleTopic"), "java");
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("No Results found"));
     }

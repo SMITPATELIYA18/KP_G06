@@ -29,6 +29,12 @@ public class GitterificService {
         this.gitHubAPIInst = gitHubAPIInst;
     }
 
+    /**
+     * Retrieves repository list based on the search query provided by the user
+     * @param username Owner of the repository
+     * @return Future CompletionStage SearchCacheStore
+     * @author Farheen Jamadar, SmitPateliya
+     */
     public CompletionStage<SearchCacheStore> getRepositoryFromSearch(String username) {
         CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + username, () -> {
             CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(username);
@@ -102,5 +108,21 @@ public class GitterificService {
                             return repositoryData;
                         }
                 );
+    }
+
+    /**
+     * Retrieves top 10 repositories containing the topic provided by the user.
+     * @param topic Topic based on which the repositories will be retrieved
+     * @return Future CompletionStage SearchRepository
+     * @author Indraneel Rachakonda
+     */
+    public CompletionStage<SearchRepository> getTopicRepository(String topic) {
+        return asyncCacheApi.getOrElseUpdate(
+                        "topic_" + topic,
+                        () -> gitHubAPIInst.getTopicRepository(topic))
+                .thenApplyAsync((searchResult) -> {
+                            asyncCacheApi.set("topic_" + topic, searchResult,  60 * 15);
+                            return searchResult;
+                        });
     }
 }

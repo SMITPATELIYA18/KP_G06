@@ -17,8 +17,10 @@ import services.github.GitHubAPI;
 
 /**
  * Mocks API calls and return fake responses
- * @author Smit Pateliya, Pradnya Kandarkar
- *
+ * @author Smit Pateliya
+ * @author Pradnya Kandarkar
+ * @author Farheen Jamadar
+ * @author Indraneel Rachakonda
  */
 
 public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAPI {
@@ -126,18 +128,16 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return futureUserRepositories;
 	}
 
-	//ToDo: Indraneel
+	/**
+	 * Mock Implementation to retrieve top 10 repositories containing the topic provided by the user.
+	 * @param topic Topic based on which the repositories will be retrieved
+	 * @return Future CompletionStage SearchRepository
+	 * @author Indraneel Rachakonda
+	 */
 	@Override
-	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
-		System.out.println("Using the mock implementation for getTopicRepository");
+	public CompletionStage<SearchRepository> getTopicRepository(String topic) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		SearchRepository sampleTopicRepositoryListURL = null;
-		try {
-			sampleTopicRepositoryListURL = new SearchRepository(mapper.readTree(TestResources.sampleRepositoryProfile), topic);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		SearchRepository sampleTopicRepositoryListURL = new SearchRepository(mapper.readTree(TestResources.sampleTopicRepositories), topic);
 		CompletableFuture<SearchRepository> futureTopicRepositoryList = new CompletableFuture<>();
 		futureTopicRepositoryList.complete(sampleTopicRepositoryListURL);
 		return futureTopicRepositoryList;

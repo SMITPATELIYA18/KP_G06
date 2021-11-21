@@ -1,4 +1,4 @@
-@(repositorys: SearchRepository,style: String = "java")
+@(listOfRepositories: SearchRepository,style: String = "java")
 
 @defining(play.core.PlayVersion.current) { version =>
 <section id="top">
@@ -7,25 +7,25 @@
 	</div>
 </section>
 	<div>
-		@if(repositorys != null) {
-		<h2 type="searchResult">Search topic: @repositorys.getQuery()</h2>
-		<div style="margin-top: 1.5%">
-			@if(repositorys.getRepositoryList().size()  > 0){
-				@for(repository <- repositorys.getRepositoryList()) {
-				<div style="margin-bottom: 2%">
-					<ul>
-						<li><b>Owner Name:</b> <a href="@routes.GitterificController.getUserProfile(repository.getOwnerName())">@repository.getOwnerName()</a> &nbsp; |
-							&nbsp;<b> Repository Name:</b> <a href="@routes.GitterificController.getRepositoryProfile(repository.getOwnerName(), repository.getRepositoryName())">@repository.getRepositoryName()</a>
-							@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
-							<- repository.getTopics()) { <a href="@routes.GitterificController.getTopicRepository(topic)">(@topic)</a>&nbsp; } }</li>
-					</ul>
-				</div>
+		@if(listOfRepositories != null) {
+			<h2 type="searchResult">Search topic: @listOfRepositories.getQuery()</h2>
+			<div style="margin-top: 1.5%">
+				@if(listOfRepositories.getRepositoryList().size()  > 0){
+					@for(repository <- listOfRepositories.getRepositoryList()) {
+						<div style="margin-bottom: 2%">
+							<ul>
+								<li><b>Owner Name:</b> <a href="@routes.GitterificController.getUserProfile(repository.getOwnerName())">@repository.getOwnerName()</a> &nbsp; |
+									&nbsp;<b> Repository Name:</b> <a href="@routes.GitterificController.getRepositoryProfile(repository.getOwnerName(), repository.getRepositoryName())">@repository.getRepositoryName()</a>
+									@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
+									<- repository.getTopics()) { <a href="@routes.GitterificController.getTopicRepository(topic)">(@topic)</a>&nbsp; } }</li>
+							</ul>
+						</div>
+					}
+				} else{
+					<p><b>No Results found</b></p>
 				}
-			} else{
-				<p><b>No Results found</b></p>
-			}
-		</div>
-		<hr />
+			</div>
+			<hr />
 		}
 	</div>
 </div>

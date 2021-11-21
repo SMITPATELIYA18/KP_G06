@@ -1,10 +1,11 @@
 package searchreposfeature;
 
 import controllers.AssetsFinder;
+import models.SearchCacheStore;
 import models.SearchRepository;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 import static play.inject.Bindings.bind;
 import static play.mvc.Http.Status.OK;
 import static play.mvc.Results.ok;
@@ -20,6 +21,7 @@ import play.routing.RoutingDsl;
 import play.server.Server;
 import play.test.Helpers;
 
+import play.twirl.api.Content;
 import services.GitHubAPIImpl;
 import services.GitHubAPIMock;
 import services.github.GitHubAPI;
@@ -183,6 +185,53 @@ public class SearchReposFeatureTest {
         assertThat(testSearchResult2.getRepositoryList(), everyItem(hasProperty("repositoryName", is(notNullValue()))));
         assertThat(testSearchResult2.getRepositoryList(), everyItem(hasProperty("ownerName", is(notNullValue()))));
         assertThat(testSearchResult2.getRepositoryList(), everyItem(hasProperty("topics")));
+    }
+
+    /**
+     * Checks if maximum 10 search results are returned for any number of queries
+     * is called
+     * @throws Exception If the call cannot be completed due to an error
+     * @author Indraneel Rachakonda
+     */
+    @Test
+    public void should_ReturnMax10Results_when_AnyNumberOfQuerys() throws Exception {
+        routePattern = "/search/repositories";
+        testResourceName = "searchreposfeature/sampleSearchResult.json";
+        SearchCacheStore testSearchStore = new SearchCacheStore();
+
+        for(int i = 1; i <= 11; i++) {
+            SearchRepository testSearchResult = testGitHubAPIImpl.getRepositoryFromSearchBar("test_query")
+                    .toCompletableFuture().get(10, TimeUnit.SECONDS);
+            testSearchStore.addNewSearch(testSearchResult);
+            System.out.println("Extracted value: " + testSearchStore.getSearches().size());
+            assertTrue(testSearchStore.getSearches().size() <= 10);
+        }
+    }
+
+    /**
+     * Checks if home page results are displayed as expected
+     * is called
+     * @throws Exception If the call cannot be completed due to an error
+     * @author Indraneel Rachakonda
+     */
+    @Test
+    public void homePageDisplayTest() throws Exception {
+        routePattern = "/search/repositories";
+        testResourceName = "searchreposfeature/sampleSearchResult.json";
+        SearchRepository testSearchResult = testGitHubAPIImpl.getRepositoryFromSearchBar("test_query")
+                .toCompletableFuture().get(10, TimeUnit.SECONDS);
+        SearchCacheStore testSearchStore = new SearchCacheStore();
+        testSearchStore.addNewSearch(testSearchResult);
+
+        Content homePageBeforeSearch = views.html.index.render(null, assetsFinder);
+        Content homePageAfterSearch = views.html.index.render(testSearchStore, assetsFinder);
+
+        assertEquals("text/html", homePageBeforeSearch.contentType());
+        assertTrue(contentAsString(homePageBeforeSearch).contains("Enter Search Terms"));
+        assertFalse(contentAsString(homePageBeforeSearch).contains("Search terms:"));
+        assertEquals("text/html", homePageAfterSearch.contentType());
+        assertTrue(contentAsString(homePageAfterSearch).contains("Enter Search Terms"));
+        assertTrue(contentAsString(homePageAfterSearch).contains("Search terms:"));
     }
 }
 

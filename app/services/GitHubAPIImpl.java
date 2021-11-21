@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,7 +18,10 @@ import com.typesafe.config.Config;
 
 /**
  * This class handles all API of GitHub.
- * @author SmitPateliya, Pradnya Kandarkar, Farheen Jamadar
+ * @author SmitPateliya
+ * @author Pradnya Kandarkar
+ * @author Farheen Jamadar
+ * @author Indraneel Rachakonda
  */
 
 public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAPI {
@@ -132,7 +134,13 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return result;
 	}
 
-	public CompletionStage<SearchRepository> getTopicRepository(String topic) {
+	/**
+	 * Retrieves top 10 repositories containing the topic provided by the user.
+	 * @param topic Topic based on which the repositories will be retrieved
+	 * @return Future CompletionStage SearchRepository
+	 * @author Indraneel Rachakonda
+	 */
+	public CompletionStage<SearchRepository> getTopicRepository(String topic) throws Exception {
 		System.out.println("Using the actual implementation for getTopicRepository.");
 
 		String finalURL = this.baseURL + "/search/repositories";
@@ -140,13 +148,9 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 				.addQueryParameter("q", topic)
 				.addQueryParameter("sort", "created")
 				.addQueryParameter("order", "desc")
-				.addHeader("accept", "application/vnd.github.v3+json").get()
+				.addHeader("accept", "application/vnd.github.v3+json")
+				.setRequestTimeout(Duration.of(5000, ChronoUnit.MILLIS)).get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), topic));
-		try {
-			System.out.println("Result: " + searchResult.toCompletableFuture().get());
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
 		return searchResult;
 	}
 

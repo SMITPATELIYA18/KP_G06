@@ -119,6 +119,7 @@ public class GitterificController extends Controller {
 
 	/**
 	 * Renders an HTML page with the top 10 repositories containing the topic provided by the user.
+	 *
 	 * The configuration in the <code>routes</code> file means that
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/topics/:topic</code>.
@@ -127,13 +128,9 @@ public class GitterificController extends Controller {
 	 * @author Indraneel Rachakonda
 	 */
 	public CompletionStage<Result> getTopicRepository(String topic) {
-		return asyncCacheApi.getOrElseUpdate(
-						"topic_" + topic,
-						() -> gitHubAPIInst.getTopicRepository(topic))
-				.thenApplyAsync((searchResult) -> {
-							asyncCacheApi.set("topic_" + topic, searchResult,  60 * 15);
-							return ok(views.html.topics.topics.render(searchResult, assetsFinder));
-						}, httpExecutionContext.current()
-				);
+		return gitterificService.getTopicRepository(topic).thenApplyAsync(
+				topicDetails -> ok(views.html.topics.topics.render(topicDetails,
+						assetsFinder)),
+				httpExecutionContext.current());
 	}
 }
