@@ -28,11 +28,6 @@ public class SearchRepository {
 	public SearchRepository(JsonNode data, String query) {
 		this.query = query;
 
-		if(data == null){
-			ObjectMapper mapper = new ObjectMapper();
-			data = mapper.createObjectNode();
-		}
-
 		ArrayNode items = Optional.ofNullable((ArrayNode) data.get("items")).orElse(JsonNodeFactory.instance.arrayNode());
 
 		Stream<JsonNode> stream = StreamSupport.stream(Spliterators
