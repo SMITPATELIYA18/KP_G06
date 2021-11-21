@@ -32,23 +32,25 @@ public class RepositoryProfileTestImpl {
     private static String testResourceName;
 
     /**
-     * Binds the interface to the mock implementation of GitHub API. Creates embedded Play server using RoutingDsl.
+     * Binds the interface to the mock implementation of GitHub API.
+     * Creates embedded Play server using RoutingDsl.
      * @author Farheen Jamadar
      */
     @BeforeClass
     public static void setUp() {
         testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
+        testGitHubAPIImpl = testApp.injector().instanceOf(GitHubAPIImpl.class);
+        testGitHubAPIImpl.setBaseURL("");
+
         server =
                 Server.forRouter(
                         (components) ->
                                 RoutingDsl.fromComponents(components)
-                                        .GET(route)
-                                        .routingTo((request, username, repositoryName) -> ok().sendResource(testResourceName))
-                                        .build());
-        wsClient = play.test.WSTestClient.newClient(server.httpPort());
+                                .GET(route)
+                                .routingTo((request, username, repositoryName) -> ok().sendResource(testResourceName))
+                                .build());
 
-        testGitHubAPIImpl = testApp.injector().instanceOf(GitHubAPIImpl.class);
-        testGitHubAPIImpl.setBaseURL("");
+        wsClient = play.test.WSTestClient.newClient(server.httpPort());
         testGitHubAPIImpl.setClient(wsClient);
     }
 
@@ -75,8 +77,9 @@ public class RepositoryProfileTestImpl {
     public void should_ReturnRepositoryProfileDetails_provided_UserNameRepositoryName() throws Exception {
         route = "/repos/:username/:repositoryName";
         testResourceName = "repositoryprofile/validRepositoryProfileDetails.json";
-        JsonNode testRepositoryProfile = testGitHubAPIImpl.getRepositoryProfile("sampleUsername", "sampleRepository")
-                                                    .toCompletableFuture().get(10, TimeUnit.SECONDS);
+        JsonNode testRepositoryProfile = testGitHubAPIImpl
+                                                .getRepositoryProfile("sampleUsername", "sampleRepository")
+                                                .toCompletableFuture().get(10, TimeUnit.SECONDS);
         assertEquals("greyli/helloflask", testRepositoryProfile.get("full_name").textValue());
     }
 
@@ -89,8 +92,9 @@ public class RepositoryProfileTestImpl {
     public void should_ReturnNotFound_provided_invalidUserName() throws Exception {
         route = "/repos/:invalidUsername/:sampleRepository";
         testResourceName = "repositoryprofile/invalidRepositoryProfileDetails.json";
-        JsonNode testRepositoryProfile = testGitHubAPIImpl.getRepositoryProfile("invalidUsername", "sampleRepository")
-                .toCompletableFuture().get(10, TimeUnit.SECONDS);
+        JsonNode testRepositoryProfile = testGitHubAPIImpl
+                                                .getRepositoryProfile("invalidUsername", "sampleRepository")
+                                                .toCompletableFuture().get(10, TimeUnit.SECONDS);
         assertEquals("Not Found", testRepositoryProfile.get("message").textValue());
     }
 
@@ -103,8 +107,9 @@ public class RepositoryProfileTestImpl {
     public void should_ReturnNotFound_provided_invalidRepositoryName() throws Exception {
         route = "/repos/:sampleUsername/:invalidRepositoryName";
         testResourceName = "repositoryprofile/invalidRepositoryProfileDetails.json";
-        JsonNode testRepositoryProfile = testGitHubAPIImpl.getRepositoryProfile("sampleUsername", "invalidRepositoryName")
-                .toCompletableFuture().get(10, TimeUnit.SECONDS);
+        JsonNode testRepositoryProfile = testGitHubAPIImpl
+                                            .getRepositoryProfile("sampleUsername", "invalidRepositoryName")
+                                            .toCompletableFuture().get(10, TimeUnit.SECONDS);
         assertEquals("Not Found", testRepositoryProfile.get("message").textValue());
     }
 }
