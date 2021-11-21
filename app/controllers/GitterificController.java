@@ -42,7 +42,7 @@ public class GitterificController extends Controller {
 	}
 
 	/**
-	 * Renders an HTML page with search input form.
+	 * Renders an HTML page with search input form and displays the result once search query is keyed in.
 	 *
 	 * The configuration in the <code>routes</code> file means that this method will be called when the application
 	 * receives a <code>GET</code> request with a path of <code>/</code>.
@@ -84,10 +84,10 @@ public class GitterificController extends Controller {
 	}
 
 	/**
-	 * Renders an HTML page with repository profile details queried by the user.
+	 * Renders an HTML page with repository profile details.
 	 *
 	 * The configuration in the <code>routes</code> file means that this method will be called when the application
-	 * receives a <code>GET</code> request with a path of <code>/repositoryProfile/:ownerName/:repositoryName</code>.
+	 * receives a <code>GET</code> request with a path of <code>/repositoryProfile/:username/:repositoryName</code>.
 	 * @param username  Owner of the repository
 	 * @param repositoryName  Repository Name
 	 * @return Future CompletionStage Result

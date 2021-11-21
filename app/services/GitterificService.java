@@ -80,7 +80,7 @@ public class GitterificService {
     }
 
     /**
-     * Retrieves repository profile details with corresponding top 20 issues
+     * Retrieves repository profile details with top 20 issues
      * @param username Owner of the repository
      * @param repositoryName  Repository Name
      * @return Future CompletionStage JsonNode
@@ -97,7 +97,6 @@ public class GitterificService {
                             asyncCacheApi.set(username + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
 
                             List<String> list = issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
-
                             ObjectMapper mapper = new ObjectMapper();
                             ObjectNode repositoryData = mapper.createObjectNode();
                             ArrayNode arrayNode = mapper.createArrayNode();
@@ -105,6 +104,7 @@ public class GitterificService {
 
                             repositoryData.set("repositoryProfile", repositoryProfileDetail);
                             repositoryData.set("issueList", arrayNode);
+
                             return repositoryData;
                         }
                 );

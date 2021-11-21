@@ -56,12 +56,13 @@ public class RepositoryProfileTestUI {
     public void should_DisplayRepositoryProfileDetails_provided_UserRepositoryIssuesList() throws Exception {
         String username = "sampleUsername";
         String repositoryName = "sampleRepositoryName";
-
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
-        ArrayNode issuesList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/validIssueListDetails.json"));
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
+        JsonNode repositoryProfileDetails = mapper.readTree(
+                                new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
+        ArrayNode issuesList = (ArrayNode) mapper.readTree(
+                                new File("test/resources/repositoryprofile/validIssueListDetails.json"));
 
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("List to top 5 issues:"));
     }
@@ -75,13 +76,13 @@ public class RepositoryProfileTestUI {
     public void should_DisplayNotFound_provided_InvalidUsername() throws Exception {
         String username = "invalidUsername";
         String repositoryName = "sampleRepositoryName";
-
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
-        ArrayNode issuesList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/validIssueListDetails.json"));
+        JsonNode repositoryProfileDetails = mapper.readTree(
+                                      new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
+        ArrayNode issuesList = (ArrayNode) mapper.readTree(
+                                                new File("test/resources/repositoryprofile/validIssueListDetails.json"));
 
         Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
-
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("Not Found"));
     }
@@ -95,13 +96,13 @@ public class RepositoryProfileTestUI {
     public void should_DisplayNotFound_provided_InvalidRepository() throws Exception {
         String username = "sampleUsername";
         String repositoryName = "invalidRepositoryName";
-
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
-        ArrayNode issuesList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/validIssueListDetails.json"));
+        JsonNode repositoryProfileDetails = mapper.readTree(
+                                    new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
+        ArrayNode issuesList = (ArrayNode) mapper.readTree(
+                                    new File("test/resources/repositoryprofile/validIssueListDetails.json"));
 
         Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
-
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("Not Found"));
     }
@@ -112,15 +113,16 @@ public class RepositoryProfileTestUI {
      * @author Farheen Jamadar
      */
     @Test
-    public void should_returnNoIssuesFoundWithProfile_when_NoIssuesFound_1() throws Exception {
+    public void should_returnNoIssuesFoundAlongWithProfileDetails_when_NoIssuesFound_1() throws Exception {
         String username = "invalidUsername";
         String repositoryName = "sampleRepositoryName";
-
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
-        ArrayNode issuesList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/noIssueListResponse1.json"));
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
+        JsonNode repositoryProfileDetails = mapper.readTree(
+                                    new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
+        ArrayNode issuesList = (ArrayNode) mapper.readTree(
+                                    new File("test/resources/repositoryprofile/noIssueListResponse1.json"));
 
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("No Issues Found"));
     }
@@ -131,15 +133,16 @@ public class RepositoryProfileTestUI {
      * @author Farheen Jamadar
      */
     @Test
-    public void should_returnNoIssuesFoundWithProfile_when_NoIssuesFound_2() throws Exception {
+    public void should_returnNoIssuesFoundAlongWithProfileDetails_when_NoIssuesFound_2() throws Exception {
         String username = "sampleUsername";
         String repositoryName = "invalidRepositoryName";
-
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
-        ArrayNode issuesList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/noIssueListResponse2.json"));
-        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
+        JsonNode repositoryProfileDetails = mapper.readTree(
+                                    new File("test/resources/repositoryprofile/invalidRepositoryProfileDetails.json"));
+        ArrayNode issuesList = (ArrayNode) mapper.readTree(
+                                    new File("test/resources/repositoryprofile/noIssueListResponse2.json"));
 
+        Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("No Issues Found"));
     }
@@ -153,13 +156,13 @@ public class RepositoryProfileTestUI {
     public void should_DisplayNoIssuesFound_provided_emptyIssueList() throws Exception {
         String username = "sampleUsername";
         String repositoryName = "sampleRepositoryName";
-
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode repositoryProfileDetails = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
-        ArrayNode issuesList = (ArrayNode) mapper.readTree(new File("test/resources/repositoryprofile/emptyIssueList.json"));
+        JsonNode repositoryProfileDetails = mapper.readTree(
+                                    new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
+        ArrayNode issuesList = (ArrayNode) mapper.readTree(
+                                    new File("test/resources/repositoryprofile/emptyIssueList.json"));
 
         Content html = repositoryProfile.render(username, repositoryName, repositoryProfileDetails, issuesList, assetsFinder);
-
         assertEquals("text/html", html.contentType());
         assertTrue(contentAsString(html).contains("No Issues Found"));
     }
