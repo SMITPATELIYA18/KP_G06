@@ -4,18 +4,20 @@
  * two arguments, a `String` for the title of the page and an `Html`
  * object to insert into the body of the page.
  *@
-@(title: String)(content: Html)(implicit assetsFinder: AssetsFinder)
+@(request: play.mvc.Http.Request, title: String)(content: Html)(implicit assetsFinder: AssetsFinder)
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
         @* Here's where we render the page title `String`. *@
         <title>@title</title>
+        <script type='text/javascript' src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script type='text/javascript' src='@routes.Assets.at("javascripts/index.js")'></script>
         <link rel="stylesheet" media="screen" href="@assetsFinder.path("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@assetsFinder.path("images/favicon.png")">
         <!--script src="@assetsFinder.path("javascripts/hello.js")" type="text/javascript"></script-->
     </head>
-    <body>
+    <body id="gitterific-home" data-ws-url="@routes.GitterificController.ws.webSocketURL(request)">
         @* And here's where we render the `Html` object containing
          * the page content. *@
         @content

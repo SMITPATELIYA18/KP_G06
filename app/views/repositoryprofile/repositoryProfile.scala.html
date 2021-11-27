@@ -1,7 +1,7 @@
 
 @import com.fasterxml.jackson.databind.JsonNode
 @import java.lang.String
-@(username: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: JsonNode)(implicit assetsFinder: AssetsFinder)
+@(request: play.mvc.Http.Request)(username: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: JsonNode)(implicit assetsFinder: AssetsFinder)
 
 @printRepositoryDetails(detail: JsonNode, name: String) = {
     @if(detail.isObject()) {
@@ -48,7 +48,7 @@
 
 
 
-@main("Repository Profile") {
+@main(request, "Repository Profile") {
 <section id="top">
     <div class="wrapper">
         <h1>Gitterific</h1>

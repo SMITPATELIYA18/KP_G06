@@ -1,3 +1,5 @@
+import play.core.PlayVersion.{akkaHttpVersion, akkaVersion}
+
 lazy val root = (project in file("."))
   .enablePlugins(PlayJava)
   .settings(
@@ -18,13 +20,18 @@ lazy val root = (project in file("."))
       "org.mockito" % "mockito-core" % "4.0.0" % Test,                // For tests that depend on external resources
       "org.powermock" % "powermock-module-junit4" % "2.0.9" % Test,
       "org.powermock" % "powermock-api-mockito2" % "2.0.9" % Test,
+      "javax.xml.bind" % "jaxb-api" % "2.3.1",
+      "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+      "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
+      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+      "com.typesafe.akka" %% "akka-http-jackson" % akkaHttpVersion,
+      "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     ),
     javacOptions ++= Seq(
       "-encoding", "UTF-8",
       "-parameters",
       "-Xlint:unchecked",
-      "-Xlint:deprecation",
-      "-Werror"
+      "-Xlint:deprecation"
     ),	
     // Make verbose tests
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v")),

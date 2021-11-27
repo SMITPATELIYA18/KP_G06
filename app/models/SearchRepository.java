@@ -44,6 +44,10 @@ public class SearchRepository {
 		return repositoryList;
 	}
 
+	public void setRepositoryList(List<RepositoryModel> repositoryList) {
+		this.repositoryList = repositoryList;
+	}
+
 	public String getQuery() {
 		return query;
 	}

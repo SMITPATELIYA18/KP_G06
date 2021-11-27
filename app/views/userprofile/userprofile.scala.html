@@ -1,4 +1,4 @@
-@(username: String)(userProfile: com.fasterxml.jackson.databind.JsonNode, userRepositories: com.fasterxml.jackson.databind.JsonNode)(implicit assetsFinder: AssetsFinder)
+@(request: play.mvc.Http.Request)(username: String)(userProfile: com.fasterxml.jackson.databind.JsonNode, userRepositories: com.fasterxml.jackson.databind.JsonNode)(implicit assetsFinder: AssetsFinder)
 
 @import com.fasterxml.jackson.databind.JsonNode;
 
@@ -34,13 +34,16 @@
     }
 }
 
-@main("User Profile") {
+@main(request, "User Profile") {
+<!-- id="gitterific-userprofile" data-ws-url="@routes.GitterificController.ws.webSocketURL(request)" -->
+<div>
     <section id="top">
         <div class="wrapper">
             <h1>Gitterific</h1>
         </div>
     </section>
     <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
+        <div id="time">time </div>
         <div id="user-info" style="padding: 10px 0px">
             <h3>User profile information for @username:</h3>
             <p>@displayUserProfile(null, userProfile) </p>
@@ -51,4 +54,5 @@
             <p>@listUserRepositories(userRepositories)</p>
         </div>
     </div>
+</div>
 }

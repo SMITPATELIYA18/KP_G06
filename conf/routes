@@ -3,23 +3,21 @@
 # ~~~~
 
 # Search repository feature route(s):
-GET     /                      controllers.GitterificController.index(search: String ?= "")
+GET     /                      controllers.GitterificController.index(search: String ?= "", request: Request)
+GET     /ws                         controllers.GitterificController.ws
 
 # User profile feature route(s):
-GET 	/user-profile/:username		controllers.GitterificController.getUserProfile(username: String)
+GET 	/user-profile/:username		controllers.GitterificController.getUserProfile(username: String, request: Request)
 
 # Repository profile feature route(s):
-GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String)
+GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String, request: Request)
 
 # Repository issues feature route(s):
-GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoName: String)
+GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoName: String, request: Request)
 
 # Tpoics feature route(s):
-GET     /topics/:topic              controllers.GitterificController.getTopicRepository(topic:String)
+GET     /topics/:topic              controllers.GitterificController.getTopicRepository(topic:String, request: Request)
 
 # Map static resources from the /public folder to the /assets URL path:
 GET     /assets/*file               controllers.Assets.versioned(file)
-
-
-
-
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
