@@ -9,7 +9,7 @@ GET     /                      controllers.GitterificController.index(search: St
 GET 	/user-profile/:username		controllers.GitterificController.getUserProfile(username: String)
 
 # Repository profile feature route(s):
-GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String)
+#GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String)
 
 # Repository issues feature route(s):
 GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoName: String)
@@ -19,6 +19,11 @@ GET     /topics/:topic              controllers.GitterificController.getTopicRep
 
 # Map static resources from the /public folder to the /assets URL path:
 GET     /assets/*file               controllers.Assets.versioned(file)
+
+GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(request: Request, username: String, repositoryName: String)
+GET   /ws/:username/:repositoryName                           controllers.GitterificController.ws(username: String, repositoryName: String)
+
+
 
 
 

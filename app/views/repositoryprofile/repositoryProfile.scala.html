@@ -1,70 +1,28 @@
 
 @import com.fasterxml.jackson.databind.JsonNode
 @import java.lang.String
-@(username: String, repositoryName: String, repositoryProfileDetails: JsonNode, issueList: JsonNode)(implicit assetsFinder: AssetsFinder)
-
-@printRepositoryDetails(detail: JsonNode, name: String) = {
-    @if(detail.isObject()) {
-        <ul>
-            @for(detailEntry <- detail.fields()) {
-            <li>
-                <b>@detailEntry.getKey(): </b>
-                    @if(detailEntry.getKey()=="login"){
-                        <a href="@routes.GitterificController.getUserProfile(username)">@printRepositoryDetails(detailEntry.getValue(), detailEntry.getKey())</a>
-                    } else{
-                        @printRepositoryDetails(detailEntry.getValue(), detailEntry.getKey())
-                    }
-            </li>
-            }
-        </ul>
-    }
-    @if(detail.isArray()) {
-        <ol>
-            @for(arrayNode <- detail.elements()) {
-                <li><a href="@routes.GitterificController.getTopicRepository(arrayNode.asText())">@arrayNode.asText()</a>&nbsp;</li>
-            }
-        </ol>
-    }
-
-    @if(detail.isValueNode()) {
-        @detail.asText()
-    }
-}
-
-@listUserRepositories(list: JsonNode) = {
-    @if(list.size() == 0){
-        <li>No Issues Found</li>
-    } else {
-        @for(arrayNode <- list.elements()) {
-            @if(arrayNode.asText() == "Issue does not Present!" || arrayNode.asText() == "Error! Repository does not present!"){
-                <li>No Issues Found</li>
-            } else {
-                <li><a href="@routes.GitterificController.getIssueStat(username + '/' + repositoryName)">@arrayNode.asText()</a></li>
-            }
-        }
-    }
-}
-
-
-
+@(request: play.mvc.Http.Request, username: String, repositoryName: String)(implicit assetsFinder: AssetsFinder)
 
 @main("Repository Profile") {
-<section id="top">
-    <div class="wrapper">
-        <h1>Gitterific</h1>
-    </div>
-</section>
-    <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
-        <div style="padding: 10px 0px;">
-            <h3>Repository Profile Data for: <b>@repositoryName</b></h3>
+
+    <script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+    <script type='text/javascript' src='@routes.Assets.versioned("javascripts/index.js")'></script>
+    <html>
+
+    </html>
+    <body data-ws-url="@routes.GitterificController.ws(username, repositoryName).webSocketURL(request)" data-issueLink="@routes.GitterificController.getIssueStat(username + '/' + repositoryName)">
+        <section id="top">
+            <div class="wrapper">
+                <h1>Gitterific</h1>
+            </div>
+        </section>
+        <div style="margin-left: 5%; margin-right: 5%; margin-bottom: 1%; margin-top: 1%;">
+            <div style="padding: 10px 0px;">
+                <h3>Repository Profile Data for: <b>@repositoryName</b></h3>
+            </div>
+            <div id="time"> </div>
         </div>
-        <div>
-            @printRepositoryDetails(repositoryProfileDetails, null)
-        </div>
-        <div id="repositories" style="padding: 10px 0px">
-            <p><b>List to top @issueList.size() issues: </b></p>
-            <p>@listUserRepositories(issueList)</p>
-        </div>
-    </div>
+    </body>
+
 }
 

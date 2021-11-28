@@ -1,3 +1,4 @@
+val AkkaVersion = "2.6.14"
 lazy val root = (project in file("."))
   .enablePlugins(PlayJava)
   .settings(
@@ -18,6 +19,10 @@ lazy val root = (project in file("."))
       "org.mockito" % "mockito-core" % "4.0.0" % Test,                // For tests that depend on external resources
       "org.powermock" % "powermock-module-junit4" % "2.0.9" % Test,
       "org.powermock" % "powermock-api-mockito2" % "2.0.9" % Test,
+
+      //New
+      "com.typesafe.akka" %% "akka-testkit" % AkkaVersion % Test,
+      "com.typesafe.akka" %% "akka-actor-testkit-typed" % AkkaVersion % Test
     ),
     javacOptions ++= Seq(
       "-encoding", "UTF-8",

@@ -86,7 +86,7 @@ public class GitterificService {
      * @return Future CompletionStage JsonNode
      * @author Farheen Jamadar
      */
-    public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
+    /*public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
         return asyncCacheApi.getOrElseUpdate(username + "/" + repositoryName,
                         () -> gitHubAPIInst.getRepositoryProfile(username, repositoryName))
                 .thenCombineAsync(
@@ -108,7 +108,7 @@ public class GitterificService {
                             return repositoryData;
                         }
                 );
-    }
+    }*/
 
     /**
      * Retrieves top 10 repositories containing the topic provided by the user.

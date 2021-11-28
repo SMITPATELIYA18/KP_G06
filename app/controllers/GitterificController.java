@@ -1,8 +1,14 @@
 package controllers;
 
+import actors.RepositoryProfileActor;
+import actors.UserActor;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.stream.Materializer;
 import com.google.inject.Inject;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
+import play.libs.streams.ActorFlow;
 import play.mvc.Controller;
 import play.mvc.*;
 import services.GitterificService;
@@ -27,18 +33,28 @@ public class GitterificController extends Controller {
 	private GitHubAPI gitHubAPIInst;
 	private GitterificService gitterificService;
 
+	@Inject
+	private ActorSystem actorSystem;
+	@Inject
+	private Materializer materializer;
+	private ActorRef repositoryActorRef;
+
 	/**
 	 * @param assetsFinder For finding assets according to configured base path and URL base
 	 * @param httpExecutionContext For managing Play Java HTTP thread local state
 	 * @param asyncCacheApi For utilizing asynchronous cache
 	 */
 	@Inject
-	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi, GitHubAPI gitHubAPIInst, GitterificService gitterificService) {
+	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi, GitHubAPI gitHubAPIInst, GitterificService gitterificService, ActorSystem actorSystem, Materializer materializer) {
 		this.assetsFinder = assetsFinder;
 		this.httpExecutionContext = httpExecutionContext;
 		this.asyncCacheApi = asyncCacheApi;
-		this.gitHubAPIInst = gitHubAPIInst;
 		this.gitterificService = gitterificService;
+
+		this.actorSystem = actorSystem;
+		this.materializer = materializer;
+		this.gitHubAPIInst = gitHubAPIInst;
+		repositoryActorRef = actorSystem.actorOf(RepositoryProfileActor.getProps(gitHubAPIInst), "repositoryProfileActor");
 	}
 
 	/**
@@ -93,7 +109,7 @@ public class GitterificController extends Controller {
 	 * @return Future CompletionStage Result
 	 * @author Farheen Jamadar
 	 */
-	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
+	/*public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName){
 		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
 				repositoryData -> ok(repositoryProfile.render(username,
 							repositoryName,
@@ -101,6 +117,16 @@ public class GitterificController extends Controller {
 							repositoryData.get("issueList"),
 							assetsFinder)),
 				httpExecutionContext.current());
+	}*/
+
+	public Result getRepositoryProfile(Http.Request request, String username, String repositoryName) {
+		return ok(repositoryProfile.render(request, username, repositoryName, assetsFinder));
+	}
+
+	public WebSocket ws(String username, String repositoryName){
+		//System.out.println("WebSocket Parameter check: " + username + ": " + repositoryName);
+		return WebSocket.Json.accept(request -> ActorFlow.actorRef(wsOut ->
+				UserActor.props(wsOut, username, repositoryName), actorSystem, materializer));
 	}
 
 	/**
