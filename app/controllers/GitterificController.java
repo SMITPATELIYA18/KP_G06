@@ -99,8 +99,7 @@ public class GitterificController extends Controller {
 						assetsFinder)),
 				httpExecutionContext.current());
 	}
-
-	/**
+/**
 	 * Renders an HTML page with repository profile details.
 	 *
 	 * The configuration in the <code>routes</code> file means that this method will be called when the application
@@ -193,13 +192,15 @@ public class GitterificController extends Controller {
 		return F.Either.Left(result);
 	}
 
-	*//**
+	*/
+	/**
 	 * Checks that the WebSocket comes from the same origin.  This is necessary to protect
 	 * against Cross-Site WebSocket Hijacking as WebSocket does not implement Same Origin Policy.
 	 * <p>
 	 * See https://tools.ietf.org/html/rfc6455#section-1.3 and
 	 * http://blog.dewhurstsecurity.com/2013/08/30/security-testing-html5-websockets.html
-	 *//*
+	 */
+	/*
 	private boolean sameOriginCheck(Http.RequestHeader rh) {
 		final Optional<String> origin = rh.header("Origin");
 

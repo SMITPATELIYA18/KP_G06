@@ -36,4 +36,24 @@ public class Messages {
             this.userProfileResult = userProfileResult;
         }
     }
+
+
+    public static final class GetRepositoryProfileActor {
+        public final String repositoryName;
+        public final String username;
+
+        public GetRepositoryProfileActor(String username, String repositoryName) {
+            this.username = username;
+            this.repositoryName = repositoryName;
+        }
+    }
+
+    public static final class RepositoryProfileInfo {
+        public final JsonNode repositoryProfileResult;
+
+        public RepositoryProfileInfo(JsonNode repositoryProfileResult) {
+            this.repositoryProfileResult = repositoryProfileResult;
+        }
+    }
+
 }

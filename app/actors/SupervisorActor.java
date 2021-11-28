@@ -19,7 +19,8 @@ public class SupervisorActor extends AbstractActor {
     private GitHubAPI gitHubAPIInst;
     private final AsyncCacheApi asyncCacheApi;
     final Map<String, ActorRef> queryToSearchActor = new HashMap<String, ActorRef>();
-    private ActorRef userProfileActor;
+    private ActorRef userProfileActor = null;
+    private ActorRef repositoryProfileActor = null;
 
     public SupervisorActor(final ActorRef wsOut, GitHubAPI gitHubAPIInst, AsyncCacheApi asyncCacheApi) {
         ws =  wsOut;
@@ -50,6 +51,10 @@ public class SupervisorActor extends AbstractActor {
                 .match(JsonNode.class, this::processRequest)
                 .match(Messages.SearchResult.class, searchResult -> ws.tell(searchResult.searchResult, self()))
                 .match(Messages.UserProfileInfo.class, userProfileInfo -> ws.tell(userProfileInfo.userProfileResult, self()))
+                .match(Messages.RepositoryProfileInfo.class, repositoryProfileInfo -> {
+                        //System.out.println(repositoryProfileInfo.repositoryProfileResult.toPrettyString());
+                        ws.tell(repositoryProfileInfo.repositoryProfileResult, self());
+                })
                 .build();
     }
 
@@ -71,6 +76,15 @@ public class SupervisorActor extends AbstractActor {
                 userProfileActor = getContext().actorOf(UserProfileActor.props(self(), this.gitHubAPIInst, this.asyncCacheApi));
             }
             userProfileActor.tell(new Messages.GetUserProfile(username), getSelf());
+        } else if(receivedJson.has("repository_profile")) {
+            String repositoryName = receivedJson.get("repository_profile").asText();
+            String username = receivedJson.get("username").asText();
+            if(repositoryProfileActor == null) {
+                log.info("Creating a repository profile actor.");
+                repositoryProfileActor = getContext().actorOf(RepositoryProfileActor.props(self(), this.gitHubAPIInst, this.asyncCacheApi));
+            }
+            repositoryProfileActor.tell(new Messages.GetRepositoryProfileActor(username, repositoryName), getSelf());
         }
+        //TODO: Else condition
     }
 }
