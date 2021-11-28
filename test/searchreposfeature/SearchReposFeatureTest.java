@@ -1,3 +1,4 @@
+/*
 package searchreposfeature;
 
 import controllers.AssetsFinder;
@@ -33,10 +34,12 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+*/
 /**
  * Holds tests related to the search repositories feature
  * @author Pradnya Kandarkar
- */
+ *//*
+
 public class SearchReposFeatureTest {
 
     private static Application testApp;
@@ -45,14 +48,20 @@ public class SearchReposFeatureTest {
     private static GitHubAPIImpl testGitHubAPIImpl;
     private static WSClient wsClient;
     private static Server server;
-    private static String routePattern;                 /* For holding the route pattern. Changes for every test depending on the test case. */
-    private static String testResourceName;             /* For returning the resources */
+    private static String routePattern;                 */
+/* For holding the route pattern. Changes for every test depending on the test case. *//*
 
-    /**
+    private static String testResourceName;             */
+/* For returning the resources *//*
+
+
+    */
+/**
      * Overrides the binding to use mock implementation instead of the actual implementation and creates a fake
      * application. Sets up an embedded server for testing.
      * @author Pradnya Kandarkar
-     */
+     *//*
+
     @BeforeClass
     public static void setUp() {
         testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
@@ -72,11 +81,13 @@ public class SearchReposFeatureTest {
     }
 
 
-    /**
+    */
+/**
      * Performs clean up activities after all tests are performed
      * @author Pradnya Kandarkar
      * @throws IOException If the call cannot be completed due to an error
-     */
+     *//*
+
     @AfterClass
     public static void tearDown() throws IOException{
         try {
@@ -89,10 +100,12 @@ public class SearchReposFeatureTest {
 
     // Tests for the responses returned by the controller that are related to the search repository feature
 
-    /**
+    */
+/**
      * Validates if HTTP response OK (200) is received for valid GET request(s)
      * @author Pradnya Kandarkar
-     */
+     *//*
+
     @Test
     public void should_ReturnOK_when_ValidGETRequest() {
         String testHomePageURL = "/";
@@ -113,10 +126,12 @@ public class SearchReposFeatureTest {
 
     }
 
-    /**
+    */
+/**
      * Validates if HTTP response NOT_FOUND (404) is received for a request type that is not implemented for the URL
      * @author Pradnya Kandarkar
-     */
+     *//*
+
     @Test
     public void should_ReturnNOT_FOUND_when_NotGETRequest() {
         String sampleSearchURL = "/";
@@ -129,10 +144,12 @@ public class SearchReposFeatureTest {
         assertEquals(NOT_FOUND, result.status());
     }
 
-    /**
+    */
+/**
      * Makes the same request twice and tests whether the second request's response is returned faster than the first one
      * @author Pradnya Kandarkar
-     */
+     *//*
+
     @Test
     public void testCachedData() {
         String requestURL1 = "/?search=github";
@@ -161,12 +178,14 @@ public class SearchReposFeatureTest {
 
     // Tests for the methods implemented for GitHubAPI that are related to the search repository feature
 
-    /**
+    */
+/**
      * Checks if 10 search results are returned for a single valid search request when <code>getRepositoryFromSearchBar</code>
      * is called
      * @throws Exception If the call cannot be completed due to an error
      * @author Pradnya Kandarkar
-     */
+     *//*
+
     @Test
     public void should_Return10ReposList_when_ValidSearchRequest() throws Exception {
         routePattern = "/search/repositories";
@@ -187,12 +206,14 @@ public class SearchReposFeatureTest {
         assertThat(testSearchResult2.getRepositoryList(), everyItem(hasProperty("topics")));
     }
 
-    /**
+    */
+/**
      * Checks if maximum 10 search results are returned for any number of queries
      * is called
      * @throws Exception If the call cannot be completed due to an error
      * @author Indraneel Rachakonda
-     */
+     *//*
+
     @Test
     public void should_ReturnMax10Results_when_AnyNumberOfQuerys() throws Exception {
         routePattern = "/search/repositories";
@@ -207,12 +228,14 @@ public class SearchReposFeatureTest {
         }
     }
 
-    /**
+    */
+/**
      * Checks if home page results are displayed as expected via index.scala.html
      * is called
      * @throws Exception If the call cannot be completed due to an error
      * @author Indraneel Rachakonda
-     */
+     *//*
+
     @Test
     public void homePageDisplayTest_index() throws Exception {
         routePattern = "/search/repositories";
@@ -233,12 +256,14 @@ public class SearchReposFeatureTest {
         assertTrue(contentAsString(homePageAfterSearch).contains("Search terms:"));
     }
 
-    /**
+    */
+/**
      * Checks if home page results are displayed as expected via welcome.scala.html
      * is called
      * @throws Exception If the call cannot be completed due to an error
      * @author Indraneel Rachakonda
-     */
+     *//*
+
     @Test
     public void homePageDisplayTest_welcome() throws Exception {
         routePattern = "/search/repositories";
@@ -261,3 +286,4 @@ public class SearchReposFeatureTest {
 }
 
 
+*/

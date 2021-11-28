@@ -1,3 +1,4 @@
+/*
 package repositoryissues;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,12 +35,14 @@ import models.IssueModel;
 
 //@RunWith(PowerMockRunner.class)
 //@PowerMockIgnore({"javax.management.*", "javax.crypto.*"})
+*/
 /**
  * This class Tests Issue Controller in Controller Package.
  * 
  * @author Smit Pateliya
  *
- */
+ *//*
+
 public class IssueControllerTest {
 	private Application testApp;
 	private GitHubAPI testGitHub;
@@ -50,9 +53,11 @@ public class IssueControllerTest {
 //		testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(MyAPIClientTest.class)).build();
 //	}
 
-	/**
+	*/
+/**
 	 * Overrides live API class to Mock API class and creates fake application.
-	 */
+	 *//*
+
 
 	@Before
 	public void setUp() {
@@ -66,10 +71,12 @@ public class IssueControllerTest {
 //		Helpers.stop(testApp);
 //	}
 
-	/**
+	*/
+/**
 	 * Tests issue controller with the help of the Mockito
 	 * 
-	 */
+	 *//*
+
 
 	@Test
 	public void testIssueController() throws Exception {
@@ -98,11 +105,13 @@ public class IssueControllerTest {
 		});
 	}
 
-	/**
+	*/
+/**
 	 * Mocks issue API fetching call
 	 * 
 	 * @return Completion Stage IssueModel object
-	 */
+	 *//*
+
 
 	private CompletionStage<Result> mockIssueController() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
@@ -121,3 +130,4 @@ public class IssueControllerTest {
 		return futureModel;
 	}
 }
+*/
