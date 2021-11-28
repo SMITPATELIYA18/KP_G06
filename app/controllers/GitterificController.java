@@ -40,7 +40,7 @@ public class GitterificController extends Controller {
 	private Materializer materializer;
 
 	private final Timeout t = new Timeout(Duration.create(1, TimeUnit.SECONDS));
-	private final Logger logger = org.slf4j.LoggerFactory.getLogger("controllers.GitterificController");
+	private final Logger log = org.slf4j.LoggerFactory.getLogger("controllers.GitterificController");
 
 	/**
 	 * @param assetsFinder For finding assets according to configured base path and URL base
@@ -150,46 +150,13 @@ public class GitterificController extends Controller {
 				httpExecutionContext.current());
 	}
 
+	/**
+	 * Creates a websocket, connected to the supervisor actor and returns it
+	 * @return <code>WebSocket</code> for further communication with client
+	 * @author Pradnya Kandarkar, Smit Pateliya
+	 */
 	public WebSocket ws() {
 		return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> SupervisorActor.props(out, gitHubAPIInst, asyncCacheApi), actorSystem, materializer));
-
-		// return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> supervisorActor., actorSystem, materializer));
-
-		/*return WebSocket.Json.acceptOrResult(request -> {
-			System.out.println("Type of 'request': " + request.getClass());
-			System.out.println("Request URI: " + request.uri());
-			if (sameOriginCheck(request)) {
-				final CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> future = wsFutureFlow(request);
-				final CompletionStage<F.Either<Result, Flow<JsonNode, JsonNode, ?>>> stage = future.thenApply(F.Either::Right);
-				return stage.exceptionally(this::logException);
-			} else {
-				return forbiddenResult();
-			}
-		});*/
-	}
-
-	/*@SuppressWarnings("unchecked")
-	private CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> wsFutureFlow(Http.RequestHeader request) {
-		long id = request.asScala().id();
-		SupervisorActor.Create create = new SupervisorActor.Create(Long.toString(id));
-
-		return ask(supervisorActor, create, t).thenApply((Object flow) -> {
-			final Flow<JsonNode, JsonNode, NotUsed> f = (Flow<JsonNode, JsonNode, NotUsed>) flow;
-			return f.named("websocket");
-		});
-	}
-
-	private CompletionStage<F.Either<Result, Flow<JsonNode, JsonNode, ?>>> forbiddenResult() {
-		final Result forbidden = Results.forbidden("forbidden");
-		final F.Either<Result, Flow<JsonNode, JsonNode, ?>> left = F.Either.Left(forbidden);
-
-		return CompletableFuture.completedFuture(left);
-	}
-
-	private F.Either<Result, Flow<JsonNode, JsonNode, ?>> logException(Throwable throwable) {
-		logger.error("Cannot create websocket", throwable);
-		Result result = Results.internalServerError("error");
-		return F.Either.Left(result);
 	}
 
 	*/
