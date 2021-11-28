@@ -24,7 +24,8 @@ public class SupervisorActor extends AbstractActor {
     private final AsyncCacheApi asyncCacheApi;
 
     final Map<String, ActorRef> queryToSearchActor = new HashMap<String, ActorRef>();
-    private ActorRef userProfileActor;
+    private ActorRef userProfileActor = null;
+    private ActorRef repositoryProfileActor = null;
 
     /**
      * @param wsOut For sending data/messages to the client
@@ -69,6 +70,7 @@ public class SupervisorActor extends AbstractActor {
                 .match(JsonNode.class, this::processRequest)
                 .match(Messages.SearchResult.class, searchResult -> wsOut.tell(searchResult.searchResult, self()))
                 .match(Messages.UserProfileInfo.class, userProfileInfo -> wsOut.tell(userProfileInfo.userProfileResult, self()))
+                .match(Messages.RepositoryProfileInfo.class, repositoryProfileInfo -> wsOut.tell(repositoryProfileInfo.repositoryProfileResult, self()))
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }
@@ -102,6 +104,15 @@ public class SupervisorActor extends AbstractActor {
                 userProfileActor = getContext().actorOf(UserProfileActor.props(self(), this.gitHubAPIInst, this.asyncCacheApi));
             }
             userProfileActor.tell(new Messages.GetUserProfile(username), getSelf());
+        } else if(receivedJson.has("repository_profile")) {
+            String repositoryName = receivedJson.get("repository_profile").asText();
+            String username = receivedJson.get("username").asText();
+            if(repositoryProfileActor == null) {
+                log.info("Creating a repository profile actor.");
+                repositoryProfileActor = getContext().actorOf(RepositoryProfileActor.props(self(), this.gitHubAPIInst, this.asyncCacheApi));
+            }
+            repositoryProfileActor.tell(new Messages.GetRepositoryProfileActor(username, repositoryName), getSelf());
         }
+        //TODO: Else condition
     }
 }
