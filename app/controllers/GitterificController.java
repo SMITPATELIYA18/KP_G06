@@ -152,7 +152,7 @@ public class GitterificController extends Controller {
 	}
 
 	public WebSocket ws() {
-		return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> SupervisorActor.props(out, gitHubAPIInst), actorSystem, materializer));
+		return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> SupervisorActor.props(out, gitHubAPIInst, asyncCacheApi), actorSystem, materializer));
 
 		// return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> supervisorActor., actorSystem, materializer));
 

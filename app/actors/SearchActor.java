@@ -38,25 +38,25 @@ public class SearchActor extends AbstractActorWithTimers {
     @Override
     public void preStart() {
         System.out.println("Created a search actor for " + trackedSearchQuery);
-        getTimers().startPeriodicTimer("RefreshSearch", new Messages.TrackSearch(trackedSearchQuery), Duration.create(15, TimeUnit.SECONDS));
+        getTimers().startPeriodicTimer("RefreshSearch", new Messages.TrackSearch(trackedSearchQuery, "periodic"), Duration.create(15, TimeUnit.SECONDS));
     }
 
     @Override
     public AbstractActor.Receive createReceive() {
         return receiveBuilder()
-                .match(Messages.TrackSearch.class, trackSearch -> {
-                    onTrackSearch(trackSearch);
-                })
+                .match(Messages.TrackSearch.class, this::onTrackSearch)
                 .build();
     }
 
     private void onTrackSearch(Messages.TrackSearch trackSearchRequest) throws Exception {
         System.out.println("Search actor is tracking this query: " + trackSearchRequest.searchQuery);
-        // ToDo: Pradnya
-        gitHubAPIInst.getRepositoryFromSearchBar(trackSearchRequest.searchQuery).thenAcceptAsync(this::processSearchResult);
+        System.out.println("Received request from : " + trackSearchRequest.requestType);
+        gitHubAPIInst.getRepositoryFromSearchBar(trackSearchRequest.searchQuery).thenAcceptAsync(searchRepository -> {
+            processSearchResult(searchRepository, trackSearchRequest.requestType);
+        });
     }
 
-    private void processSearchResult(SearchRepository searchRepository) {
+    private void processSearchResult(SearchRepository searchRepository, String requestType) {
         if(baseSearchResults == null) {
             baseSearchResults = searchRepository.getRepositoryList();
             ObjectMapper mapper = new ObjectMapper();
@@ -76,7 +76,11 @@ public class SearchActor extends AbstractActorWithTimers {
             searchRepository.setRepositoryList(searchResultUpdate);
             ObjectMapper mapper = new ObjectMapper();
             searchResultJson = mapper.valueToTree(searchRepository);
-            searchResultJson.put("responseType", "searchResultUpdate");
+            if(requestType.equals("periodic")) {
+                searchResultJson.put("responseType", "searchResultPeriodicUpdate");
+            } else {
+                searchResultJson.put("responseType", "searchResultUpdate");
+            }
             System.out.println("Update for search " + trackedSearchQuery + ":\n " + searchResultJson);
             baseSearchResults.addAll(searchResultUpdate);
         }

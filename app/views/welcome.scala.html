@@ -1,7 +1,7 @@
 @(request: play.mvc.Http.Request, cacheResult: SearchCacheStore, style: String = "java")
 
 <script lang="text/javascript">
-	function validateForm() {
+	/*function validateForm() {
 	  var x = document.forms["searchForm"]["search"].value;
 	  if (x == "") {
 		alert("Please enter a string to be searched.");
@@ -11,7 +11,7 @@
 	  		document.forms["searchForm"]["search"].value = x.toLowerCase();
 	  }
 
-}
+}*/
 </script>
 <div>
 <section id="top">
@@ -21,7 +21,7 @@
 </section>
 <div style="margin-left: 18%; margin-right: 18%; margin-bottom: 1%; margin-top: 1%;">
 	<div style="padding: 10px 0px; text-align: center">
-		<form name="searchForm" onsubmit="return validateForm()" id="searchGitHubForm" action="/" method="GET">
+		<form name="searchForm" id="searchGitHubForm" action="/" method="GET">
 			<input type="search" id="searchField" name="search" value=""
 				   placeholder="Enter Search Terms" />
 			<button type="submit">Go!</button>
@@ -54,8 +54,7 @@
 		}
 	</div>
 
-	<div id="user-profile-info" >
-
+	<div id="user-profile-info">
 	</div>
 </div>
 </div>
