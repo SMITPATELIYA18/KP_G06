@@ -70,7 +70,7 @@ public class SupervisorActor extends AbstractActor {
                 .match(JsonNode.class, this::processRequest)
                 .match(Messages.SearchResult.class, searchResult -> wsOut.tell(searchResult.searchResult, self()))
                 .match(Messages.UserProfileInfo.class, userProfileInfo -> wsOut.tell(userProfileInfo.userProfileResult, self()))
-                .match(Messages.RepositoryProfileInfo.class, repositoryProfileInfo -> ws.tell(repositoryProfileInfo.repositoryProfileResult, self()))
+                .match(Messages.RepositoryProfileInfo.class, repositoryProfileInfo -> wsOut.tell(repositoryProfileInfo.repositoryProfileResult, self()))
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }

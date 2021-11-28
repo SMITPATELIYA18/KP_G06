@@ -159,7 +159,7 @@ public class GitterificController extends Controller {
 		return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> SupervisorActor.props(out, gitHubAPIInst, asyncCacheApi), actorSystem, materializer));
 	}
 
-	*/
+
 	/**
 	 * Checks that the WebSocket comes from the same origin.  This is necessary to protect
 	 * against Cross-Site WebSocket Hijacking as WebSocket does not implement Same Origin Policy.
