@@ -68,6 +68,7 @@ public class UserProfileActor extends AbstractActor {
                 .match(Messages.GetUserProfile.class, userProfileRequest -> {
                     onGetUserProfile(userProfileRequest).thenAcceptAsync(this::processUserProfileResult);
                 })
+//                .matchAny(other -> getSender().tell(new Messages.UnknownMessageReceived(), getSelf()))
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }

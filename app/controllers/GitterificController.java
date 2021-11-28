@@ -68,7 +68,8 @@ public class GitterificController extends Controller {
 	 * @author SmitPateliya, Farheen Jamadar
 	 */
 	public CompletionStage<Result> index(String query, Http.Request request) {
-		if (query.isEmpty()) {
+		return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(request, null, assetsFinder)));
+		/*if (query.isEmpty()) {
 			asyncCacheApi.remove("search");
 			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(request, null, assetsFinder)));
 		}
@@ -76,7 +77,7 @@ public class GitterificController extends Controller {
 		return gitterificService.getRepositoryFromSearch(query).thenApplyAsync(
 				searchResults -> ok(views.html.index.render(request, searchResults,
 						assetsFinder)),
-				httpExecutionContext.current());
+				httpExecutionContext.current());*/
 
 	}
 

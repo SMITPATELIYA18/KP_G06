@@ -20,6 +20,7 @@ $ ->
         updateSearchResult(message)
       when "userProfileInfo"
         $("#all-search-results").hide()
+        $("#repository-profile-info").hide()
         displayUserProfileInfo(message)
         $("#user-profile-info").show()
       when "repositoryProfileInfo"
@@ -50,9 +51,19 @@ $ ->
     return
 
   $("#all-search-results").on "click", "a.repository-profile-link", (event) ->
-      event.preventDefault()
-      ws.send(JSON.stringify({repository_profile: $(this).text(), username: $(this).attr("username")}))
-      return
+    event.preventDefault()
+    ws.send(JSON.stringify({repository_profile: $(this).text(), username: $(this).attr("username")}))
+    return
+
+  $("#user-profile-info").on "click", "a.repository-profile-link", (event) ->
+    event.preventDefault()
+    ws.send(JSON.stringify({repository_profile: $(this).text(), username: $(this).attr("username")}))
+    return
+
+  $("#repository-profile-info").on "click", "a.user-profile-link", (event) ->
+    event.preventDefault()
+    ws.send(JSON.stringify({user_profile: $(this).text()}))
+    return
 
 # Replaces spaces in a string with underscores
 replaceSpaceWithUnderscore = (string) ->
@@ -144,6 +155,7 @@ displayUserProfileInfo = (message) ->
         repositoryEntry = $("<li>")
         repositoryEntryLink = $("<a>").text(repo).attr("href", "/repositoryProfile/" + username + "/" + repo)
         repositoryEntryLink.addClass("repository-profile-link")
+        repositoryEntryLink.attr("username", username)
         repositoryEntry.append(repositoryEntryLink)
         repoList.append(repositoryEntry)
       userRepos.append(repoList)

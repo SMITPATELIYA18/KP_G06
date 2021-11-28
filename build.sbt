@@ -26,6 +26,7 @@ lazy val root = (project in file("."))
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-http-jackson" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+      "ch.qos.logback" % "logback-classic" % "1.2.5",
     ),
     javacOptions ++= Seq(
       "-encoding", "UTF-8",
