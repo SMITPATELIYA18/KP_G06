@@ -7,6 +7,7 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.fasterxml.jackson.databind.JsonNode;
 import services.github.GitHubAPI;
+import play.cache.AsyncCacheApi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,15 +17,18 @@ public class SupervisorActor extends AbstractActor {
     private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
     private final ActorRef ws;
     private GitHubAPI gitHubAPIInst;
+    private final AsyncCacheApi asyncCacheApi;
     final Map<String, ActorRef> queryToSearchActor = new HashMap<String, ActorRef>();
+    private ActorRef userProfileActor;
 
-    public SupervisorActor(final ActorRef wsOut, GitHubAPI gitHubAPIInst) {
+    public SupervisorActor(final ActorRef wsOut, GitHubAPI gitHubAPIInst, AsyncCacheApi asyncCacheApi) {
         ws =  wsOut;
         this.gitHubAPIInst = gitHubAPIInst;
+        this.asyncCacheApi = asyncCacheApi;
     }
 
-    public static Props props(final ActorRef wsout, GitHubAPI gitHubAPIInst) {
-        return Props.create(SupervisorActor.class, wsout, gitHubAPIInst);
+    public static Props props(final ActorRef wsout, GitHubAPI gitHubAPIInst, AsyncCacheApi asyncCacheApi) {
+        return Props.create(SupervisorActor.class, wsout, gitHubAPIInst, asyncCacheApi);
     }
 
     static public class TimeMessage {
@@ -44,9 +48,8 @@ public class SupervisorActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(JsonNode.class, this::processRequest)
-                .match(Messages.SearchResult.class, searchResult -> {
-                    ws.tell(searchResult.searchResult, self());
-                })
+                .match(Messages.SearchResult.class, searchResult -> ws.tell(searchResult.searchResult, self()))
+                .match(Messages.UserProfileInfo.class, userProfileInfo -> ws.tell(userProfileInfo.userProfileResult, self()))
                 .build();
     }
 
@@ -60,9 +63,14 @@ public class SupervisorActor extends AbstractActor {
                 searchActor = getContext().actorOf(SearchActor.props(self(), searchQuery, this.gitHubAPIInst));
                 queryToSearchActor.putIfAbsent(searchQuery, searchActor);
             }
-            searchActor.tell(new Messages.TrackSearch(searchQuery), getSelf());
+            searchActor.tell(new Messages.TrackSearch(searchQuery, "fromSupervisor"), getSelf());
         } else if(receivedJson.has("user_profile")) {
-            System.out.println("It works. Received JSON: " + receivedJson);
+            String username = receivedJson.get("user_profile").asText();
+            if(userProfileActor == null) {
+                log.info("Creating a user profile actor.");
+                userProfileActor = getContext().actorOf(UserProfileActor.props(self(), this.gitHubAPIInst, this.asyncCacheApi));
+            }
+            userProfileActor.tell(new Messages.GetUserProfile(username), getSelf());
         }
     }
 }
