@@ -1,5 +1,8 @@
 $ ->
+  # Requests a web socket from the server for two-way fully duplex communication
   ws = new WebSocket $("#gitterific-home").data("ws-url")
+
+  # On receiving a message, checks the response type and renders data accordingly
   ws.onmessage = (event) ->
     message = JSON.parse event.data
     switch message.responseType
@@ -18,28 +21,32 @@ $ ->
         displayUserProfileInfo(message)
         $("#user-profile-info").show()
 
+  # When the form button is clicked, validates the input and sends a request using the web socket
   $("#searchGitHubForm").submit (event) ->
     event.preventDefault()
-    x = $("#searchField").val()
-    if x == ''
-      alert 'Please enter a string to be searched.'
+    searchQuery = $("#searchField").val()
+    if searchQuery == ""
+      alert "Please enter a string to be searched."
       return false
     else
-      x = x.toLowerCase()
-      ws.send(JSON.stringify({search_query: x}))
+      searchQuery = searchQuery.toLowerCase()
+      ws.send(JSON.stringify({search_query: searchQuery}))
       # reset the form
       $("#searchField").val("")
       return
 
+  # When a user profile link is clicked, sends a request to retrieve user profile and repositories information using
+  # the web socket
   $("#all-search-results").on "click", "a.user-profile-link", (event) ->
     event.preventDefault()
-    # alert $(this).text()
     ws.send(JSON.stringify({user_profile: $(this).text()}))
     return
 
+# Replaces spaces in a string with underscores
 replaceSpaceWithUnderscore = (string) ->
   string.replace(" ", "_")
 
+# Displays search results for fresh search results (this function is not for periodic updates to the search results)
 displaySearchResult = (message) ->
   id_query = replaceSpaceWithUnderscore(message.query)
   singleSearchResult = $("<div>").addClass("single-search-result").prop("id", id_query)
@@ -71,6 +78,7 @@ displaySearchResult = (message) ->
   singleSearchResult.append($("<hr>"))
   $("#all-search-results").prepend(singleSearchResult)
 
+# Updates displayed search results with new data received from the server
 updateSearchResult = (message) ->
   id_query = replaceSpaceWithUnderscore(message.query)
   for repository in message.repositoryList
@@ -94,6 +102,7 @@ updateSearchResult = (message) ->
 
     $("#" + id_query + "-result").prepend(respositoryInfo)
 
+# Renders user profile and repositories information
 displayUserProfileInfo = (message) ->
   $("#user-profile-info").empty()
   username = message.profile.login
