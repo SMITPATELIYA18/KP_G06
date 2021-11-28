@@ -1,14 +1,29 @@
 package services;
 
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import models.IssueModel;
 import models.SearchRepository;
 import play.libs.ws.*;
@@ -63,12 +78,40 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @return IssueModel's future instance
 	 */
 
-	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) {
+	public CompletionStage<JsonNode> getRepositoryIssue(String repoFullName) {
 		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
-		CompletionStage<IssueModel> searchResult = client.url(finalURL)
+		CompletionStage<JsonNode> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
-				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
+				.thenApplyAsync(result -> {
+					ObjectMapper mapper = new ObjectMapper();
+					ObjectNode finalResult = mapper.createObjectNode();
+					finalResult.put("repoFullName", repoFullName);
+					JsonNode data = result.asJson();
+					List<String> issueTitles = new ArrayList<>();
+//					LinkedHashMap<String, Long> worldLevelData = new LinkedHashMap<>();
+					ObjectNode worldLevelData = mapper.createObjectNode();
+					if(!data.has("message")) {
+						java.util.Iterator<JsonNode> iteratorItems = data.elements() != null ? data.elements()
+								: Collections.emptyIterator();
+						iteratorItems.forEachRemaining(issue -> issueTitles.add(issue.get("title").asText()));
+						Map<String, Long> unsortedData = issueTitles.stream().flatMap(title -> getIndividualWord(title))
+								.collect(groupingBy(Function.identity(), counting()));
+						unsortedData.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+								.forEachOrdered(result1 -> worldLevelData.put(result1.getKey(), result1.getValue()));
+						finalResult.set("wordLevelData", worldLevelData);
+						finalResult.put("error",false);
+					}
+					else {
+						finalResult.put("error", true);
+						finalResult.put("errorMessage", "Error! This Repository does not have Issues");
+					}
+                    return finalResult;
+				});
 		return searchResult;
+	}
+	
+	private Stream<String> getIndividualWord(String title) {
+		return Arrays.asList(title.split(" ")).stream();
 	}
 
 	/**

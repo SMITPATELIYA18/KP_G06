@@ -26,6 +26,7 @@ public class SupervisorActor extends AbstractActor {
     final Map<String, ActorRef> queryToSearchActor = new HashMap<String, ActorRef>();
     private ActorRef userProfileActor = null;
     private ActorRef repositoryProfileActor = null;
+    private ActorRef issueStatActor = null;
 
     /**
      * @param wsOut For sending data/messages to the client
@@ -71,6 +72,7 @@ public class SupervisorActor extends AbstractActor {
                 .match(Messages.SearchResult.class, searchResult -> wsOut.tell(searchResult.searchResult, self()))
                 .match(Messages.UserProfileInfo.class, userProfileInfo -> wsOut.tell(userProfileInfo.userProfileResult, self()))
                 .match(Messages.RepositoryProfileInfo.class, repositoryProfileInfo -> wsOut.tell(repositoryProfileInfo.repositoryProfileResult, self()))
+                .match(Messages.IssueStatInfo.class, issueStatInfo -> wsOut.tell(issueStatInfo.issueModel, self()))
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }
@@ -112,6 +114,13 @@ public class SupervisorActor extends AbstractActor {
                 repositoryProfileActor = getContext().actorOf(RepositoryProfileActor.props(self(), this.gitHubAPIInst, this.asyncCacheApi));
             }
             repositoryProfileActor.tell(new Messages.GetRepositoryProfileActor(username, repositoryName), getSelf());
+        } else if(receivedJson.has("issues")) {
+        	String repoFullName = receivedJson.get("repoFullName").asText();
+        	if(issueStatActor == null) {
+        		log.info("Creating a Issue Stat info");
+        		issueStatActor  =getContext().actorOf(IssueStatActor.props(self(), this.gitHubAPIInst));
+        	}
+        	issueStatActor.tell(new Messages.GetRepositoryIssueActor(repoFullName), getSelf());
         }
         //TODO: Else condition
     }
