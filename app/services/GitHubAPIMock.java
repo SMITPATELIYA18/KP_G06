@@ -1,6 +1,8 @@
 package services;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -24,7 +26,14 @@ import services.github.GitHubAPI;
  */
 
 public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAPI {
-	
+	private static List<String> list;
+
+	public GitHubAPIMock(){
+		this.list = new ArrayList<>();
+		this.list.add("test/resources/searchreposfeature/sampleSearchResult.json");
+		this.list.add("test/resources/searchreposfeature/sampleSearchResult2.json");
+		this.list.add("test/resources/searchreposfeature/sampleSearchResult3.json");
+	}
 	/**
 	 * This function returns IssueModel object when API  will call.
 	 * @author smitpateliya
@@ -71,8 +80,19 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 	@Override
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
+
+		System.out.println("List size1: " + this.list.size());
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode sampleSearchResult = mapper.readTree(new File("test/resources/searchreposfeature/sampleSearchResult.json"));
+		String filePath = "";
+		if(this.list.size() > 1) {
+			filePath = this.list.get(this.list.size() - 1);
+			this.list.remove(this.list.size() - 1);
+		}else {
+			filePath = this.list.get(0);
+		}
+
+		System.out.println("Path: " + filePath + " List size: " + list.size());
+		JsonNode sampleSearchResult = mapper.readTree(new File(filePath));
 		CompletableFuture<SearchRepository> futureModel = new CompletableFuture<>();
 		SearchRepository modelData = new SearchRepository(sampleSearchResult, query);
 		futureModel.complete(modelData);

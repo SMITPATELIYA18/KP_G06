@@ -62,7 +62,8 @@ public class SearchActor extends AbstractActorWithTimers {
     public void preStart() {
         getTimers().startPeriodicTimer("RefreshSearch",
                 new Messages.TrackSearch(trackedSearchQuery, "periodic"),
-                Duration.create(120, TimeUnit.SECONDS));
+                Duration.create(10, TimeUnit.SECONDS));
+        //TODO: Farheen, change this to 120 before submission
     }
 
     /**
@@ -109,7 +110,6 @@ public class SearchActor extends AbstractActorWithTimers {
             /* If "baseSearchResults" has repository entries, checks if any repositories provided in "searchRepository"
             * are already present in "baseSearchResults" and constructs "searchResultUpdate" which contains only the
             * new repositories  */
-
             List<RepositoryModel> searchResultUpdate = new ArrayList<>();
             for(RepositoryModel repositoryModel: searchRepository.getRepositoryList()) {
                 if(!baseSearchResults.contains(repositoryModel)){
@@ -119,6 +119,7 @@ public class SearchActor extends AbstractActorWithTimers {
 
             /* This if block is added to help during the development process and should be removed before project
             * submission. */
+            //TODO: Farheen: Remove before submission
             if(searchResultUpdate.isEmpty()) {
                 RepositoryModel sampleRepositoryModel = new RepositoryModel("sampleOwnerName", "sampleRepositoryName", new ArrayList<String>());
                 searchResultUpdate.add(sampleRepositoryModel);

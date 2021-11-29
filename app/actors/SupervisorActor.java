@@ -24,8 +24,8 @@ public class SupervisorActor extends AbstractActor {
     private final AsyncCacheApi asyncCacheApi;
 
     final Map<String, ActorRef> queryToSearchActor = new HashMap<String, ActorRef>();
-    private ActorRef userProfileActor = null;
-    private ActorRef repositoryProfileActor = null;
+    private ActorRef userProfileActor;
+    private ActorRef repositoryProfileActor;
 
     /**
      * @param wsOut For sending data/messages to the client
@@ -71,7 +71,6 @@ public class SupervisorActor extends AbstractActor {
                 .match(Messages.SearchResult.class, searchResult -> wsOut.tell(searchResult.searchResult, self()))
                 .match(Messages.UserProfileInfo.class, userProfileInfo -> wsOut.tell(userProfileInfo.userProfileResult, self()))
                 .match(Messages.RepositoryProfileInfo.class, repositoryProfileInfo -> wsOut.tell(repositoryProfileInfo.repositoryProfileResult, self()))
-//                .match(Messages.UnknownMessageReceived.class, unknownMessageReceived -> {})
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }
@@ -106,6 +105,11 @@ public class SupervisorActor extends AbstractActor {
             }
             userProfileActor.tell(new Messages.GetUserProfile(username), getSelf());
         } else if(receivedJson.has("repository_profile")) {
+
+            /* For "repository_profile" requests, checks if a "RepositoryProfileActor" is already created. If no actor exists,
+             * creates a new "RepositoryProfileActor" to handle all "repository_profile" requests and sends it the current request
+             * to get the user profile information. */
+
             String repositoryName = receivedJson.get("repository_profile").asText();
             String username = receivedJson.get("username").asText();
             if(repositoryProfileActor == null) {
@@ -114,6 +118,8 @@ public class SupervisorActor extends AbstractActor {
             }
             repositoryProfileActor.tell(new Messages.GetRepositoryProfileActor(username, repositoryName), getSelf());
         }
-        //TODO: Else condition
+        else {
+            getSelf().tell(new Messages.UnknownMessageReceived(), getSelf());
+        }
     }
 }

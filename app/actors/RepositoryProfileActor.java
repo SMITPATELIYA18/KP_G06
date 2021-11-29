@@ -41,9 +41,9 @@ public class RepositoryProfileActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Messages.GetRepositoryProfileActor.class, repositoryProfileRequest -> {
-                    onGetRepositoryProfile(repositoryProfileRequest).thenAcceptAsync(this::processRepositoryProfileResult);
-                })
+                .match(Messages.GetRepositoryProfileActor.class, repositoryProfileRequest ->
+                    onGetRepositoryProfile(repositoryProfileRequest).thenAcceptAsync(this::processRepositoryProfileResult))
+                .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }
 
@@ -74,7 +74,6 @@ public class RepositoryProfileActor extends AbstractActor {
     }
 
     private void processRepositoryProfileResult(JsonNode repositoryProfileInfo) {
-        //System.out.println("Received repository profile result: " + repositoryProfileInfo);
         sessionActor.tell(new Messages.RepositoryProfileInfo(repositoryProfileInfo), getSelf());
     }
 }
