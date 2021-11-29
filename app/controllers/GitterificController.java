@@ -1,7 +1,6 @@
 package controllers;
 
 import actors.SupervisorActor;
-import actors.UserParentActor;
 import akka.NotUsed;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
@@ -177,27 +176,27 @@ public class GitterificController extends Controller {
 		return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> SupervisorActor.props(out, gitHubAPIInst, asyncCacheApi), actorSystem, materializer));
 	}
 	
-	@SuppressWarnings("unchecked")
-    private CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> wsFutureFlow(Http.RequestHeader request) {
-        String id = Long.toString(request.asScala().id());
-        Scheduler scheduler = Adapter.toTyped(system.scheduler());
-        return AskPattern.<SupervisorActor.props, Flow<JsonNode, JsonNode, NotUsed>>ask(
-        		SupervisorActor, replyTo -> new UserParentActor.Create(id, replyTo), timeout, scheduler
-        ).thenApply(f -> f.named("websocket"));
-    }
-
-    private CompletionStage<Either<Result, Flow<JsonNode, JsonNode, ?>>> forbiddenResult() {
-        final Result forbidden = Results.forbidden("forbidden");
-        final Either<Result, Flow<JsonNode, JsonNode, ?>> left = Either.Left(forbidden);
-
-        return CompletableFuture.completedFuture(left);
-    }
-
-    private Either<Result, Flow<JsonNode, JsonNode, ?>> logException(Throwable throwable) {
-    	log.error("Cannot create websocket", throwable);
-        Result result = Results.internalServerError("error");
-        return Either.Left(result);
-    }
+//	@SuppressWarnings("unchecked")
+//    private CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> wsFutureFlow(Http.RequestHeader request) {
+//        String id = Long.toString(request.asScala().id());
+//        Scheduler scheduler = Adapter.toTyped(system.scheduler());
+//        return AskPattern.<SupervisorActor.props, Flow<JsonNode, JsonNode, NotUsed>>ask(
+//        		SupervisorActor, replyTo -> new UserParentActor.Create(id, replyTo), timeout, scheduler
+//        ).thenApply(f -> f.named("websocket"));
+//    }
+//
+//    private CompletionStage<Either<Result, Flow<JsonNode, JsonNode, ?>>> forbiddenResult() {
+//        final Result forbidden = Results.forbidden("forbidden");
+//        final Either<Result, Flow<JsonNode, JsonNode, ?>> left = Either.Left(forbidden);
+//
+//        return CompletableFuture.completedFuture(left);
+//    }
+//
+//    private Either<Result, Flow<JsonNode, JsonNode, ?>> logException(Throwable throwable) {
+//    	log.error("Cannot create websocket", throwable);
+//        Result result = Results.internalServerError("error");
+//        return Either.Left(result);
+//    }
 
 
 	/**

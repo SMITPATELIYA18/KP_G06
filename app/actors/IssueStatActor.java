@@ -54,7 +54,8 @@ public class IssueStatActor extends AbstractActor {
 	 */
 	@Override
 	public void preStart() {
-		log.info("Issue Stat Actor has started");
+		System.out.println
+		("Issue Stat Actor has started");
 	}
 	
 	/**

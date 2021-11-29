@@ -5,6 +5,7 @@ $ ->
   # On receiving a message, checks the response type and renders data accordingly
   ws.onmessage = (event) ->
     message = JSON.parse event.data
+    console.log(message.responseType)
     switch message.responseType
       when "searchResult"
         $("#repository-profile-info").hide()
@@ -206,14 +207,24 @@ displayIssueStatInfo = (issueModel) ->
     $("#issue-stat-info").append("<span>").append("<i>").text("(by frequency of the words in descending order)")
 
     repoFullName = issueModel.result.repoFullName
+    console.log(repoFullName)
     $("#issue-stat-info").append($("<h2>").text("Repository Name: " + repoFullName))
     $("#issue-stat-info").append($("<br>"))
     issueStat = $("<div>")
+    console.log($("#issue-stat-info"))
     if issueModel.result.error
         $("#issue-stat-info").append("<div><h4>" + issueModel.result.errorMessage + "</div></h4>")
     else
-        for key,value of issues.result.wordLevelData
-            oneIssueStat = $("<div><ul>" + key + " :: " + value + "</div></ul>")
+        $.each issueModel.result.wordLevelData, (key, value) ->
+            oneIssueStat = $("<li>")
+            oneIssueStat.append($("<b>").text(key))
+            oneIssueStat.append($("<b>").text(": "))
+            oneIssueStat.append(value)
             issueStat.append(oneIssueStat)
         issueStat.append("</div>")
+        console.log(issueStat)
+        #for key,value of issueModel.result.wordLevelData
+         #   oneIssueStat = $("<div><ul>" + key + " :: " + value + "</div></ul>")
+          #  issueStat.append(oneIssueStat)
+        # issueStat.append("</div>")
     $("#issue-stat-info").append(issueStat)
