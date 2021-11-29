@@ -63,10 +63,10 @@ $ ->
       ws.send(JSON.stringify({repository_profile: $(this).text(), username: $(this).attr("username")}))
       return
 
-  $("repository-profile-info").on "click", "a.issue-profile-link", (event) ->
-        event.preventDefault()
-        ws.send(JSON.stringify({"issues": repoFullName}))
-        return
+  $("#repository-profile-info").on "click", "a.issue-profile-link", (event) ->
+      event.preventDefault()
+      ws.send(JSON.stringify({issues: $(this).attr("repoFullName")}))
+      return
 
 # Replaces spaces in a string with underscores
 replaceSpaceWithUnderscore = (string) ->
@@ -206,7 +206,7 @@ displayIssueStatInfo = (issueModel) ->
     $("#issue-stat-info").append("<span>").append("<i>").text("(by frequency of the words in descending order)")
 
     repoFullName = issueModel.result.repoFullName
-    $("#issue-stat-info).append($("<h2>").text("Repository Name: " + repoFullName))
+    $("#issue-stat-info").append($("<h2>").text("Repository Name: " + repoFullName))
     $("#issue-stat-info").append($("<br>"))
     issueStat = $("<div>")
     if issueModel.result.error
