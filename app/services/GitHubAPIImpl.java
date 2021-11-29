@@ -110,6 +110,21 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return searchResult;
 	}
 	
+	public CompletionStage<IssueModel> getRepository20Issue(String repoFullName) {
+		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
+		CompletionStage<IssueModel> searchResult = client.url(finalURL)
+				.addHeader("accept", "application/vnd.github.v3+json").get()
+				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
+		return searchResult;
+	}
+	
+	/**
+	 * This functions return String stream of title array.
+	 * @param title Receives title for splitting into individual words
+	 * @return Stream of title's word 
+	 * 
+	 */
+	
 	private Stream<String> getIndividualWord(String title) {
 		return Arrays.asList(title.split(" ")).stream();
 	}

@@ -128,7 +128,7 @@ public class GitterificController extends Controller {
 
 	public CompletionStage<Result> getIssueStat(String repoName, Http.Request request) {
 		repoName = repoName.replace("+", "/");
-		return gitHubAPIInst.getRepositoryIssue(repoName).thenApplyAsync(
+		return gitHubAPIInst.getRepository20Issue(repoName).thenApplyAsync(
 				issueModel -> {return ok(views.html.issues.render(request, issueModel, assetsFinder));},
 				httpExecutionContext.current());
 	}

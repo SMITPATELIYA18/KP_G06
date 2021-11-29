@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Handles sending/receiving data/messages to/from clients. Acts as a supervisor to all other actors - creates ana manages them
- * @author Pradnya Kandarkar
+ * @author Pradnya Kandarkar, Smit Pateliya
  */
 public class SupervisorActor extends AbstractActor {
     private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
@@ -63,7 +63,7 @@ public class SupervisorActor extends AbstractActor {
     /**
      * Handles incoming messages for this actor - matches the class of an incoming message and takes appropriate action
      * @return <code>AbstractActor.Receive</code> defining the messages that can be processed by this actor and how they will be processed
-     * @author Pradnya Kandarkar
+     * @author Pradnya Kandarkar, Smit Pateliya
      */
     @Override
     public Receive createReceive() {
@@ -80,7 +80,7 @@ public class SupervisorActor extends AbstractActor {
     /**
      * Processes JSON data received from client requests, and creates actors to handle the requests accordingly
      * @param receivedJson <code>JsonNode</code> object holding the client request
-     * @author Pradnya Kandarkar
+     * @author Pradnya Kandarkar, Smit Pateliya
      */
     private void processRequest(JsonNode receivedJson) {
         if(receivedJson.has("search_query")) {
@@ -115,7 +115,7 @@ public class SupervisorActor extends AbstractActor {
             }
             repositoryProfileActor.tell(new Messages.GetRepositoryProfileActor(username, repositoryName), getSelf());
         } else if(receivedJson.has("issues")) {
-        	String repoFullName = receivedJson.get("repoFullName").asText();
+        	String repoFullName = receivedJson.get("issues").asText();
         	if(issueStatActor == null) {
         		log.info("Creating a Issue Stat info");
         		issueStatActor  =getContext().actorOf(IssueStatActor.props(self(), this.gitHubAPIInst));

@@ -63,6 +63,11 @@ $ ->
       ws.send(JSON.stringify({repository_profile: $(this).text(), username: $(this).attr("username")}))
       return
 
+  $("repository-profile-info").on "click", "a.issue-profile-link", (event) ->
+        event.preventDefault()
+        ws.send(JSON.stringify({"issues": repoFullName}))
+        return
+
 # Replaces spaces in a string with underscores
 replaceSpaceWithUnderscore = (string) ->
   string.replace(" ", "_")
@@ -179,6 +184,7 @@ displayRepositoryProfileInfo = (message) ->
             index = parseInt(key) + 1
             issueLink = $("<a>").text(value).attr("href", "/issues/" + username + "/" + repositoryName)
             issueLink.addClass("issue-profile-link")
+            issueLink.attr("repoFullName", username + "/" + repositoryName)
             $("#repository-profile-info").append( "<b>" + index + " -</b> ").append(issueLink).append("<br>")
   else
       $("#repository-profile-info").append("No issues found")

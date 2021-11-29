@@ -41,7 +41,7 @@ public class IssueStatActor extends AbstractActor {
 	 * @param supervisorActor Receiving  Supervisor Actor Reference
 	 * @param gitHubAPI To call Git hub Rest API
 	 * @return return Actor Reference
-	 * @author smitp
+	 * @author Smit Pateliya
 	 */
 	
 	public static Props props(ActorRef  supervisorActor, GitHubAPI gitHubAPI) {
@@ -50,7 +50,7 @@ public class IssueStatActor extends AbstractActor {
 	
 	/**
 	 * This method calls before initializing actor
-	 * @author smitp
+	 * @author Smit Pateliya
 	 */
 	@Override
 	public void preStart() {
@@ -59,7 +59,7 @@ public class IssueStatActor extends AbstractActor {
 	
 	/**
 	 * This method Handles Incoming messages and redirect to appropriate method
-	 * @author smitp
+	 * @author Smit Pateliya
 	 */
 	
 	@Override
@@ -72,8 +72,8 @@ public class IssueStatActor extends AbstractActor {
 	/**
 	 * This method calls REST API for getting data.
 	 * @param issueStatRequest Receiving Repository name for calling API
-	 * @return Json data in the form Future
-	 * @author smitp
+	 * @return JSON data in the form Future
+	 * @author Smit Pateliya
 	 */
 	private CompletionStage<JsonNode> getIssueStat(Messages.GetRepositoryIssueActor issueStatRequest) {
 		return gitHubAPI.getRepositoryIssue(issueStatRequest.repoFullName).thenApplyAsync((JsonNode result) -> {
@@ -88,7 +88,7 @@ public class IssueStatActor extends AbstractActor {
 	/**
 	 * This method return API reponse to the supervisor actor
 	 * @param issueModel data from API
-	 * @author smitp
+	 * @author Smit Pateliya
 	 */
 	private void returnResult(JsonNode issueModel) {
 		superviserActor.tell(new Messages.IssueStatInfo(issueModel), getSelf());

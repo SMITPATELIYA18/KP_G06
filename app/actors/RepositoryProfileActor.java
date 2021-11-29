@@ -53,7 +53,7 @@ public class RepositoryProfileActor extends AbstractActor {
                         () -> gitHubAPIInst.getRepositoryProfile(repositoryProfileRequest.username, repositoryProfileRequest.repositoryName))
                 .thenCombineAsync(
                         asyncCacheApi.getOrElseUpdate(repositoryProfileRequest.username + repositoryProfileRequest.repositoryName + "/20issues",
-                                () -> gitHubAPIInst.getRepositoryIssue(repositoryProfileRequest.username + "/" + repositoryProfileRequest.repositoryName)),
+                                () -> gitHubAPIInst.getRepository20Issue(repositoryProfileRequest.username + "/" + repositoryProfileRequest.repositoryName)),
                         (repositoryProfileDetail, issueList) -> {
                             asyncCacheApi.set(repositoryProfileRequest.username + repositoryProfileRequest.repositoryName + "/20issues", issueList,  60 * 15);
                             asyncCacheApi.set(repositoryProfileRequest.username + "/" + repositoryProfileRequest.repositoryName, repositoryProfileDetail,  60 * 15);

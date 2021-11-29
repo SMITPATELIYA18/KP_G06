@@ -93,7 +93,7 @@ public class Messages {
     
     /**
      * This message class uses for receiving data from supervisor actor
-     * @author smitp
+     * @author Smit Pateliya
      *
      */
     
@@ -103,7 +103,7 @@ public class Messages {
     	/**
     	 * This methods initialize repoFullNme variable
     	 * @param repoFullName
-    	 * @author smitp
+    	 * @author Smit Pateliya
     	 */
     	
     	public GetRepositoryIssueActor(String repoFullName) {
@@ -113,7 +113,7 @@ public class Messages {
     
     /**
      * This message class uses for sending data to user
-     * @author smitp
+     * @author Smit Pateliya
      *
      */
     
@@ -123,7 +123,7 @@ public class Messages {
     	/**
     	 * Initializes issuModel variable
     	 * @param issueModel
-    	 * @author smitp
+    	 * @author Smit Pateliya
     	 */
     	
     	public IssueStatInfo(JsonNode issueModel) {
