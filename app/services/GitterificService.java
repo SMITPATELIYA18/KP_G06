@@ -35,7 +35,7 @@ public class GitterificService {
      * @return Future CompletionStage SearchCacheStore
      * @author Farheen Jamadar, SmitPateliya
      */
-    public CompletionStage<SearchCacheStore> getRepositoryFromSearch(String username) {
+   /* public CompletionStage<SearchCacheStore> getRepositoryFromSearch(String username) {
         CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + username, () -> {
             CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(username);
             asyncCacheApi.set("search_" + username, searchRepository, 60 * 15);
@@ -53,7 +53,7 @@ public class GitterificService {
                     asyncCacheApi.set("search", store, 60 * 15);
                     return store;
                 });
-    }
+    }*/
 
     /**
      * Retrieves all available public profile information about a user, as well as all the repositories of that user
@@ -86,7 +86,7 @@ public class GitterificService {
      * @return Future CompletionStage JsonNode
      * @author Farheen Jamadar
      */
-    public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
+    /*public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
         return asyncCacheApi.getOrElseUpdate(username + "/" + repositoryName,
                         () -> gitHubAPIInst.getRepositoryProfile(username, repositoryName))
                 .thenCombineAsync(
@@ -109,7 +109,7 @@ public class GitterificService {
                         }
                 );
     }
-
+*/
     /**
      * Retrieves top 10 repositories containing the topic provided by the user.
      * @param topic Topic based on which the repositories will be retrieved
