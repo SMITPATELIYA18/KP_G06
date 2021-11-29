@@ -7,7 +7,7 @@ GET     /                      controllers.GitterificController.index(request: R
 GET     /ws                         controllers.GitterificController.ws
 
 # Repository profile feature route(s):
-GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String, request: Request)
+#GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String, request: Request)
 
 # Repository issues feature route(s):
 GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoName: String, request: Request)

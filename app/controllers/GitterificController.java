@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
-import views.html.repositoryprofile.*;
+//import views.html.repositoryprofile.*;
 
 import static akka.pattern.PatternsCS.ask;
 
@@ -80,7 +80,7 @@ public class GitterificController extends Controller {
 	 * @return Future CompletionStage Result
 	 * @author Farheen Jamadar
 	 */
-	public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName, Http.Request request){
+	/*public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName, Http.Request request){
 		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
 				repositoryData -> ok(repositoryProfile.render(request, username,
 							repositoryName,
@@ -88,7 +88,7 @@ public class GitterificController extends Controller {
 							repositoryData.get("issueList"),
 							assetsFinder)),
 				httpExecutionContext.current());
-	}
+	}*/
 
 	/**
 	 * This method gives issues' title statics which are returning from API.
