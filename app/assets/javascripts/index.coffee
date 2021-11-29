@@ -172,6 +172,7 @@ displayRepositoryProfileInfo = (message) ->
   username = message.repositoryProfile.owner.login
   for key,value of message.repositoryProfile
     if(typeof value == "object")
+      $('#repository-profile-info').append "<b>" + key + "</b>: <br>"
       printRepositoryDetails value, repositoryName
     else
       $('#repository-profile-info').append "<b>" + key + "</b>: " + value + "<br/>"
