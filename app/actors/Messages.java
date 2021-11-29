@@ -70,8 +70,8 @@ public class Messages {
         }
     }
 
-    /*public static final class UnknownMessageReceived {
-    }*/
+    public static final class UnknownMessageReceived {
+    }
 
 
     public static final class GetRepositoryProfileActor {
