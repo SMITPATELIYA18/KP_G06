@@ -14,7 +14,8 @@
 					@for(repository <- listOfRepositories.getRepositoryList()) {
 						<div style="margin-bottom: 2%">
 							<ul>
-								<li><b>Owner Name:</b> <a href="@routes.GitterificController.getUserProfile(repository.getOwnerName())">@repository.getOwnerName()</a> &nbsp; |
+								<!-- Removed user profile link from href because it is no longer available after adding akka actors -->
+								<li><b>Owner Name:</b> <a href="#">@repository.getOwnerName()</a> &nbsp; |
 									&nbsp;<b> Repository Name:</b> <a href="@routes.GitterificController.getRepositoryProfile(repository.getOwnerName(), repository.getRepositoryName())">@repository.getRepositoryName()</a>
 									@if(!repository.getTopics().isEmpty()){ &nbsp; | &nbsp; @for(topic
 									<- repository.getTopics()) { <a href="@routes.GitterificController.getTopicRepository(topic)">(@topic)</a>&nbsp; } }</li>

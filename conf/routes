@@ -3,11 +3,8 @@
 # ~~~~
 
 # Search repository feature route(s):
-GET     /                      controllers.GitterificController.index(search: String ?= "", request: Request)
+GET     /                      controllers.GitterificController.index(request: Request)
 GET     /ws                         controllers.GitterificController.ws
-
-# User profile feature route(s):
-GET 	/user-profile/:username		controllers.GitterificController.getUserProfile(username: String, request: Request)
 
 # Repository profile feature route(s):
 GET     /repositoryProfile/:username/:repositoryName		    controllers.GitterificController.getRepositoryProfile(username: String, repositoryName: String, request: Request)
