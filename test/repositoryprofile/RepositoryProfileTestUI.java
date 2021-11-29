@@ -1,3 +1,5 @@
+//TODO: Farheen: Delete
+/*
 package repositoryprofile;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,32 +22,39 @@ import static org.junit.Assert.assertTrue;
 import static play.inject.Bindings.bind;
 import static play.test.Helpers.*;
 
+*/
 /**
  * Contains cases to test the view in Repository profile feature
  * @author Farheen Jamadar
- */
+ *//*
+
 public class RepositoryProfileTestUI {
     private static AssetsFinder assetsFinder;
     private static Application testApp;
 
-    /**
+    */
+/**
      * Binds the interface to the mock implementation of GitHub API
      * @author Farheen Jamadar
-     */
+     *//*
+
     @BeforeClass
     public static void setUp() {
         testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
         assetsFinder = testApp.injector().instanceOf(AssetsFinder.class);
     }
 
-    /**
+    */
+/**
      * Cleans up after all the test cases are executed
      * @author Farheen Jamadar
-     */
+     *//*
+
     @AfterClass
     public static void tearDown() {
         Helpers.stop(testApp);
     }
+*/
 
     /**
      * Checks if the view displays repository profile details provided a valid username,
@@ -167,4 +176,4 @@ public class RepositoryProfileTestUI {
         assertTrue(contentAsString(html).contains("No Issues Found"));
     }*/
 
-}
+//}

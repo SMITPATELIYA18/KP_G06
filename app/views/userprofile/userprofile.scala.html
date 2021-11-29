@@ -24,7 +24,6 @@
         @if(userRepositories.size() > 0) {
             <p>@userRepositories.size() repositories available for this user.</p>
             @for(arrayNode <- node.elements()) {
-                <li><a href="@routes.GitterificController.getRepositoryProfile(username, arrayNode.asText())">@arrayNode.asText()</a></li>
             }
         } else {
             <p>No public repositories available for this user.</p>

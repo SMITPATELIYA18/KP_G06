@@ -21,5 +21,26 @@
         @* And here's where we render the `Html` object containing
          * the page content. *@
         @content
+        <div>
+            <section id="top">
+                <div class="wrapper">
+                    <h1>Gitterific</h1>
+                </div>
+            </section>
+            <div style="margin-left: 18%; margin-right: 18%; margin-bottom: 1%; margin-top: 1%;">
+                <div style="padding: 10px 0px; text-align: center">
+                    <form name="searchForm" id="searchGitHubForm" action="/" method="GET">
+                        <input type="search" id="searchField" name="search" value=""
+                               placeholder="Enter Search Terms" />
+                        <button type="submit">Go!</button>
+                    </form>
+                </div>
+                <div id="all-search-results" class="container"></div>
+
+                <div id="user-profile-info"></div>
+
+                <div id="repository-profile-info"></div>
+            </div>
+        </div>
     </body>
 </html>
