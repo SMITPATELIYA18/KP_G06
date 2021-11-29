@@ -1,20 +1,29 @@
 package controllers;
 
 import actors.SupervisorActor;
+import actors.UserParentActor;
+import akka.NotUsed;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
 import akka.util.Timeout;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.streams.ActorFlow;
 import play.mvc.Controller;
+import akka.actor.typed.javadsl.Adapter;
+import akka.actor.typed.javadsl.AskPattern;
+import akka.stream.javadsl.Flow;
 import play.mvc.*;
 import scala.concurrent.duration.Duration;
 import services.GitterificService;
 import services.github.GitHubAPI;
+import play.libs.F.Either;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -156,8 +165,39 @@ public class GitterificController extends Controller {
 	 * @author Pradnya Kandarkar, Smit Pateliya
 	 */
 	public WebSocket ws() {
+//		WebSocket.Json.acceptOrResult(request -> {
+//            if (sameOriginCheck(request)) {
+//                final CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> future = wsFutureFlow(request);
+//                final CompletionStage<Either<Result, Flow<JsonNode, JsonNode, ?>>> stage = future.thenApply(Either::Right);
+//                return stage.exceptionally(this::logException);
+//            } else {
+//                return forbiddenResult();
+//            }
+//        });
 		return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> SupervisorActor.props(out, gitHubAPIInst, asyncCacheApi), actorSystem, materializer));
 	}
+	
+	@SuppressWarnings("unchecked")
+    private CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> wsFutureFlow(Http.RequestHeader request) {
+        String id = Long.toString(request.asScala().id());
+        Scheduler scheduler = Adapter.toTyped(system.scheduler());
+        return AskPattern.<SupervisorActor.props, Flow<JsonNode, JsonNode, NotUsed>>ask(
+        		SupervisorActor, replyTo -> new UserParentActor.Create(id, replyTo), timeout, scheduler
+        ).thenApply(f -> f.named("websocket"));
+    }
+
+    private CompletionStage<Either<Result, Flow<JsonNode, JsonNode, ?>>> forbiddenResult() {
+        final Result forbidden = Results.forbidden("forbidden");
+        final Either<Result, Flow<JsonNode, JsonNode, ?>> left = Either.Left(forbidden);
+
+        return CompletableFuture.completedFuture(left);
+    }
+
+    private Either<Result, Flow<JsonNode, JsonNode, ?>> logException(Throwable throwable) {
+    	log.error("Cannot create websocket", throwable);
+        Result result = Results.internalServerError("error");
+        return Either.Left(result);
+    }
 
 
 	/**
@@ -167,23 +207,23 @@ public class GitterificController extends Controller {
 	 * See https://tools.ietf.org/html/rfc6455#section-1.3 and
 	 * http://blog.dewhurstsecurity.com/2013/08/30/security-testing-html5-websockets.html
 	 */
-	/*
+	
 	private boolean sameOriginCheck(Http.RequestHeader rh) {
 		final Optional<String> origin = rh.header("Origin");
 
 		if (! origin.isPresent()) {
-			logger.error("originCheck: rejecting request because no Origin header found");
+			log.error("originCheck: rejecting request because no Origin header found");
 			return false;
 		} else if (originMatches(origin.get())) {
-			logger.debug("originCheck: originValue = " + origin);
+			log.debug("originCheck: originValue = " + origin);
 			return true;
 		} else {
-			logger.error("originCheck: rejecting request because Origin header value " + origin + " is not in the same origin");
+			log.error("originCheck: rejecting request because Origin header value " + origin + " is not in the same origin");
 			return false;
 		}
 	}
 
 	private boolean originMatches(String origin) {
 		return origin.contains("localhost:9000") || origin.contains("localhost:19001");
-	}*/
+	}
 }
