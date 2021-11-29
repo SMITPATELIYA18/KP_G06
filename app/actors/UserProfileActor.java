@@ -54,7 +54,16 @@ public class UserProfileActor extends AbstractActor {
      */
     @Override
     public void preStart() {
-        System.out.println("Created a user profile actor.");
+        log.info("Created a user profile actor.");
+    }
+
+    /**
+     * Executes after all other actions related to this actor
+     * @author Pradnya Kandarkar
+     */
+    @Override
+    public void postStop() {
+        log.info("Stopped the user profile actor.");
     }
 
     /**

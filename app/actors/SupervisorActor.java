@@ -56,7 +56,16 @@ public class SupervisorActor extends AbstractActor {
      */
     @Override
     public void preStart() {
-        System.out.println("Created a session actor.");
+        log.info("Created the supervisor actor.");
+    }
+
+    /**
+     * Executes after all other actions related to this actor
+     * @author Pradnya Kandarkar
+     */
+    @Override
+    public void postStop() {
+        log.info("Stopped the supervisor actor.");
     }
 
     /**

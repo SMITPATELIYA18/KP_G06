@@ -1,6 +1,7 @@
 package userprofile;
 
 import actors.Messages;
+import actors.SupervisorActor;
 import actors.UserProfileActor;
 import akka.actor.*;
 import akka.event.Logging;
@@ -77,10 +78,11 @@ public class UserProfileActorTest {
         userProfileActor.tell(new Messages.GetUserProfile("test_username"), testProbe.getRef());
 
         Messages.UserProfileInfo userProfileInfo = testProbe.expectMsgClass(Messages.UserProfileInfo.class);
-        System.out.println("Received JSON response: " + userProfileInfo.userProfileResult);
         assertEquals("userProfileInfo", userProfileInfo.userProfileResult.get("responseType").asText());
         assertTrue(userProfileInfo.userProfileResult.has("profile"));
         assertTrue(userProfileInfo.userProfileResult.has("repositories"));
+
+        actorSystem.stop(userProfileActor);
     }
 
     /**
@@ -99,14 +101,48 @@ public class UserProfileActorTest {
         final String unknownMessageStatus = new EventFilter(1) {
             @Override
             public boolean matches(Logging.LogEvent event) {
-                System.out.println("Printing log event: " + event.message().toString());
-                return true;
+                if(event.message().toString().equals("Received unknown message type: class com.fasterxml.jackson.databind.node.ObjectNode")) {
+                    return true;
+                }
+                return false;
             }
         }.intercept(() -> {
             userProfileActor.tell(testUnknownMessageType, testProbe.getRef());
-            return "Unknown Message type intercepted";
+            return "Unknown message type intercepted";
         }, actorSystem);
 
-        assertEquals("Unknown Message type intercepted", unknownMessageStatus);
+        assertEquals("Unknown message type intercepted", unknownMessageStatus);
+
+        actorSystem.stop(userProfileActor);
+    }
+
+    /**
+     * Checks whether JSON response containing user profile information is returned upon receiving a request for user
+     * profile from client-side
+     * @throws IOException If the call cannot be completed due to an IO error
+     * @author Pradnya Kandarkar
+     */
+    @Test
+    public void should_ReturnValidJSONResponse_when_UserProfileQuery() throws IOException {
+        final ActorRef supervisorActor = actorSystem.actorOf(
+                SupervisorActor.props(testProbe.getRef(), testGitHubAPIInst, testAsyncCacheApi));
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode userProfileQuery1 = mapper.readTree(new File("test/resources/userprofile/sampleUserProfileRequest.json"));
+        JsonNode userProfileQuery2 = mapper.readTree(new File("test/resources/userprofile/sampleUserProfileRequest.json"));
+
+        supervisorActor.tell(userProfileQuery1, testProbe.getRef());
+        JsonNode userProfileInfo1 = testProbe.expectMsgClass(JsonNode.class);
+        assertEquals("userProfileInfo", userProfileInfo1.get("responseType").asText());
+        assertTrue(userProfileInfo1.has("profile"));
+        assertTrue(userProfileInfo1.has("repositories"));
+
+        supervisorActor.tell(userProfileQuery2, testProbe.getRef());
+        JsonNode userProfileInfo2 = testProbe.expectMsgClass(JsonNode.class);
+        assertEquals("userProfileInfo", userProfileInfo2.get("responseType").asText());
+        assertTrue(userProfileInfo2.has("profile"));
+        assertTrue(userProfileInfo2.has("repositories"));
+
+        actorSystem.stop(supervisorActor);
     }
 }
