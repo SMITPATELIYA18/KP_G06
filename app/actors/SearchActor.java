@@ -60,10 +60,20 @@ public class SearchActor extends AbstractActorWithTimers {
      */
     @Override
     public void preStart() {
+        log.info("Created a search actor");
         getTimers().startPeriodicTimer("RefreshSearch",
                 new Messages.TrackSearch(trackedSearchQuery, "periodic"),
                 Duration.create(10, TimeUnit.SECONDS));
         //TODO: Farheen, change this to 120 before submission
+    }
+
+    /**
+     * Executes after all other actions related to this actor
+     * @author Pradnya Kandarkar
+     */
+    @Override
+    public void postStop() {
+        log.info("Stopped the search actor.");
     }
 
     /**

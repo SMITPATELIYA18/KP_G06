@@ -63,43 +63,13 @@ public class GitterificController extends Controller {
 	 *
 	 * The configuration in the <code>routes</code> file means that this method will be called when the application
 	 * receives a <code>GET</code> request with a path of <code>/</code>.
-	 * @param query request HTTP Request containing the search query
 	 * @return Future CompletionStage Result
 	 * @author SmitPateliya, Farheen Jamadar
 	 */
-	public CompletionStage<Result> index(String query, Http.Request request) {
+	public CompletionStage<Result> index(Http.Request request) {
 		return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(request, null, assetsFinder)));
-		/*if (query.isEmpty()) {
-			asyncCacheApi.remove("search");
-			return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(request, null, assetsFinder)));
-		}
-
-		return gitterificService.getRepositoryFromSearch(query).thenApplyAsync(
-				searchResults -> ok(views.html.index.render(request, searchResults,
-						assetsFinder)),
-				httpExecutionContext.current());*/
-
 	}
 
-	/**
-	 * Renders an HTML page containing all available public profile information about a user, as well as all the
-	 * repositories of that user
-	 *
-	 * The configuration in the <code>routes</code> file means that this method will be called when the application
-	 * receives a <code>GET</code> request with a path of <code>/user-profile/:username</code>
-	 * @param username Username to fetch the details for
-	 * @return CompletionStage&lt;Result&gt; which contains available public profile information and repositories for a user
-	 * @author Pradnya Kandarkar
-	 */
-	public CompletionStage<Result> getUserProfile(String username, Http.Request request) {
-
-		return gitterificService.getUserProfile(username).thenApplyAsync(
-				userInfo -> ok(views.html.userprofile.userprofile.render(request, username,
-						userInfo.get("profile"),
-						userInfo.get("repositories"),
-						assetsFinder)),
-				httpExecutionContext.current());
-	}
 /**
 	 * Renders an HTML page with repository profile details.
 	 *

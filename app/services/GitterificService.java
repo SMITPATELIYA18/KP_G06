@@ -56,30 +56,6 @@ public class GitterificService {
     }*/
 
     /**
-     * Retrieves all available public profile information about a user, as well as all the repositories of that user
-     * @param username Username to fetch the details for
-     * @return CompletionStage&lt;JsonNode&gt; which contains available public profile information and repositories for a user
-     * @author Pradnya Kandarkar
-     */
-    public CompletionStage<JsonNode> getUserProfile(String username) {
-
-        return asyncCacheApi.getOrElseUpdate(username + "_profile",
-                        () -> gitHubAPIInst.getUserProfileByUsername(username))
-                .thenCombineAsync(asyncCacheApi.getOrElseUpdate(username + "_repositories",
-                                () -> gitHubAPIInst.getUserRepositories(username)),
-                        (userProfile, userRepositories) -> {
-                            asyncCacheApi.set(username + "_profile", userProfile);
-                            asyncCacheApi.set(username + "_repositories", userRepositories);
-                            ObjectMapper mapper = new ObjectMapper();
-                            ObjectNode userInfo = mapper.createObjectNode();
-                            userInfo.set("profile", userProfile);
-                            userInfo.set("repositories", userRepositories);
-                            return userInfo;
-                        }
-                );
-    }
-
-    /**
      * Retrieves repository profile details with top 20 issues
      * @param username Owner of the repository
      * @param repositoryName  Repository Name
