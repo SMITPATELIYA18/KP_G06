@@ -2,9 +2,15 @@ package actors;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.OneForOneStrategy;
 import akka.actor.Props;
+import akka.actor.SupervisorStrategy;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akka.japi.pf.DeciderBuilder;
+
+import java.time.Duration;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import services.github.GitHubAPI;
 import play.cache.AsyncCacheApi;
@@ -27,7 +33,17 @@ public class SupervisorActor extends AbstractActor {
     private ActorRef userProfileActor = null;
     private ActorRef repositoryProfileActor = null;
     private ActorRef issueStatActor = null;
-
+    
+    private static SupervisorStrategy strategy = new OneForOneStrategy(10, Duration.ofMinutes(1), DeciderBuilder.match(NullPointerException.class, e -> SupervisorStrategy.restart()).matchAny(o -> SupervisorStrategy.escalate()).build());
+    /**
+     * This methods creates Supervisor Strategy for this Supervisor Actor.
+     * @author Smit Pateliya
+     */
+    @Override
+    public SupervisorStrategy supervisorStrategy() {
+    	return strategy;
+    }
+    
     /**
      * @param wsOut For sending data/messages to the client
      * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface, for making external API calls to GitHub

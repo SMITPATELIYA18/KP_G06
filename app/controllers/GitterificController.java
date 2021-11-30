@@ -80,12 +80,12 @@ public class GitterificController extends Controller {
 	 * @return Future Result which contains issues' title stats.
 	 */
 
-	public CompletionStage<Result> getIssueStat(String repoName, Http.Request request)  throws Exception {
-		repoName = repoName.replace("+", "/");
-		return gitHubAPIInst.getRepository20Issue(repoName).thenApplyAsync(
-				issueModel -> {return ok(views.html.issues.render(request, issueModel, assetsFinder));},
-				httpExecutionContext.current());
-	}
+//	public CompletionStage<Result> getIssueStat(String repoName, Http.Request request)  throws Exception {
+//		repoName = repoName.replace("+", "/");
+//		return gitHubAPIInst.getRepository20Issue(repoName).thenApplyAsync(
+//				issueModel -> {return ok(views.html.issues.render(request, issueModel, assetsFinder));},
+//				httpExecutionContext.current());
+//	}
 
 	/**
 	 * Renders an HTML page with the top 10 repositories containing the topic provided by the user.
@@ -114,9 +114,9 @@ public class GitterificController extends Controller {
 //            if (sameOriginCheck(request)) {
 //                final CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> future = wsFutureFlow(request);
 //                final CompletionStage<Either<Result, Flow<JsonNode, JsonNode, ?>>> stage = future.thenApply(Either::Right);
-//                return stage.exceptionally(this::logException);
+//                stage.exceptionally(this::logException);
 //            } else {
-//                return forbiddenResult();
+//                forbiddenResult();
 //            }
 //        });
 		return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> SupervisorActor.props(out, gitHubAPIInst, asyncCacheApi), actorSystem, materializer));
@@ -153,22 +153,22 @@ public class GitterificController extends Controller {
 	 * http://blog.dewhurstsecurity.com/2013/08/30/security-testing-html5-websockets.html
 	 */
 	
-	private boolean sameOriginCheck(Http.RequestHeader rh) {
-		final Optional<String> origin = rh.header("Origin");
-
-		if (! origin.isPresent()) {
-			log.error("originCheck: rejecting request because no Origin header found");
-			return false;
-		} else if (originMatches(origin.get())) {
-			log.debug("originCheck: originValue = " + origin);
-			return true;
-		} else {
-			log.error("originCheck: rejecting request because Origin header value " + origin + " is not in the same origin");
-			return false;
-		}
-	}
-
-	private boolean originMatches(String origin) {
-		return origin.contains("localhost:9000") || origin.contains("localhost:19001");
-	}
+//	private boolean sameOriginCheck(Http.RequestHeader rh) {
+//		final Optional<String> origin = rh.header("Origin");
+//
+//		if (! origin.isPresent()) {
+//			log.error("originCheck: rejecting request because no Origin header found");
+//			return false;
+//		} else if (originMatches(origin.get())) {
+//			log.debug("originCheck: originValue = " + origin);
+//			return true;
+//		} else {
+//			log.error("originCheck: rejecting request because Origin header value " + origin + " is not in the same origin");
+//			return false;
+//		}
+//	}
+//
+//	private boolean originMatches(String origin) {
+//		return origin.contains("localhost:9000") || origin.contains("localhost:19001");
+//	}
 }

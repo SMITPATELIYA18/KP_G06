@@ -214,9 +214,10 @@ printRepositoryDetails = (objectValue, repositoryName) ->
 
 
 displayIssueStatInfo = (issueModel) -> 
-    $("#issue-stat-info").append("<h1>").text("A word-level statistics of the issue titles")
-    $("#issue-stat-info").append("<br/>")
-    $("#issue-stat-info").append("<span>").append("<i>").text("(by frequency of the words in descending order)")
+    $("#issue-stat-info").empty()
+    $("#issue-stat-info").append($("<h1>").text("A word-level statistics of the issue titles"))
+    $("#issue-stat-info").append("<br>")
+    $("#issue-stat-info").append("<i>").text("(by frequency of the words in descending order)")
 
     repoFullName = issueModel.result.repoFullName
     console.log(repoFullName)
