@@ -16,8 +16,6 @@ import org.junit.Test;
 import play.Application;
 import play.cache.AsyncCacheApi;
 import play.inject.guice.GuiceApplicationBuilder;
-import play.mvc.Http;
-import play.mvc.Result;
 import play.test.Helpers;
 import services.GitHubAPIMock;
 import services.github.GitHubAPI;
@@ -28,8 +26,6 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static play.inject.Bindings.bind;
-import static play.test.Helpers.GET;
-import static play.test.Helpers.route;
 
 /**
  * Contains cases to test SupervisorActor and SearchActor used in search functionality
@@ -183,6 +179,7 @@ public class SearchFeatureActorTest {
     public void testMessageClass(){
         assertNotEquals(null, new Messages());
     }
+    //TODO: Farheen
 /*
     @Test
     public void should_ReturnOK_when_ValidGETRequest() {

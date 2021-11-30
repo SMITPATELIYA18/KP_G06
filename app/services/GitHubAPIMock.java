@@ -93,6 +93,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 	@Override
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
+		//System.out.println("Mock implementation for getRepositoryFromSearchBar");
 
 		System.out.println("List size1: " + this.list.size());
 		ObjectMapper mapper = new ObjectMapper();
@@ -154,6 +155,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 	@Override
 	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) throws Exception{
+		//System.out.println("Mock implementation for getRepositoryProfile");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sampleRepositoryProfile = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
 		CompletableFuture<JsonNode> futureUserRepositories = new CompletableFuture<>();
@@ -177,15 +179,10 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	}
 	
 	@Override
-	public CompletionStage<IssueModel> getRepository20Issue(String repoFullName){
+	public CompletionStage<IssueModel> getRepository20Issue(String repoFullName)  throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode data = null;
-		try {
-			data = mapper.readTree(TestResources.nullIssueData);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		data = mapper.readTree(TestResources.nullIssueData);
 		CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
 		IssueModel modelData = new IssueModel(repoFullName, data);
 		futureModel.complete(modelData);

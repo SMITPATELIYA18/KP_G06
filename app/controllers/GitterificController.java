@@ -20,16 +20,11 @@ import play.mvc.*;
 import scala.concurrent.duration.Duration;
 import services.GitterificService;
 import services.github.GitHubAPI;
-import play.libs.F.Either;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-
-//import views.html.repositoryprofile.*;
-
-import static akka.pattern.PatternsCS.ask;
 
 /**
  * Contains actions to handle HTTP requests to the application
@@ -78,26 +73,6 @@ public class GitterificController extends Controller {
 		return CompletableFuture.supplyAsync(() -> ok(views.html.index.render(request, null, assetsFinder)));
 	}
 
-/**
-	 * Renders an HTML page with repository profile details.
-	 *
-	 * The configuration in the <code>routes</code> file means that this method will be called when the application
-	 * receives a <code>GET</code> request with a path of <code>/repositoryProfile/:username/:repositoryName</code>.
-	 * @param username  Owner of the repository
-	 * @param repositoryName  Repository Name
-	 * @return Future CompletionStage Result
-	 * @author Farheen Jamadar
-	 */
-	/*public CompletionStage<Result> getRepositoryProfile(String username, String repositoryName, Http.Request request){
-		return gitterificService.getRepositoryProfile(username, repositoryName).thenApplyAsync(
-				repositoryData -> ok(repositoryProfile.render(request, username,
-							repositoryName,
-							repositoryData.get("repositoryProfile"),
-							repositoryData.get("issueList"),
-							assetsFinder)),
-				httpExecutionContext.current());
-	}*/
-
 	/**
 	 * This method gives issues' title statics which are returning from API.
 	 * @author smitpateliya
@@ -105,7 +80,7 @@ public class GitterificController extends Controller {
 	 * @return Future Result which contains issues' title stats.
 	 */
 
-	public CompletionStage<Result> getIssueStat(String repoName, Http.Request request) {
+	public CompletionStage<Result> getIssueStat(String repoName, Http.Request request)  throws Exception {
 		repoName = repoName.replace("+", "/");
 		return gitHubAPIInst.getRepository20Issue(repoName).thenApplyAsync(
 				issueModel -> {return ok(views.html.issues.render(request, issueModel, assetsFinder));},

@@ -2,10 +2,8 @@ package services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
-import models.SearchCacheStore;
 import models.SearchRepository;
 import play.cache.AsyncCacheApi;
 import services.github.GitHubAPI;
@@ -35,63 +33,6 @@ public class GitterificService {
     }
 
     /**
-     * Retrieves repository list based on the search query provided by the user
-     * @param username Owner of the repository
-     * @return Future CompletionStage SearchCacheStore
-     * @author Farheen Jamadar, SmitPateliya
-     */
-   /* public CompletionStage<SearchCacheStore> getRepositoryFromSearch(String username) {
-        CompletionStage<SearchRepository> newSearchData = asyncCacheApi.getOrElseUpdate("search_" + username, () -> {
-            CompletionStage<SearchRepository> searchRepository = gitHubAPIInst.getRepositoryFromSearchBar(username);
-            asyncCacheApi.set("search_" + username, searchRepository, 60 * 15);
-            return searchRepository;
-        });
-
-        return newSearchData.thenCombineAsync(
-                asyncCacheApi.get("search"),
-                (newData, cacheData) -> {
-                    SearchCacheStore store = new SearchCacheStore();
-                    if (cacheData.isPresent()) {
-                        store = (SearchCacheStore) cacheData.get();
-                    }
-                    store.addNewSearch(newData);
-                    asyncCacheApi.set("search", store, 60 * 15);
-                    return store;
-                });
-    }*/
-
-    /**
-     * Retrieves repository profile details with top 20 issues
-     * @param username Owner of the repository
-     * @param repositoryName  Repository Name
-     * @return Future CompletionStage JsonNode
-     * @author Farheen Jamadar
-     */
-    /*public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) {
-        return asyncCacheApi.getOrElseUpdate(username + "/" + repositoryName,
-                        () -> gitHubAPIInst.getRepositoryProfile(username, repositoryName))
-                .thenCombineAsync(
-                        asyncCacheApi.getOrElseUpdate(username + repositoryName + "/20issues",
-                                () -> gitHubAPIInst.getRepositoryIssue(username + "/" + repositoryName)),
-                        (repositoryProfileDetail, issueList) -> {
-                            asyncCacheApi.set(username + repositoryName + "/20issues", issueList,  60 * 15);
-                            asyncCacheApi.set(username + "/" + repositoryName, repositoryProfileDetail,  60 * 15);
-
-                            List<String> list = new ArrayList<>();//issueList.getIssueTitles().parallelStream().limit(20).collect(Collectors.toList());
-                            ObjectMapper mapper = new ObjectMapper();
-                            ObjectNode repositoryData = mapper.createObjectNode();
-                            ArrayNode arrayNode = mapper.createArrayNode();
-                            list.forEach(arrayNode::add);
-
-                            repositoryData.set("repositoryProfile", repositoryProfileDetail);
-                            repositoryData.set("issueList", arrayNode);
-
-                            return repositoryData;
-                        }
-                );
-    }
-*/
-    /**
      * Retrieves top 10 repositories containing the topic provided by the user.
      * @param topic Topic based on which the repositories will be retrieved
      * @return Future CompletionStage SearchRepository
@@ -106,7 +47,7 @@ public class GitterificService {
                             return searchResult;
                         });
     }
-    
+
     public CompletionStage<JsonNode> getRepositoryIssueStat(String repoFullName) {
     	return gitHubAPIInst.getRepositoryIssue(repoFullName).thenApplyAsync(data -> {
 					ObjectMapper mapper = new ObjectMapper();
@@ -133,14 +74,14 @@ public class GitterificService {
                     return finalResult;
 				});
     }
-    
+
     /**
 	 * This functions return String stream of title array.
 	 * @param title Receives title for splitting into individual words
-	 * @return Stream of title's word 
-	 * 
+	 * @return Stream of title's word
+	 *
 	 */
-	
+
 	private Stream<String> getIndividualWord(String title) {
 		return Arrays.asList(title.split(" ")).stream();
 	}
