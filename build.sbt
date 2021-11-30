@@ -22,7 +22,7 @@ lazy val root = (project in file("."))
       "org.powermock" % "powermock-api-mockito2" % "2.0.9" % Test,
       "javax.xml.bind" % "jaxb-api" % "2.3.1",
       "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-      "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
+      "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-http-jackson" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,

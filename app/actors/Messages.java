@@ -2,6 +2,8 @@ package actors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import models.IssueModel;
+
 /**
  * Holds messages used by the application actors
  * @author Pradnya Kandarkar
@@ -90,6 +92,46 @@ public class Messages {
         public RepositoryProfileInfo(JsonNode repositoryProfileResult) {
             this.repositoryProfileResult = repositoryProfileResult;
         }
+    }
+    
+    /**
+     * This message class uses for receiving data from supervisor actor
+     * @author Smit Pateliya
+     *
+     */
+    
+    public static final class GetRepositoryIssueActor{
+    	public final String repoFullName;
+    	
+    	/**
+    	 * This methods initialize repoFullNme variable
+    	 * @param repoFullName
+    	 * @author Smit Pateliya
+    	 */
+    	
+    	public GetRepositoryIssueActor(String repoFullName) {
+    		this.repoFullName = repoFullName;
+    	}
+    }
+    
+    /**
+     * This message class uses for sending data to user
+     * @author Smit Pateliya
+     *
+     */
+    
+    public static final class IssueStatInfo {
+    	public final JsonNode issueModel;
+    	
+    	/**
+    	 * Initializes issuModel variable
+    	 * @param issueModel
+    	 * @author Smit Pateliya
+    	 */
+    	
+    	public IssueStatInfo(JsonNode issueModel) {
+    		this.issueModel = issueModel;
+    	}
     }
 
 }

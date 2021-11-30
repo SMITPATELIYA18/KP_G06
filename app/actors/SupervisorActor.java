@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Handles sending/receiving data/messages to/from clients. Acts as a supervisor to all other actors - creates ana manages them
- * @author Pradnya Kandarkar
+ * @author Pradnya Kandarkar, Smit Pateliya
  */
 public class SupervisorActor extends AbstractActor {
     private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
@@ -24,8 +24,9 @@ public class SupervisorActor extends AbstractActor {
     private final AsyncCacheApi asyncCacheApi;
 
     final Map<String, ActorRef> queryToSearchActor = new HashMap<String, ActorRef>();
-    private ActorRef userProfileActor;
-    private ActorRef repositoryProfileActor;
+    private ActorRef userProfileActor = null;
+    private ActorRef repositoryProfileActor = null;
+    private ActorRef issueStatActor = null;
 
     /**
      * @param wsOut For sending data/messages to the client
@@ -71,7 +72,7 @@ public class SupervisorActor extends AbstractActor {
     /**
      * Handles incoming messages for this actor - matches the class of an incoming message and takes appropriate action
      * @return <code>AbstractActor.Receive</code> defining the messages that can be processed by this actor and how they will be processed
-     * @author Pradnya Kandarkar
+     * @author Pradnya Kandarkar, Smit Pateliya
      */
     @Override
     public Receive createReceive() {
@@ -80,6 +81,7 @@ public class SupervisorActor extends AbstractActor {
                 .match(Messages.SearchResult.class, searchResult -> wsOut.tell(searchResult.searchResult, self()))
                 .match(Messages.UserProfileInfo.class, userProfileInfo -> wsOut.tell(userProfileInfo.userProfileResult, self()))
                 .match(Messages.RepositoryProfileInfo.class, repositoryProfileInfo -> wsOut.tell(repositoryProfileInfo.repositoryProfileResult, self()))
+                .match(Messages.IssueStatInfo.class, issueStatInfo -> wsOut.tell(issueStatInfo.issueModel, self()))
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }
@@ -87,9 +89,11 @@ public class SupervisorActor extends AbstractActor {
     /**
      * Processes JSON data received from client requests, and creates actors to handle the requests accordingly
      * @param receivedJson <code>JsonNode</code> object holding the client request
-     * @author Pradnya Kandarkar
+     * @author Pradnya Kandarkar, Smit Pateliya
      */
     private void processRequest(JsonNode receivedJson) {
+    	log.info(receivedJson.asText());
+    	System.out.println(receivedJson.asText());
         if(receivedJson.has("search_query")) {
             /* For "search_query" requests, gets the query string and checks id there is a search actor created to handle
             * this query. If no search actor is created, starts a new search actor and sends it a message to start
@@ -126,6 +130,13 @@ public class SupervisorActor extends AbstractActor {
                 repositoryProfileActor = getContext().actorOf(RepositoryProfileActor.props(self(), this.gitHubAPIInst, this.asyncCacheApi));
             }
             repositoryProfileActor.tell(new Messages.GetRepositoryProfileActor(username, repositoryName), getSelf());
+        } else if(receivedJson.has("issues")) {
+        	String repoFullName = receivedJson.get("issues").asText();
+        	if(issueStatActor == null) {
+        		log.info("Creating a Issue Stat info");
+        		issueStatActor  =getContext().actorOf(IssueStatActor.props(self(), this.gitHubAPIInst));
+        	}
+        	issueStatActor.tell(new Messages.GetRepositoryIssueActor(repoFullName), getSelf());
         }
         else {
             getSelf().tell(new Messages.UnknownMessageReceived(), getSelf());
