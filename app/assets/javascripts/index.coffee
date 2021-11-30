@@ -201,7 +201,6 @@ printRepositoryDetails = (objectValue, repositoryName) ->
 
 
 displayIssueStatInfo = (issueModel) -> 
-    $("#issue-stat-info").empty();
     $("#issue-stat-info").append("<h1>").text("A word-level statistics of the issue titles")
     $("#issue-stat-info").append("<br/>")
     $("#issue-stat-info").append("<span>").append("<i>").text("(by frequency of the words in descending order)")
@@ -213,7 +212,7 @@ displayIssueStatInfo = (issueModel) ->
     issueStat = $("<div>")
     console.log($("#issue-stat-info"))
     if issueModel.result.error
-        $("#issue-stat-info").append("<div><h4>" + issueModel.result.errorMessage + "</div></h4>")
+        $("#issue-stat-info").append($("<h4>").text(issueModel.result.errorMessage))
     else
         $.each issueModel.result.wordLevelData, (key, value) ->
             oneIssueStat = $("<li>")
@@ -221,7 +220,6 @@ displayIssueStatInfo = (issueModel) ->
             oneIssueStat.append($("<b>").text(": "))
             oneIssueStat.append(value)
             issueStat.append(oneIssueStat)
-        issueStat.append("</div>")
         console.log(issueStat)
         #for key,value of issueModel.result.wordLevelData
          #   oneIssueStat = $("<div><ul>" + key + " :: " + value + "</div></ul>")
