@@ -64,6 +64,8 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
+		//System.out.println("Actual implementation for getRepositoryProfile");
+
 		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
@@ -110,7 +112,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 		return searchResult;
 	}
 	
-	public CompletionStage<IssueModel> getRepository20Issue(String repoFullName) {
+	public CompletionStage<IssueModel> getRepository20Issue(String repoFullName) throws Exception {
 		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
 		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
@@ -183,6 +185,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @author Farheen Jamadar
 	 */
 	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) throws Exception{
+		//System.out.println("Actual implementation for getRepositoryProfile");
 		String finalURL = this.baseURL + "/repos/" + username + "/" + repositoryName;
 		CompletionStage<JsonNode> result = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json")
