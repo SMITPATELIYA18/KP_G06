@@ -5,15 +5,18 @@ $ ->
   # On receiving a message, checks the response type and renders data accordingly
   ws.onmessage = (event) ->
     message = JSON.parse event.data
+    console.log(message.responseType)
     switch message.responseType
       when "searchResult"
         $("#repository-profile-info").hide()
         $("#user-profile-info").hide()
+        $("#issue-stat-info").hide()
         displaySearchResult(message)
         $("#all-search-results").show()
       when "searchResultUpdate"
         $("#repository-profile-info").hide()
         $("#user-profile-info").hide()
+        $("#issue-stat-info").hide()
         updateSearchResult(message)
         $("#all-search-results").show()
       when "searchResultPeriodicUpdate"
@@ -25,9 +28,16 @@ $ ->
         $("#user-profile-info").show()
       when "repositoryProfileInfo"
         $("#all-search-results").hide()
+        $("#issue-stat-info").hide()
         $("#user-profile-info").hide()
         displayRepositoryProfileInfo(message)
         $("#repository-profile-info").show()
+      when "issueStatInfo"
+        $("#repository-profile-info").hide()
+        $("#user-profile-info").hide()
+        $("#all-search-results").hide()
+        displayIssueStatInfo(message)
+        $("#issue-stat-info").show()
 
   # When the form button is clicked, validates the input and sends a request using the web socket
   $("#searchGitHubForm").submit (event) ->
@@ -64,6 +74,11 @@ $ ->
     event.preventDefault()
     ws.send(JSON.stringify({user_profile: $(this).text()}))
     return
+
+  $("#repository-profile-info").on "click", "a.issue-profile-link", (event) ->
+      event.preventDefault()
+      ws.send(JSON.stringify({issues: $(this).attr("repoFullName")}))
+      return
 
 # Replaces spaces in a string with underscores
 replaceSpaceWithUnderscore = (string) ->
@@ -183,6 +198,7 @@ displayRepositoryProfileInfo = (message) ->
             index = parseInt(key) + 1
             issueLink = $("<a>").text(value).attr("href", "/issues/" + username + "/" + repositoryName)
             issueLink.addClass("issue-profile-link")
+            issueLink.attr("repoFullName", username + "/" + repositoryName)
             $("#repository-profile-info").append( "<b>" + index + " -</b> ").append(issueLink).append("<br>")
   else
       $("#repository-profile-info").append("No issues found")
@@ -196,3 +212,30 @@ printRepositoryDetails = (objectValue, repositoryName) ->
             else
                   $('#repository-profile-info').append "<b>" + key + "</b>: " + value + "<br/>"
 
+
+displayIssueStatInfo = (issueModel) -> 
+    $("#issue-stat-info").append("<h1>").text("A word-level statistics of the issue titles")
+    $("#issue-stat-info").append("<br/>")
+    $("#issue-stat-info").append("<span>").append("<i>").text("(by frequency of the words in descending order)")
+
+    repoFullName = issueModel.result.repoFullName
+    console.log(repoFullName)
+    $("#issue-stat-info").append($("<h2>").text("Repository Name: " + repoFullName))
+    $("#issue-stat-info").append($("<br>"))
+    issueStat = $("<div>")
+    console.log($("#issue-stat-info"))
+    if issueModel.result.error
+        $("#issue-stat-info").append($("<h4>").text(issueModel.result.errorMessage))
+    else
+        $.each issueModel.result.wordLevelData, (key, value) ->
+            oneIssueStat = $("<li>")
+            oneIssueStat.append($("<b>").text(key))
+            oneIssueStat.append($("<b>").text(": "))
+            oneIssueStat.append(value)
+            issueStat.append(oneIssueStat)
+        console.log(issueStat)
+        #for key,value of issueModel.result.wordLevelData
+         #   oneIssueStat = $("<div><ul>" + key + " :: " + value + "</div></ul>")
+          #  issueStat.append(oneIssueStat)
+        # issueStat.append("</div>")
+    $("#issue-stat-info").append(issueStat)
