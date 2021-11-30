@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+//TODO: Farheen: delete
 public class WebSocketClient {
 
     private AsyncHttpClient client;
