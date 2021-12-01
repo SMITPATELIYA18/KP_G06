@@ -42,44 +42,24 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @param repoFullName The name of repository name
 	 * @return returns completion stage issue model object 
 	 */
-	public CompletionStage<JsonNode> getRepositoryIssue(String repoFullName){
+	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) throws Exception{
 		if(repoFullName.equals("sadasd/sadsad")) {
 			ObjectMapper mapper = new ObjectMapper();
-//			JsonNode data = null;
-//			try {
-//				data = mapper.readTree(TestResources.nullIssueData);
-//			} catch (JsonProcessingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			CompletableFuture<JsonNode> futureModel = new CompletableFuture<>();
-//			IssueModel modelData = new IssueModel(repoFullName, data);
-//			futureModel.complete(modelData);
-//			System.out.println(modelData.getWordLevelData());
-			ObjectNode finalResult = mapper.createObjectNode();
-			finalResult.put("responseType", "responseType");
-			ObjectNode apiResult = mapper.createObjectNode();
-			apiResult.put("error", true);
-			apiResult.put("errorMessage", "Error! This Repository does not have Issues");
-			finalResult.set("result", apiResult);
-			futureModel.complete(finalResult);
+			JsonNode data = null;
+			data = mapper.readTree(TestResources.nullIssueData);
+			CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
+			IssueModel modelData = new IssueModel(repoFullName, data);
+			futureModel.complete(modelData);
+			System.out.println(modelData.getWordLevelData());
+			futureModel.complete(modelData);
 			return futureModel;
 		}
 		ObjectMapper mapper = new ObjectMapper();
-//		JsonNode data = null;
-//		try {
-//			data = mapper.readTree(TestResources.issueData);
-//		} catch (JsonProcessingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		CompletableFuture<JsonNode> futureModel = new CompletableFuture<>();
-//		IssueModel modelData = new IssueModel(repoFullName, data);
-		ObjectNode finalResult = mapper.createObjectNode();
-		finalResult.put("responseType", "responseType");
-		ObjectNode apiResult = mapper.createObjectNode();
-		apiResult.put("error", false);
-		futureModel.complete(finalResult);
+		JsonNode data = null;
+		data = mapper.readTree(TestResources.issueData);
+		CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
+		IssueModel modelData = new IssueModel(repoFullName, data);
+		futureModel.complete(modelData);
 //		System.out.println(modelData.getWordLevelData());
 		return futureModel;
 	}
@@ -176,16 +156,5 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 		CompletableFuture<SearchRepository> futureTopicRepositoryList = new CompletableFuture<>();
 		futureTopicRepositoryList.complete(sampleTopicRepositoryListURL);
 		return futureTopicRepositoryList;
-	}
-	
-	@Override
-	public CompletionStage<IssueModel> getRepository20Issue(String repoFullName)  throws Exception{
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode data = null;
-		data = mapper.readTree(TestResources.nullIssueData);
-		CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
-		IssueModel modelData = new IssueModel(repoFullName, data);
-		futureModel.complete(modelData);
-		return futureModel;
 	}
 }

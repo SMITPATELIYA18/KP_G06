@@ -75,11 +75,26 @@ public class IssueStatActor extends AbstractActor {
 	 * @param issueStatRequest Receiving Repository name for calling API
 	 * @return JSON data in the form Future
 	 * @author Smit Pateliya
+	 * @throws Exception 
 	 */
-	private CompletionStage<JsonNode> getIssueStat(Messages.GetRepositoryIssueActor issueStatRequest) {
-		return gitHubAPI.getRepositoryIssue(issueStatRequest.repoFullName).thenApplyAsync((JsonNode result) -> {
+	private CompletionStage<JsonNode> getIssueStat(Messages.GetRepositoryIssueActor issueStatRequest) throws Exception {
+		return gitHubAPI.getRepositoryIssue(issueStatRequest.repoFullName).thenApplyAsync((IssueModel issueModel) -> {
 			ObjectMapper mapper = new ObjectMapper();
 			ObjectNode finalResult = mapper.createObjectNode();
+			if(issueModel.getIssueTitles().get(0).equals("Error! Repository does not present!")) {
+				finalResult.put("error", true);
+				finalResult.put("errorMessage", "Error! This Repository does not have Issues");
+				finalResult.put("responseType", "issueStatInfo");
+				ObjectNode result = mapper.createObjectNode();
+				result.put("repoFullName", issueModel.getRepoFullName());
+				finalResult.set("result", result);
+				return finalResult;
+			}
+			ObjectNode result = mapper.createObjectNode();
+			result.put("repoFullName", issueModel.getRepoFullName());
+			ObjectNode worldLevelData = mapper.createObjectNode();
+			issueModel.getWordLevelData().forEach((key,value) -> worldLevelData.put(key, value));
+			result.set("wordLevelData", worldLevelData);
 			finalResult.put("responseType", "issueStatInfo");
 			finalResult.set("result", result);
 			return finalResult;

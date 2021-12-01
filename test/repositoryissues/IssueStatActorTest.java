@@ -1,9 +1,17 @@
-package actors;
+package repositoryissues;
 
 import static org.junit.Assert.assertEquals;
 import static play.inject.Bindings.bind;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import actors.Messages;
+import actors.SupervisorActor;
+import actors.Messages.GetRepositoryIssueActor;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,6 +25,7 @@ import play.Application;
 import play.cache.AsyncCacheApi;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.Helpers;
+import resources.TestResources;
 import services.GitHubAPIMock;
 import services.github.GitHubAPI;
 
@@ -57,17 +66,43 @@ public class IssueStatActorTest {
 	 * @author Smit Pateliya
 	 */
 	@Test
-	public void testIssueStatActor() {
+	public void testIssueStatActor() throws IOException {
 		final ActorRef supervisorActor = actorSystem.actorOf(
 				SupervisorActor.props(testProbe.getRef(), testGitHub, testAsyncCacheApi));
 		
 		//ActorRef<IssueStatActor> issueActor = testKit.spawn(IssueStatActor.props(testProbe.getRef(), testGitHub));
 		
-		supervisorActor.tell(new Messages.GetRepositoryIssueActor("TheAlgorithms/Java"), testProbe.getRef());
+		//supervisorActor.tell(new Messages.GetRepositoryIssueActor("TheAlgorithms/Java"), testProbe.getRef());
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode issueData = mapper.readTree(new File("test/resources/repositoryissues/sampleSearchData.json"))
+;		supervisorActor.tell(issueData, testProbe.getRef());
 		JsonNode answer = testProbe.expectMsgClass(JsonNode.class);
 		//assertEquals("TheAlgorithms/Java", issueStatInfo.issueModel);
-		System.out.println(answer);
-		System.out.println("hii");
-		assertEquals("issueStatInfo", answer.get("issueModel").get("responseType").asText());
+		//System.out.println("hii");
+		assertEquals("issueStatInfo", answer.get("responseType").asText());
+		assertEquals("TheAlgorithms/Java", answer.get("result").get("repoFullName").asText());
+	}
+	
+	/**
+	 * This Test case checks Issue Stat Actor Null Characteristics
+	 * @author Smit Pateliya
+	 */
+	@Test
+	public void testIssueStatActorCheckNull() throws IOException {
+		final ActorRef supervisorActor = actorSystem.actorOf(
+				SupervisorActor.props(testProbe.getRef(), testGitHub, testAsyncCacheApi));
+		
+		//ActorRef<IssueStatActor> issueActor = testKit.spawn(IssueStatActor.props(testProbe.getRef(), testGitHub));
+		
+		//supervisorActor.tell(new Messages.GetRepositoryIssueActor("TheAlgorithms/Java"), testProbe.getRef());
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode issueData = mapper.readTree(new File("test/resources/repositoryissues/sampleSearchNullData.json"))
+;		supervisorActor.tell(issueData, testProbe.getRef());
+		JsonNode answer = testProbe.expectMsgClass(JsonNode.class);
+		//assertEquals("TheAlgorithms/Java", issueStatInfo.issueModel);
+		//System.out.println("hii");
+		assertEquals("issueStatInfo", answer.get("responseType").asText());
+		assertEquals("sadasd/sadsad", answer.get("result").get("repoFullName").asText());
+		assertEquals(true, answer.get("error").asBoolean());
 	}
 }

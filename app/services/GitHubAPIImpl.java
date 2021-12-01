@@ -80,55 +80,12 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @return IssueModel's future instance
 	 */
 
-	public CompletionStage<JsonNode> getRepositoryIssue(String repoFullName) {
+	public CompletionStage<IssueModel> getRepositoryIssue(String repoFullName) {
 		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
-		CompletionStage<JsonNode> searchResult = client.url(finalURL)
+		CompletionStage<IssueModel> searchResult = client.url(finalURL)
 				.addHeader("accept", "application/vnd.github.v3+json").get()
-				.thenApplyAsync(result -> {
-					ObjectMapper mapper = new ObjectMapper();
-					ObjectNode finalResult = mapper.createObjectNode();
-					finalResult.put("repoFullName", repoFullName);
-					JsonNode data = result.asJson();
-					List<String> issueTitles = new ArrayList<>();
-//					LinkedHashMap<String, Long> worldLevelData = new LinkedHashMap<>();
-					ObjectNode worldLevelData = mapper.createObjectNode();
-					if(!data.has("message")) {
-						java.util.Iterator<JsonNode> iteratorItems = data.elements() != null ? data.elements()
-								: Collections.emptyIterator();
-						iteratorItems.forEachRemaining(issue -> issueTitles.add(issue.get("title").asText()));
-						Map<String, Long> unsortedData = issueTitles.stream().flatMap(title -> getIndividualWord(title))
-								.collect(groupingBy(Function.identity(), counting()));
-						unsortedData.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-								.forEachOrdered(result1 -> worldLevelData.put(result1.getKey(), result1.getValue()));
-						finalResult.set("wordLevelData", worldLevelData);
-						finalResult.put("error",false);
-					}
-					else {
-						finalResult.put("error", true);
-						finalResult.put("errorMessage", "Error! This Repository does not have Issues");
-					}
-                    return finalResult;
-				});
+				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
 		return searchResult;
-	}
-	
-//	public CompletionStage<IssueModel> getRepository20Issue(String repoFullName) throws Exception {
-//		String finalURL = this.baseURL + "/repos/" + repoFullName + "/issues";
-//		CompletionStage<IssueModel> searchResult = client.url(finalURL)
-//				.addHeader("accept", "application/vnd.github.v3+json").get()
-//				.thenApplyAsync(result -> new IssueModel(repoFullName, result.asJson()));
-//		return searchResult;
-//	}
-	
-	/**
-	 * This functions return String stream of title array.
-	 * @param title Receives title for splitting into individual words
-	 * @return Stream of title's word 
-	 * 
-	 */
-	
-	private Stream<String> getIndividualWord(String title) {
-		return Arrays.asList(title.split(" ")).stream();
 	}
 
 	/**
