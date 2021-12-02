@@ -1,23 +1,20 @@
 package services;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import models.IssueModel;
 import models.SearchRepository;
 import play.libs.ws.WSBodyReadables;
 import play.libs.ws.WSBodyWritables;
 import resources.TestResources;
-import scala.reflect.api.Quasiquotes.Quasiquote.api;
 import services.github.GitHubAPI;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Mocks API calls and return fake responses
@@ -28,7 +25,7 @@ import services.github.GitHubAPI;
  */
 
 public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAPI {
-	private static List<String> list;
+	private List<String> list;
 
 	public GitHubAPIMock(){
 		this.list = new ArrayList<>();
@@ -74,18 +71,33 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	@Override
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
 		//System.out.println("Mock implementation for getRepositoryFromSearchBar");
-
-		System.out.println("List size1: " + this.list.size());
-		ObjectMapper mapper = new ObjectMapper();
 		String filePath = "";
-		if(this.list.size() > 1) {
-			filePath = this.list.get(this.list.size() - 1);
-			this.list.remove(this.list.size() - 1);
-		}else {
-			filePath = this.list.get(0);
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			if (this.list.size() > 1) {
+				filePath = this.list.get(this.list.size() - 1);
+				this.list.remove(this.list.size() - 1);
+			} else {
+				filePath = this.list.get(0);
+			}
+		}catch (IndexOutOfBoundsException e){
+			System.out.println("Exception occured!");
+			this.list.add("test/resources/searchreposfeature/sampleSearchResult.json");
+			filePath = "test/resources/searchreposfeature/sampleSearchResult.json";
 		}
 
-		System.out.println("Path: " + filePath + " List size: " + list.size());
+	/*	if(query.equals("samplequery")){
+			filePath = "test/resources/searchreposfeature/sampleSearchResult.json";
+		}
+		else if(query.equals("samplequery2")){
+			filePath = "test/resources/searchreposfeature/sampleSearchResult3.json";
+		}
+		else{
+			query = "samplequery2";
+			filePath = "test/resources/searchreposfeature/sampleSearchResult2.json";
+		}
+*/
+		System.out.println("Path: " + filePath + " query: " + query);
 		JsonNode sampleSearchResult = mapper.readTree(new File(filePath));
 		CompletableFuture<SearchRepository> futureModel = new CompletableFuture<>();
 		SearchRepository modelData = new SearchRepository(sampleSearchResult, query);

@@ -3,7 +3,6 @@ package searchreposfeature;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
 import controllers.AssetsFinder;
-import controllers.GitterificController;
 import models.SearchCacheStore;
 import models.SearchRepository;
 import org.junit.AfterClass;
@@ -38,9 +37,6 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
-import static play.test.Helpers.running;
-import static play.test.Helpers.testServer;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -54,7 +50,7 @@ import static play.test.Helpers.*;
  * @author Farheen Jamadar, Indraneel Rachakonda
  */
 
-public class SearchReposFeatureTest extends WithServer {
+public class WebSocketTest extends WithServer {
 
     private static Application testApp;
     private static AssetsFinder assetsFinder;
@@ -79,104 +75,13 @@ public class SearchReposFeatureTest extends WithServer {
      */
 
 
-    @BeforeClass
-    public static void setUp() {
-        testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
-
-        testGitHubAPI = testApp.injector().instanceOf(GitHubAPI.class);
-        assetsFinder = testApp.injector().instanceOf(AssetsFinder.class);
-        asyncCacheApi = testApp.injector().instanceOf(AsyncCacheApi.class);
-
-
-        httpExecutionContext = testApp.injector().instanceOf(HttpExecutionContext.class);
-        gitHubAPIInst = testApp.injector().instanceOf(GitHubAPI.class);
-        gitterificService = testApp.injector().instanceOf(GitterificService.class);
-        actorSystem = testApp.injector().instanceOf(ActorSystem.class);
-        materializer = testApp.injector().instanceOf(Materializer.class);
-
-        server =
-                Server.forRouter(
-                        (components) ->
-                                RoutingDsl.fromComponents(components)
-                                        .GET(routePattern)
-                                        .routingTo(request -> ok().sendResource(testResourceName))
-                                        .build());
-    }
-
-
-    /**
-     * Performs clean up activities after all tests are performed
-     * @author Farheen Jamadar
-     * @throws IOException If the call cannot be completed due to an error
-     */
-
-    @AfterClass
-    public static void tearDown() throws IOException{
-        Helpers.stop(testApp);
-    }
 
     /**
      * Validates if HTTP response OK (200) is received for valid GET request(s)
      * @author Pradnya Kandarkar, Farheen Jamadar
      */
+
     @Test
-    public void should_ReturnOK_when_ValidGETRequest() {
-        String testRepositoryProfileURL = "/";
-
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .method(GET)
-                .uri(testRepositoryProfileURL);
-        Result result = route(testApp, request);
-
-        assertEquals(OK, result.status());
-    }
-
-    /**
-     * Validates if HTTP response NOT_FOUND (404) is received for a request type that is not implemented for the URL
-     * @author Pradnya Kandarkar
-     */
-    @Test
-    public void should_ReturnNOT_FOUND_when_NotGETRequest() {
-        String sampleSearchURL = "/";
-
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .method(POST)
-                .uri(sampleSearchURL);
-        Result result = route(testApp, request);
-
-        assertEquals(NOT_FOUND, result.status());
-    }
-
-
-    /**
-     * Checks if home page results are displayed as expected
-     * is called
-     * @throws Exception If the call cannot be completed due to an error
-     * @author Indraneel Rachakonda, Farheen Jamadar
-     */
-    @Test
-    public void homePageDisplayTest_index() throws Exception {
-        routePattern = "/search/repositories";
-        testResourceName = "searchreposfeature/sampleSearchResult.json";
-        SearchRepository testSearchResult = testGitHubAPI.getRepositoryFromSearchBar("test_query")
-                .toCompletableFuture().get(10, TimeUnit.SECONDS);
-        SearchCacheStore testSearchStore = new SearchCacheStore();
-        testSearchStore.addNewSearch(testSearchResult);
-
-        Http.Request request = mock(Http.Request.class);
-        Content homePageBeforeSearch = views.html.index.render(request, null, assetsFinder);
-
-        System.out.println("homePageBeforeSearch: " + homePageBeforeSearch);
-        assertEquals("text/html", homePageBeforeSearch.contentType());
-        assertTrue(contentAsString(homePageBeforeSearch).contains("all-search-results"));
-    }
-
-    /**
-     * WebSocket test
-     * @throws Exception If the call cannot be completed due to an error
-     * @author Farheen Jamadar
-     */
-/*    @Test
     public void websocket(){
         TestServer server = testServer(9000);
         running(server, () -> {
@@ -202,7 +107,7 @@ public class SearchReposFeatureTest extends WithServer {
         //assertEquals(true, new GitterificController( assetsFinder, httpExecutionContext, asyncCacheApi, gitHubAPIInst, gitterificService, actorSystem, materializer).ws().toString().contains("play.mvc.WebSocket"));
         //TODO: Farheen Improvement
 
-    }*/
+    }
 
 }
 
