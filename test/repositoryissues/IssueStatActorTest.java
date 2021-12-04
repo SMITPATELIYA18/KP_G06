@@ -74,8 +74,9 @@ public class IssueStatActorTest {
 		
 		//supervisorActor.tell(new Messages.GetRepositoryIssueActor("TheAlgorithms/Java"), testProbe.getRef());
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode issueData = mapper.readTree(new File("test/resources/repositoryissues/sampleSearchData.json"))
-;		supervisorActor.tell(issueData, testProbe.getRef());
+		JsonNode issueData = mapper.readTree(new File("test/resources/repositoryissues/sampleSearchData.json"));
+		supervisorActor.tell(issueData, testProbe.getRef());
+		supervisorActor.tell(issueData, testProbe.getRef());
 		JsonNode answer = testProbe.expectMsgClass(JsonNode.class);
 		//assertEquals("TheAlgorithms/Java", issueStatInfo.issueModel);
 		//System.out.println("hii");
@@ -105,4 +106,27 @@ public class IssueStatActorTest {
 		assertEquals("sadasd/sadsad", answer.get("result").get("repoFullName").asText());
 		assertEquals(true, answer.get("error").asBoolean());
 	}
+	
+//	/**
+//	 * This Test case checks Issue Stat Actor does not create second time
+//	 * @author Smit Pateliya
+//	 */
+//	@Test
+//	public void testIssueStatActorThatNotCreateSecondTime() throws IOException {
+//		final ActorRef supervisorActor = actorSystem.actorOf(
+//				SupervisorActor.props(testProbe.getRef(), testGitHub, testAsyncCacheApi));
+//		
+//		//ActorRef<IssueStatActor> issueActor = testKit.spawn(IssueStatActor.props(testProbe.getRef(), testGitHub));
+//		
+//		//supervisorActor.tell(new Messages.GetRepositoryIssueActor("TheAlgorithms/Java"), testProbe.getRef());
+//		ObjectMapper mapper = new ObjectMapper();
+//		JsonNode issueData = mapper.readTree(new File("test/resources/repositoryissues/sampleSearchData.json"));
+//		supervisorActor.tell(issueData, testProbe.getRef());
+//		JsonNode answer = testProbe.expectMsgClass(JsonNode.class);
+//		supervisorActor.tell(issueData, testProbe.getRef());
+//		//assertEquals("TheAlgorithms/Java", issueStatInfo.issueModel);
+//		//System.out.println("hii");
+//		assertEquals("issueStatInfo", answer.get("responseType").asText());
+//		assertEquals("TheAlgorithms/Java", answer.get("result").get("repoFullName").asText());
+//	}
 }
