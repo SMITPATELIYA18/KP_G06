@@ -8,14 +8,14 @@ $ ->
     console.log(message.responseType)
     switch message.responseType
       when "searchResult"
-        $("#repository-profile-info").hide()
         $("#user-profile-info").hide()
+        $("#repository-profile-info").hide()
         $("#issue-stat-info").hide()
         displaySearchResult(message)
         $("#all-search-results").show()
       when "searchResultUpdate"
-        $("#repository-profile-info").hide()
         $("#user-profile-info").hide()
+        $("#repository-profile-info").hide()
         $("#issue-stat-info").hide()
         updateSearchResult(message)
         $("#all-search-results").show()
@@ -24,18 +24,19 @@ $ ->
       when "userProfileInfo"
         $("#all-search-results").hide()
         $("#repository-profile-info").hide()
+        $("#issue-stat-info").hide()
         displayUserProfileInfo(message)
         $("#user-profile-info").show()
       when "repositoryProfileInfo"
         $("#all-search-results").hide()
-        $("#issue-stat-info").hide()
         $("#user-profile-info").hide()
+        $("#issue-stat-info").hide()
         displayRepositoryProfileInfo(message)
         $("#repository-profile-info").show()
       when "issueStatInfo"
-        $("#repository-profile-info").hide()
-        $("#user-profile-info").hide()
         $("#all-search-results").hide()
+        $("#user-profile-info").hide()
+        $("#repository-profile-info").hide()
         displayIssueStatInfo(message)
         $("#issue-stat-info").show()
 
