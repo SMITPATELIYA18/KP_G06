@@ -77,7 +77,9 @@ public class UserProfileActor extends AbstractActor {
                 .match(Messages.GetUserProfile.class, userProfileRequest -> {
                     onGetUserProfile(userProfileRequest).thenAcceptAsync(this::processUserProfileResult);
                 })
-//                .matchAny(other -> getSender().tell(new Messages.UnknownMessageReceived(), getSelf()))
+                .match(Exception.class, exception -> {
+                    throw exception;
+                })
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }
@@ -113,6 +115,10 @@ public class UserProfileActor extends AbstractActor {
      * @author Pradnya Kandarkar
      */
     private void processUserProfileResult(JsonNode userProfileInfo) {
-        supervisorActor.tell(new Messages.UserProfileInfo(userProfileInfo), getSelf());
+        if(userProfileInfo.get("profile").isEmpty()) {
+            self().tell(new Exception("Testing exception"), self());
+        } else {
+            supervisorActor.tell(new Messages.UserProfileInfo(userProfileInfo), getSelf());
+        }
     }
 }
