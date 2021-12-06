@@ -8,14 +8,14 @@ $ ->
     console.log(message.responseType)
     switch message.responseType
       when "searchResult"
-        $("#repository-profile-info").hide()
         $("#user-profile-info").hide()
+        $("#repository-profile-info").hide()
         $("#issue-stat-info").hide()
         displaySearchResult(message)
         $("#all-search-results").show()
       when "searchResultUpdate"
-        $("#repository-profile-info").hide()
         $("#user-profile-info").hide()
+        $("#repository-profile-info").hide()
         $("#issue-stat-info").hide()
         updateSearchResult(message)
         $("#all-search-results").show()
@@ -24,18 +24,19 @@ $ ->
       when "userProfileInfo"
         $("#all-search-results").hide()
         $("#repository-profile-info").hide()
+        $("#issue-stat-info").hide()
         displayUserProfileInfo(message)
         $("#user-profile-info").show()
       when "repositoryProfileInfo"
         $("#all-search-results").hide()
-        $("#issue-stat-info").hide()
         $("#user-profile-info").hide()
+        $("#issue-stat-info").hide()
         displayRepositoryProfileInfo(message)
         $("#repository-profile-info").show()
       when "issueStatInfo"
-        $("#repository-profile-info").hide()
-        $("#user-profile-info").hide()
         $("#all-search-results").hide()
+        $("#user-profile-info").hide()
+        $("#repository-profile-info").hide()
         displayIssueStatInfo(message)
         $("#issue-stat-info").show()
 
@@ -112,7 +113,7 @@ displaySearchResult = (message) ->
       repositoryDetails.append(topicLink)
     respositoryInfo.append(repositoryDetails)
 
-    searchResultData.append(respositoryInfo)
+    searchResultData.prepend(respositoryInfo)
   singleSearchResult.append(searchResultHeader)
   singleSearchResult.append(searchResultData)
   singleSearchResult.append($("<hr>"))
@@ -121,10 +122,13 @@ displaySearchResult = (message) ->
 # Updates displayed search results with new data received from the server
 updateSearchResult = (message) ->
   id_query = replaceSpaceWithUnderscore(message.query)
+  query_result_field = document.getElementById(id_query + "-result")
   for repository in message.repositoryList
+    if query_result_field.childNodes.length == 10
+      query_result_field.removeChild(query_result_field.lastChild)
     respositoryInfo = $("<div>").addClass("repository-info")
 
-    repositoryDetails = $("<p>").append($("<b>").text("***New*** Repository Name: "))
+    repositoryDetails = $("<p>").append($("<b>").text("Repository Name: "))
     repositoryLink = $("<a>").text(repository.repositoryName).attr("href", "/repositoryProfile/" + repository.ownerName + "/" + repository.repositoryName)
     repositoryLink.addClass("repository-profile-link")
     repositoryLink.attr("username", repository.ownerName)

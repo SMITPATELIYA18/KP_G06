@@ -127,14 +127,6 @@ public class SearchActor extends AbstractActorWithTimers {
                 }
             }
 
-            /* This if block is added to help during the development process and should be removed before project
-            * submission. */
-            //TODO: Farheen: Remove before submission
-            if(searchResultUpdate.isEmpty()) {
-                RepositoryModel sampleRepositoryModel = new RepositoryModel("sampleOwnerName", "sampleRepositoryName", new ArrayList<String>());
-                searchResultUpdate.add(sampleRepositoryModel);
-            }
-
             /* Sets the list of repositories to be returned using "searchResultUpdate". Constructs the final JSON
             * response, indicating whether the response is for a fresh search request or for a periodic search result
             * update */
