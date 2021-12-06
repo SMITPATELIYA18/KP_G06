@@ -85,12 +85,17 @@ public class SearchFeatureActorTest {
         JsonNode searchQuery2 = mapper.readTree(
                 new File("test/resources/searchreposfeature/sampleSearchQuery2.json"));
 
+        JsonNode searchQuery3 = mapper.readTree(
+                new File("test/resources/searchreposfeature/sampleSearchQuery3.json"));
+
         supervisorActor.tell(searchQuery, testProbe.getRef());
         supervisorActor.tell(searchQuery2, testProbe.getRef());
         supervisorActor.tell(searchQuery2, testProbe.getRef());
         Thread.sleep(10000);
         //TODO: Farheen, change this to 120000 before submission
         supervisorActor.tell(searchQuery2, testProbe.getRef());
+        //To cover GitMock
+        supervisorActor.tell(searchQuery3, testProbe.getRef());
         JsonNode jsonNode = testProbe.expectMsgClass(JsonNode.class);
         assertNotEquals(null, jsonNode.get("repositoryList").get(0).get("repositoryName").asText());
     }
@@ -179,17 +184,29 @@ public class SearchFeatureActorTest {
     public void testMessageClass(){
         assertNotEquals(null, new Messages());
     }
-    //TODO: Farheen
-/*
-    @Test
-    public void should_ReturnOK_when_ValidGETRequest() {
-        String testHomePageURL = "/ws";
 
-        Http.RequestBuilder homePageRequest = new Http.RequestBuilder()
-                .method(GET)
-                .uri(testHomePageURL);
-        Result homePageResult = route(testApp, homePageRequest);
-        System.out.println("OK: " + homePageResult);
-        //assertEquals(OK, homePageResult.status());
+    //TODO: Farheen
+    /**
+     * Checks if the Supervisor Strategy works
+     * @throws IOException Exception thrown by Mapper class in case of any issue while reading the file
+     * @author Farheen Jamadar
+     */
+    /*@Test
+    public void testSupervisorActorStrategy() throws IOException {
+
+        scala.concurrent.duration.Duration timeout =
+                scala.concurrent.duration.Duration.create(5, SECONDS);
+
+        final ActorRef supervisorActor = actorSystem.actorOf(
+                SupervisorActor.props(testProbe.getRef(), testGitHubAPI, testAsyncCacheApi));
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode searchQuery = mapper.readTree(
+                new File("test/resources/searchreposfeature/sampleSearchQuery.json"));
+
+        supervisorActor.tell(searchQuery, testProbe.getRef());
+        System.out.println("Sender: " + testProbe.getLastSender());
+        System.out.println("Sender: " + testProbe.no);
+
     }*/
 }

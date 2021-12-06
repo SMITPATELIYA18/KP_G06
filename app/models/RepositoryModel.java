@@ -54,21 +54,6 @@ public class RepositoryModel {
 	public String getOwnerName(){
 		return ownerName;
 	}
-/*
-
-	// These setters are created to help during the development process. Will be removed later if not required.
-	public void setOwnerName(String ownerName) {
-		this.ownerName = ownerName;
-	}
-*/
-
-	/*public void setRepositoryName(String repositoryName) {
-		this.repositoryName = repositoryName;
-	}*/
-
-	/*public void setTopics(List<String> topics) {
-		this.topics = topics;
-	}*/
 
 	@Override
 	public boolean equals(Object obj) {

@@ -81,6 +81,7 @@ public class RepositoryProfileActor extends AbstractActor {
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }
+
     /**
      * Fetches and builds response containing repository profile information and corresponding top 20 issues
      * @return <code>CompletionStage&lt;JsonNode&gt;</code> which containing repository profile information and corresponding top 20 issues

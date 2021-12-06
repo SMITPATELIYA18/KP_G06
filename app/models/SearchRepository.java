@@ -6,7 +6,6 @@ import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
@@ -35,7 +34,7 @@ public class SearchRepository {
 						Spliterator.ORDERED),false);
 
 		this.repositoryList = stream
-								.map(repository -> new RepositoryModel(repository))
+								.map(RepositoryModel::new)
 								.limit(10)
 								.collect(toList());
 	}
