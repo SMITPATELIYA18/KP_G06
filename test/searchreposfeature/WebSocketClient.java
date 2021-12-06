@@ -13,6 +13,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+/**
+ * Mock Web Socket Client to test WebSocket functionality
+ * @author Farheen Jamadar
+ **/
+
 public class WebSocketClient {
 
     private AsyncHttpClient client;
@@ -60,7 +65,6 @@ public class WebSocketClient {
 
         @Override
         public void onTextFrame(String payload, boolean finalFragment, int rsv) {
-            //logger.info("onMessage: s = " + s);
             onMessageCallback.accept(payload);
         }
     }

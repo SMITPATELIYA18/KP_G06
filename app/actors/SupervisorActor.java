@@ -29,7 +29,7 @@ public class SupervisorActor extends AbstractActor {
     private GitHubAPI gitHubAPIInst;
     private final AsyncCacheApi asyncCacheApi;
 
-    final Map<String, ActorRef> queryToSearchActor = new HashMap<String, ActorRef>();
+    final Map<String, ActorRef> queryToSearchActor = new HashMap<>();
     private ActorRef userProfileActor = null;
     private ActorRef repositoryProfileActor = null;
     private ActorRef issueStatActor = null;

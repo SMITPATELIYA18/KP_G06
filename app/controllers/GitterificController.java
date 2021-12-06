@@ -1,27 +1,20 @@
 package controllers;
 
 import actors.SupervisorActor;
-import akka.NotUsed;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
 import akka.util.Timeout;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import play.cache.AsyncCacheApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.libs.streams.ActorFlow;
 import play.mvc.Controller;
-import akka.actor.typed.javadsl.Adapter;
-import akka.actor.typed.javadsl.AskPattern;
-import akka.stream.javadsl.Flow;
 import play.mvc.*;
 import scala.concurrent.duration.Duration;
 import services.GitterificService;
 import services.github.GitHubAPI;
-
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +35,7 @@ public class GitterificController extends Controller {
 	private final ActorSystem actorSystem;
 	private Materializer materializer;
 
+	//TODO: Farheen: Being used?
 	private final Timeout t = new Timeout(Duration.create(1, TimeUnit.SECONDS));
 	private final Logger log = org.slf4j.LoggerFactory.getLogger("controllers.GitterificController");
 
@@ -74,20 +68,6 @@ public class GitterificController extends Controller {
 	}
 
 	/**
-	 * This method gives issues' title statics which are returning from API.
-	 * @author smitpateliya
-	 * @param repoName Gets repository names.
-	 * @return Future Result which contains issues' title stats.
-	 */
-
-//	public CompletionStage<Result> getIssueStat(String repoName, Http.Request request)  throws Exception {
-//		repoName = repoName.replace("+", "/");
-//		return gitHubAPIInst.getRepository20Issue(repoName).thenApplyAsync(
-//				issueModel -> {return ok(views.html.issues.render(request, issueModel, assetsFinder));},
-//				httpExecutionContext.current());
-//	}
-
-	/**
 	 * Renders an HTML page with the top 10 repositories containing the topic provided by the user.
 	 *
 	 * The configuration in the <code>routes</code> file means that
@@ -110,65 +90,6 @@ public class GitterificController extends Controller {
 	 * @author Pradnya Kandarkar, Smit Pateliya
 	 */
 	public WebSocket ws() {
-//		WebSocket.Json.acceptOrResult(request -> {
-//            if (sameOriginCheck(request)) {
-//                final CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> future = wsFutureFlow(request);
-//                final CompletionStage<Either<Result, Flow<JsonNode, JsonNode, ?>>> stage = future.thenApply(Either::Right);
-//                stage.exceptionally(this::logException);
-//            } else {
-//                forbiddenResult();
-//            }
-//        });
 		return WebSocket.Json.accept(request -> ActorFlow.actorRef(out -> SupervisorActor.props(out, gitHubAPIInst, asyncCacheApi), actorSystem, materializer));
 	}
-	
-//	@SuppressWarnings("unchecked")
-//    private CompletionStage<Flow<JsonNode, JsonNode, NotUsed>> wsFutureFlow(Http.RequestHeader request) {
-//        String id = Long.toString(request.asScala().id());
-//        Scheduler scheduler = Adapter.toTyped(system.scheduler());
-//        return AskPattern.<SupervisorActor.props, Flow<JsonNode, JsonNode, NotUsed>>ask(
-//        		SupervisorActor, replyTo -> new UserParentActor.Create(id, replyTo), timeout, scheduler
-//        ).thenApply(f -> f.named("websocket"));
-//    }
-//
-//    private CompletionStage<Either<Result, Flow<JsonNode, JsonNode, ?>>> forbiddenResult() {
-//        final Result forbidden = Results.forbidden("forbidden");
-//        final Either<Result, Flow<JsonNode, JsonNode, ?>> left = Either.Left(forbidden);
-//
-//        return CompletableFuture.completedFuture(left);
-//    }
-//
-//    private Either<Result, Flow<JsonNode, JsonNode, ?>> logException(Throwable throwable) {
-//    	log.error("Cannot create websocket", throwable);
-//        Result result = Results.internalServerError("error");
-//        return Either.Left(result);
-//    }
-
-
-	/**
-	 * Checks that the WebSocket comes from the same origin.  This is necessary to protect
-	 * against Cross-Site WebSocket Hijacking as WebSocket does not implement Same Origin Policy.
-	 * <p>
-	 * See https://tools.ietf.org/html/rfc6455#section-1.3 and
-	 * http://blog.dewhurstsecurity.com/2013/08/30/security-testing-html5-websockets.html
-	 */
-	
-//	private boolean sameOriginCheck(Http.RequestHeader rh) {
-//		final Optional<String> origin = rh.header("Origin");
-//
-//		if (! origin.isPresent()) {
-//			log.error("originCheck: rejecting request because no Origin header found");
-//			return false;
-//		} else if (originMatches(origin.get())) {
-//			log.debug("originCheck: originValue = " + origin);
-//			return true;
-//		} else {
-//			log.error("originCheck: rejecting request because Origin header value " + origin + " is not in the same origin");
-//			return false;
-//		}
-//	}
-//
-//	private boolean originMatches(String origin) {
-//		return origin.contains("localhost:9000") || origin.contains("localhost:19001");
-//	}
 }

@@ -12,7 +12,6 @@ import services.github.GitHubAPI;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -47,17 +46,16 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 			CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
 			IssueModel modelData = new IssueModel(repoFullName, data);
 			futureModel.complete(modelData);
-			System.out.println(modelData.getWordLevelData());
+			//System.out.println(modelData.getWordLevelData());
 			futureModel.complete(modelData);
 			return futureModel;
 		}
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode data = null;
-		data = mapper.readTree(TestResources.issueData);
+		JsonNode data = mapper.readTree(TestResources.issueData);
 		CompletableFuture<IssueModel> futureModel = new CompletableFuture<>();
 		IssueModel modelData = new IssueModel(repoFullName, data);
 		futureModel.complete(modelData);
-//		System.out.println(modelData.getWordLevelData());
+		//System.out.println(modelData.getWordLevelData());
 		return futureModel;
 	}
 
@@ -70,33 +68,24 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 	@Override
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
-		//System.out.println("Mock implementation for getRepositoryFromSearchBar");
 		String filePath = "";
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			if (this.list.size() > 1) {
 				filePath = this.list.get(this.list.size() - 1);
 				this.list.remove(this.list.size() - 1);
-			} else {
+			}
+			else if(query.equals("nullquery")) {
+				throw new Exception();
+			}
+			else {
 				filePath = this.list.get(0);
 			}
-		}catch (IndexOutOfBoundsException e){
-			System.out.println("Exception occured!");
-			this.list.add("test/resources/searchreposfeature/sampleSearchResult.json");
+		}catch (Exception e){
 			filePath = "test/resources/searchreposfeature/sampleSearchResult.json";
+			this.list.add(filePath);
 		}
 
-	/*	if(query.equals("samplequery")){
-			filePath = "test/resources/searchreposfeature/sampleSearchResult.json";
-		}
-		else if(query.equals("samplequery2")){
-			filePath = "test/resources/searchreposfeature/sampleSearchResult3.json";
-		}
-		else{
-			query = "samplequery2";
-			filePath = "test/resources/searchreposfeature/sampleSearchResult2.json";
-		}
-*/
 		System.out.println("Path: " + filePath + " query: " + query);
 		JsonNode sampleSearchResult = mapper.readTree(new File(filePath));
 		CompletableFuture<SearchRepository> futureModel = new CompletableFuture<>();
@@ -147,7 +136,6 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 	@Override
 	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) throws Exception{
-		//System.out.println("Mock implementation for getRepositoryProfile");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sampleRepositoryProfile = mapper.readTree(new File("test/resources/repositoryprofile/validRepositoryProfileDetails.json"));
 		CompletableFuture<JsonNode> futureUserRepositories = new CompletableFuture<>();
