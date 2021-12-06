@@ -97,6 +97,7 @@ public class SearchFeatureActorTest {
         //To cover GitMock
         supervisorActor.tell(searchQuery3, testProbe.getRef());
         JsonNode jsonNode = testProbe.expectMsgClass(JsonNode.class);
+        System.out.println("Commit: " + jsonNode.get("repositoryList").get(0).get("repositoryName").asText());
         assertNotEquals(null, jsonNode.get("repositoryList").get(0).get("repositoryName").asText());
     }
 
