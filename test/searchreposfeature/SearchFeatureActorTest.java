@@ -85,21 +85,16 @@ public class SearchFeatureActorTest {
         JsonNode searchQuery2 = mapper.readTree(
                 new File("test/resources/searchreposfeature/sampleSearchQuery2.json"));
 
-        JsonNode searchQuery3 = mapper.readTree(
-                new File("test/resources/searchreposfeature/sampleSearchQuery3.json"));
-
         supervisorActor.tell(searchQuery, testProbe.getRef());
         supervisorActor.tell(searchQuery2, testProbe.getRef());
         supervisorActor.tell(searchQuery2, testProbe.getRef());
         Thread.sleep(10000);
         //TODO: Farheen, change this to 120000 before submission
         supervisorActor.tell(searchQuery2, testProbe.getRef());
-        //To cover GitMock
-        supervisorActor.tell(searchQuery3, testProbe.getRef());
         JsonNode jsonNode = testProbe.expectMsgClass(JsonNode.class);
-        System.out.println("Commit: " + jsonNode.get("repositoryList").get(0).get("repositoryName").asText());
         assertNotEquals(null, jsonNode.get("repositoryList").get(0).get("repositoryName").asText());
     }
+
 
     /**
      * Checks if the Supervisor handles repeated search query
@@ -210,4 +205,23 @@ public class SearchFeatureActorTest {
         System.out.println("Sender: " + testProbe.no);
 
     }*/
+
+    /**
+     * Test case to cover GitHubMock
+     * @throws IOException Exception thrown by Mapper class in case of any issue while reading the file
+     * @author Farheen Jamadar
+     */
+    @Test
+    public void testGitMockSearchFunction() throws IOException {
+        final ActorRef supervisorActor = actorSystem.actorOf(
+                SupervisorActor.props(testProbe.getRef(), testGitHubAPI, testAsyncCacheApi));
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode searchQuery = mapper.readTree(
+                new File("test/resources/searchreposfeature/sampleSearchQuery3.json"));
+
+        supervisorActor.tell(searchQuery, testProbe.getRef());
+        JsonNode jsonNode = testProbe.expectMsgClass(JsonNode.class);
+        assertNotEquals(null, jsonNode.get("repositoryList").get(0).get("repositoryName").asText());
+    }
+
 }
