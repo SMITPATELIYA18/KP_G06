@@ -111,7 +111,6 @@ public class SearchReposImplTest {
 
     /**
      * Checks if maximum 10 search results are returned for any number of queries
-     * is called
      * @throws Exception If the call cannot be completed due to an error
      * @author Indraneel Rachakonda
      */
