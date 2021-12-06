@@ -64,10 +64,10 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 */
 
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
-		//System.out.println("Actual implementation for getRepositoryProfile");
-
 		String finalURL = this.baseURL + "/search/repositories";
 		CompletionStage<SearchRepository> searchResult = client.url(finalURL).addQueryParameter("q", query)
+				.addQueryParameter("sort", "updated")
+				.addQueryParameter("order", "desc")
 				.addHeader("accept", "application/vnd.github.v3+json").get()
 				.thenApplyAsync(result -> new SearchRepository(result.asJson(), query));
 		return searchResult;
