@@ -64,7 +64,6 @@ public class SearchActor extends AbstractActorWithTimers {
         getTimers().startPeriodicTimer("RefreshSearch",
                 new Messages.TrackSearch(trackedSearchQuery, "periodic"),
                 Duration.create(10, TimeUnit.SECONDS));
-        //TODO: Farheen, change this to 120 before submission
     }
 
     /**
