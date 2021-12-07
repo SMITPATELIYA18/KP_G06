@@ -133,5 +133,35 @@ public class Messages {
     		this.issueModel = issueModel;
     	}
     }
+    
+    /**
+     * Used to ask <code>TopicActor</code> to retrieve topic information
+     * @author Indraneel Rachakonda
+     */
+    public static final class GetTopic {
+        public final String topic;
+
+        /**
+         * @param topic Topic to fetch the details for
+         */
+        public GetTopic(String topic) {
+            this.topic = topic;
+        }
+    }
+    
+    /**
+     * Used to send the topic information from <code>TopicActor</code>
+     * @author Indraneel Rachakonda
+     */
+    public static final class TopicInfo {
+        public final JsonNode topicResult;
+
+        /**
+         * @param userProfileResult Holds user profile and repositories information
+         */
+        public TopicInfo(JsonNode topicResult) {
+            this.topicResult = topicResult;
+        }
+    }
 
 }

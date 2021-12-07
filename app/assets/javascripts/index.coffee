@@ -39,6 +39,13 @@ $ ->
         $("#repository-profile-info").hide()
         displayIssueStatInfo(message)
         $("#issue-stat-info").show()
+      when "topicInfo"
+        $("#all-search-results").hide()
+        $("#user-profile-info").hide()
+        $("#repository-profile-info").hide()
+        $("#issue-stat-info").hide()
+        displayTopicInfo(message)
+        $("#topic-info").show()
 
   # When the form button is clicked, validates the input and sends a request using the web socket
   $("#searchGitHubForm").submit (event) ->
@@ -81,6 +88,26 @@ $ ->
       ws.send(JSON.stringify({issues: $(this).attr("repoFullName")}))
       return
 
+  $("#all-search-results").on "click", "a.topic-link", (event) ->
+      event.preventDefault()
+      ws.send(JSON.stringify({topic: $(this).attr("topicAttr")}))
+      return
+    
+  $("#topic-info").on "click", "a.repository-profile-link", (event) ->
+      event.preventDefault()
+      ws.send(JSON.stringify({repository_profile: $(this).text(), username: $(this).attr("username")}))
+      return
+      
+  $("#topic-info").on "click", "a.user-profile-link", (event) ->
+      event.preventDefault()
+      ws.send(JSON.stringify({user_profile: $(this).text()}))
+      return
+      
+  $("#topic-info").on "click", "a.topic-link", (event) ->
+      event.preventDefault()
+      ws.send(JSON.stringify({topic: $(this).attr("topicAttr")}))
+      return
+
 # Replaces spaces in a string with underscores
 replaceSpaceWithUnderscore = (string) ->
   string.replace(" ", "_")
@@ -109,11 +136,13 @@ displaySearchResult = (message) ->
     repositoryDetails.append($("<b>").text(" | Topic List:"))
     for topic in repository.topics
       topicLink = $("<a>").text(topic).attr("href", "/topics/" + topic)
+      topicLink.addClass("topic-link")
+      topicLink.attr("topicAttr", topic)
       repositoryDetails.append("  ")
       repositoryDetails.append(topicLink)
     respositoryInfo.append(repositoryDetails)
 
-    searchResultData.prepend(respositoryInfo)
+    searchResultData.append(respositoryInfo)
   singleSearchResult.append(searchResultHeader)
   singleSearchResult.append(searchResultData)
   singleSearchResult.append($("<hr>"))
@@ -122,13 +151,10 @@ displaySearchResult = (message) ->
 # Updates displayed search results with new data received from the server
 updateSearchResult = (message) ->
   id_query = replaceSpaceWithUnderscore(message.query)
-  query_result_field = document.getElementById(id_query + "-result")
   for repository in message.repositoryList
-    if query_result_field.childNodes.length == 10
-      query_result_field.removeChild(query_result_field.lastChild)
     respositoryInfo = $("<div>").addClass("repository-info")
 
-    repositoryDetails = $("<p>").append($("<b>").text("Repository Name: "))
+    repositoryDetails = $("<p>").append($("<b>").text("***New*** Repository Name: "))
     repositoryLink = $("<a>").text(repository.repositoryName).attr("href", "/repositoryProfile/" + repository.ownerName + "/" + repository.repositoryName)
     repositoryLink.addClass("repository-profile-link")
     repositoryLink.attr("username", repository.ownerName)
@@ -142,6 +168,8 @@ updateSearchResult = (message) ->
     repositoryDetails.append($("<b>").text(" | Topic List:"))
     for topic in repository.topics
       topicLink = $("<a>").text(topic).attr("href", "/topics/" + topic)
+      topicLink.addClass("topic-link")
+      topicLink.attr("topicAttr", topic)
       repositoryDetails.append("  ")
       repositoryDetails.append(topicLink)
     respositoryInfo.append(repositoryDetails)
@@ -244,3 +272,40 @@ displayIssueStatInfo = (issueModel) ->
           #  issueStat.append(oneIssueStat)
         # issueStat.append("</div>")
     $("#issue-stat-info").append(issueStat)
+    
+displayTopicInfo = (message) ->
+  console.log("0" + JSON.stringify(message))
+  id_query = replaceSpaceWithUnderscore(message.query)
+  topicResult = $("<div>").addClass("topic-result").prop("id", id_query)
+  topicHeader = $("<div>").addClass("topic-header")
+  topicData = $("<div>").addClass("topic-data").prop("id", id_query + "-result")
+  topicHeader.append($("<h2>").text("Search terms: " + message.query))
+  for repository in message.repositoryList
+    respositoryInfo = $("<div>").addClass("repository-info")
+
+    repositoryDetails = $("<p>").append($("<b>").text("Repository Name: "))
+    repositoryLink = $("<a>").text(repository.repositoryName).attr("href", "/repositoryProfile/" + repository.ownerName + "/" + repository.repositoryName)
+    repositoryLink.addClass("repository-profile-link")
+    repositoryLink.attr("username", repository.ownerName)
+    repositoryDetails.append(repositoryLink)
+
+    repositoryDetails.append($("<b>").text(" | Owner Name: "))
+    userProfileLink = $("<a>").text(repository.ownerName).attr("href", "/user-profile/" + repository.ownerName)
+    userProfileLink.addClass("user-profile-link")
+    repositoryDetails.append(userProfileLink)
+
+    repositoryDetails.append($("<b>").text(" | Topic List:"))
+    for topic in repository.topics
+      topicLink = $("<a>").text(topic).attr("href", "/topics/" + topic)
+      topicLink.addClass("topic-link")
+      topicLink.attr("topicAttr", topic)
+      repositoryDetails.append("  ")
+      repositoryDetails.append(topicLink)
+    respositoryInfo.append(repositoryDetails)
+
+    topicData.append(respositoryInfo)
+  topicResult.append(topicHeader)
+  topicResult.append(topicData)
+  console.log("1" + JSON.stringify(topicData))
+  topicResult.append($("<hr>"))
+  $("#topic-info").prepend(topicResult)

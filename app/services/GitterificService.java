@@ -27,13 +27,13 @@ public class GitterificService {
      * @return Future CompletionStage SearchRepository
      * @author Indraneel Rachakonda
      */
-    public CompletionStage<SearchRepository> getTopicRepository(String topic) {
-        return asyncCacheApi.getOrElseUpdate(
-                        "topic_" + topic,
-                        () -> gitHubAPIInst.getTopicRepository(topic))
-                .thenApplyAsync((searchResult) -> {
-                            asyncCacheApi.set("topic_" + topic, searchResult,  60 * 15);
-                            return searchResult;
-                        });
-    }
+//    public CompletionStage<SearchRepository> getTopicRepository(String topic) {
+//        return asyncCacheApi.getOrElseUpdate(
+//                        "topic_" + topic,
+//                        () -> gitHubAPIInst.getTopicRepository(topic))
+//                .thenApplyAsync((searchResult) -> {
+//                            asyncCacheApi.set("topic_" + topic, searchResult,  60 * 15);
+//                            return searchResult;
+//                        });
+//    }
 }
