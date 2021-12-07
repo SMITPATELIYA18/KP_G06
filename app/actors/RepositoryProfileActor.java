@@ -29,7 +29,7 @@ public class RepositoryProfileActor extends AbstractActor {
 
     /**
      * @param sessionActor Supervisor Actor Reference
-     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface for GitHub API calls
+     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface for GitHub API calls
      * @param asyncCacheApi Asynchronous Cache
      */
     public RepositoryProfileActor(ActorRef sessionActor, GitHubAPI gitHubAPIInst, AsyncCacheApi asyncCacheApi) {
@@ -41,7 +41,7 @@ public class RepositoryProfileActor extends AbstractActor {
     /**
      * Creates Repository profile actor
      * @param sessionActor Supervisor Actor Reference
-     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface for GitHub API calls
+     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface for GitHub API calls
      * @param asyncCacheApi Asynchronous Cache
      * @return <code>Props</code> object Repository profile actor
      * @author Farheen Jamadar
@@ -60,7 +60,7 @@ public class RepositoryProfileActor extends AbstractActor {
     }
 
     /**
-     * Called after Repository Actor children/activites are stopped
+     * Called after Repository Actor children/activities are stopped
      * @author Farheen Jamadar
      */
     @Override

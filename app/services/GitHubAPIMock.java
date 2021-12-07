@@ -64,7 +64,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @param query Query string from User to search repositories
 	 * @return Returns SearchRepository Model containing repository information
 	 * @throws Exception If the call cannot be completed due to an error
-	 * @author Pradnya Kandarkar
+	 * @author Pradnya Kandarkar, Farheen Jamadar
 	 */
 	@Override
 	public CompletionStage<SearchRepository> getRepositoryFromSearchBar(String query) throws Exception {
@@ -86,7 +86,7 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 			this.list.add(filePath);
 		}
 
-		System.out.println("Path: " + filePath + " query: " + query);
+		//System.out.println("Path: " + filePath + " query: " + query);
 		JsonNode sampleSearchResult = mapper.readTree(new File(filePath));
 		CompletableFuture<SearchRepository> futureModel = new CompletableFuture<>();
 		SearchRepository modelData = new SearchRepository(sampleSearchResult, query);

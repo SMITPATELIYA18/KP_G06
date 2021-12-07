@@ -35,14 +35,15 @@ public class GitterificController extends Controller {
 	private final ActorSystem actorSystem;
 	private Materializer materializer;
 
-	//TODO: Farheen: Being used?
-	private final Timeout t = new Timeout(Duration.create(1, TimeUnit.SECONDS));
-	private final Logger log = org.slf4j.LoggerFactory.getLogger("controllers.GitterificController");
-
 	/**
 	 * @param assetsFinder For finding assets according to configured base path and URL base
 	 * @param httpExecutionContext For managing Play Java HTTP thread local state
 	 * @param asyncCacheApi For utilizing asynchronous cache
+	 * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface for GitHub API calls
+	 *                      //TODO: Farheen: Remove service class
+	 * @param gitterificService For using GitHub Service Class
+	 * @param actorSystem For creating actor system
+	 * @param materializer Factory for stream execution engines
 	 */
 	@Inject
 	public GitterificController(AssetsFinder assetsFinder, HttpExecutionContext httpExecutionContext, AsyncCacheApi asyncCacheApi, GitHubAPI gitHubAPIInst, GitterificService gitterificService, ActorSystem actorSystem, Materializer materializer) {
@@ -60,6 +61,7 @@ public class GitterificController extends Controller {
 	 *
 	 * The configuration in the <code>routes</code> file means that this method will be called when the application
 	 * receives a <code>GET</code> request with a path of <code>/</code>.
+	 * @param request An HTTP request
 	 * @return Future CompletionStage Result
 	 * @author SmitPateliya, Farheen Jamadar
 	 */
@@ -74,6 +76,7 @@ public class GitterificController extends Controller {
 	 * this method will be called when the application receives a
 	 * <code>GET</code> request with a path of <code>/topics/:topic</code>.
 	 * @param topic  Topic based on which the repositories will be retrieved
+	 * @param request An HTTP request
 	 * @return Future CompletionStage Result
 	 * @author Indraneel Rachakonda
 	 */

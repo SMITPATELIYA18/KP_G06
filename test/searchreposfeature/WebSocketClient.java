@@ -41,26 +41,12 @@ public class WebSocketClient {
             this.onMessageCallback = onMessageCallback;
         }
 
-        private Logger logger = org.slf4j.LoggerFactory.getLogger(LoggingListener.class);
-
-        private Throwable throwableFound = null;
-
-        public Throwable getThrowable() {
-            return throwableFound;
-        }
-
-        public void onOpen(WebSocket websocket) {
-            // do nothing
-        }
+        public void onOpen(WebSocket websocket) {}
 
         @Override
-        public void onClose(WebSocket webSocket, int i, String s) {
-            // do nothing
-        }
+        public void onClose(WebSocket webSocket, int i, String s) {}
 
         public void onError(Throwable t) {
-            // do nothing
-            throwableFound = t;
         }
 
         @Override

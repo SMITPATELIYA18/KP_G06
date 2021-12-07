@@ -34,17 +34,15 @@ public class WebSocketTest extends WithServer {
             try {
                 AsyncHttpClientConfig config = new DefaultAsyncHttpClientConfig.Builder().setMaxRequestRetry(0).build();
                 AsyncHttpClient client = new DefaultAsyncHttpClient(config);
-                WebSocketClient webSocketClient = new WebSocketClient(client);
 
-                try {
+                try (client) {
+                    WebSocketClient webSocketClient = new WebSocketClient(client);
                     String serverURL = "ws://localhost:9000/ws";
-                    WebSocketClient.LoggingListener listener = new WebSocketClient.LoggingListener(message -> {});
+                    WebSocketClient.LoggingListener listener = new WebSocketClient.LoggingListener(message -> {
+                    });
                     CompletableFuture<NettyWebSocket> completionStage = webSocketClient.call(serverURL, serverURL, listener);
                     await().until(completionStage::isDone);
-                    System.out.println("Print: " + completionStage.get());
-                   assertThat(completionStage.get()).isNotNull();
-                } finally {
-                    client.close();
+                    assertThat(completionStage.get()).isNotNull();
                 }
             } catch (Exception e) {
                 fail("Unexpected exception", e);
