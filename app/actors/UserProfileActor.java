@@ -74,12 +74,8 @@ public class UserProfileActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Messages.GetUserProfile.class, userProfileRequest -> {
-                    onGetUserProfile(userProfileRequest).thenAcceptAsync(this::processUserProfileResult);
-                })
-                .match(Exception.class, exception -> {
-                    throw exception;
-                })
+                .match(Messages.GetUserProfile.class, userProfileRequest ->
+                        onGetUserProfile(userProfileRequest).thenAcceptAsync(this::processUserProfileResult))
                 .matchAny(other -> log.error("Received unknown message type: " + other.getClass()))
                 .build();
     }
@@ -115,10 +111,6 @@ public class UserProfileActor extends AbstractActor {
      * @author Pradnya Kandarkar
      */
     private void processUserProfileResult(JsonNode userProfileInfo) {
-        if(userProfileInfo.get("profile").isEmpty()) {
-            self().tell(new Exception("Testing exception"), self());
-        } else {
-            supervisorActor.tell(new Messages.UserProfileInfo(userProfileInfo), getSelf());
-        }
+        supervisorActor.tell(new Messages.UserProfileInfo(userProfileInfo), getSelf());
     }
 }

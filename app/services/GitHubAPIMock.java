@@ -104,13 +104,6 @@ public class GitHubAPIMock implements WSBodyReadables, WSBodyWritables, GitHubAP
 	@Override
 	public CompletionStage<JsonNode> getUserProfileByUsername(String username) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		if(username.equals("empty_user_profile_response")) {
-			System.out.println("Received the expected request.");
-			JsonNode sampleUserProfile = mapper.readTree(new File("test/resources/userprofile/emptyUserProfileInformation.json"));
-			CompletableFuture<JsonNode> futureUserProfile = new CompletableFuture<JsonNode>();
-			futureUserProfile.complete(sampleUserProfile);
-			return futureUserProfile;
-		}
 		JsonNode sampleUserProfile = mapper.readTree(new File("test/resources/userprofile/validGitHubUserProfile.json"));
 		CompletableFuture<JsonNode> futureUserProfile = new CompletableFuture<JsonNode>();
 		futureUserProfile.complete(sampleUserProfile);

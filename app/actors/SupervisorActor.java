@@ -37,10 +37,7 @@ public class SupervisorActor extends AbstractActor {
     private static SupervisorStrategy strategy = new OneForOneStrategy(
             10,
             Duration.ofMinutes(1),
-            DeciderBuilder.match(Exception.class, e -> {
-                        System.out.println("Restarting actor because of exception.");
-                        return SupervisorStrategy.restart();
-                    })
+            DeciderBuilder.match(Exception.class, e -> SupervisorStrategy.restart())
                     .matchAny(o -> SupervisorStrategy.escalate())
                     .build());
     /**
