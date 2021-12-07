@@ -203,7 +203,7 @@ public class SearchFeatureActorTest {
     }
 
     /**
-     * Tests the Supervisor strategy
+     * Tests whether supervisor handles failures as expected
      * @author Pradnya Kandarkar
      */
     @Test
