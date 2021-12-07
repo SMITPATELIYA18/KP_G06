@@ -6,6 +6,7 @@ import actors.UserProfileActor;
 import akka.actor.*;
 import akka.event.Logging;
 import akka.testkit.EventFilter;
+import akka.testkit.TestActorRef;
 import akka.testkit.javadsl.TestKit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -144,5 +145,19 @@ public class UserProfileActorTest {
         assertTrue(userProfileInfo2.has("repositories"));
 
         actorSystem.stop(supervisorActor);
+    }
+
+    @Test
+    public void testSupervisonForUserProfile() {
+        final Props props = Props.create(SupervisorActor.class, testProbe.getRef(), testGitHubAPIInst, testAsyncCacheApi);
+        final TestActorRef<SupervisorActor> supervisorTestActorRef = TestActorRef.create(actorSystem, props);
+
+        SupervisorStrategy.Directive directive = supervisorTestActorRef.underlyingActor()
+                .supervisorStrategy().decider().apply(new Exception());
+        assertEquals(SupervisorStrategy.restart(), directive);
+
+        SupervisorStrategy.Directive directive2 = supervisorTestActorRef.underlyingActor()
+                .supervisorStrategy().decider().apply(new Throwable());
+        assertEquals(SupervisorStrategy.escalate(), directive2);
     }
 }

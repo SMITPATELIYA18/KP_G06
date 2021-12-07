@@ -34,7 +34,12 @@ public class SupervisorActor extends AbstractActor {
     private ActorRef repositoryProfileActor = null;
     private ActorRef issueStatActor = null;
     
-    private static SupervisorStrategy strategy = new OneForOneStrategy(10, Duration.ofMinutes(1), DeciderBuilder.match(NullPointerException.class, e -> SupervisorStrategy.restart()).matchAny(o -> SupervisorStrategy.escalate()).build());
+    private static SupervisorStrategy strategy = new OneForOneStrategy(
+            10,
+            Duration.ofMinutes(1),
+            DeciderBuilder.match(Exception.class, e -> SupervisorStrategy.restart())
+                    .matchAny(o -> SupervisorStrategy.escalate())
+                    .build());
     /**
      * This methods creates Supervisor Strategy for this Supervisor Actor.
      * @author Smit Pateliya
