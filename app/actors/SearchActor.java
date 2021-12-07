@@ -34,7 +34,7 @@ public class SearchActor extends AbstractActorWithTimers {
     /**
      * @param supervisorActor Actor reference for the supervisor actor
      * @param trackedSearchQuery Search query for which this actor is responsible
-     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface, used to make external API calls to GitHub
+     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface, used to make external API calls to GitHub
      */
     public SearchActor(ActorRef supervisorActor, String trackedSearchQuery, GitHubAPI gitHubAPIInst) {
         this.supervisorActor = supervisorActor;
@@ -46,7 +46,7 @@ public class SearchActor extends AbstractActorWithTimers {
      * Creates an actor with properties specified using parameters
      * @param supervisorActor Actor reference for the supervisor actor
      * @param trackedSearchQuery Search query for which created actor will be responsible
-     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface, used to make external API calls to GitHub
+     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface, used to make external API calls to GitHub
      * @return A <code>Props</code> object holding actor configuration
      * @author Pradnya Kandarkar
      */

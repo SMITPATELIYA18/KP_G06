@@ -27,7 +27,7 @@ public class UserProfileActor extends AbstractActor {
 
     /**
      * @param supervisorActor Actor reference for the supervisor actor
-     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface, used to make external API calls to GitHub
+     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface, used to make external API calls to GitHub
      * @param asyncCacheApi For temporary data storage
      */
     public UserProfileActor(ActorRef supervisorActor, GitHubAPI gitHubAPIInst, AsyncCacheApi asyncCacheApi) {
@@ -39,7 +39,7 @@ public class UserProfileActor extends AbstractActor {
     /**
      * Creates an actor with properties specified using parameters
      * @param supervisorActor Actor reference for the supervisor actor
-     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface, used to make external API calls to GitHub
+     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface, used to make external API calls to GitHub
      * @param asyncCacheApi For temporary data storage
      * @return A <code>Props</code> object holding actor configuration
      * @author Pradnya Kandarkar

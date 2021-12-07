@@ -5,8 +5,11 @@ import actors.SearchActor;
 import actors.SupervisorActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.actor.SupervisorStrategy;
 import akka.event.Logging;
 import akka.testkit.EventFilter;
+import akka.testkit.TestActorRef;
 import akka.testkit.javadsl.TestKit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -89,7 +92,7 @@ public class SearchFeatureActorTest {
         supervisorActor.tell(searchQuery2, testProbe.getRef());
         supervisorActor.tell(searchQuery2, testProbe.getRef());
         Thread.sleep(10000);
-        //TODO: Farheen, change this to 120000 before submission
+
         supervisorActor.tell(searchQuery2, testProbe.getRef());
         JsonNode jsonNode = testProbe.expectMsgClass(JsonNode.class);
         assertNotEquals(null, jsonNode.get("repositoryList").get(0).get("repositoryName").asText());
@@ -181,33 +184,8 @@ public class SearchFeatureActorTest {
         assertNotEquals(null, new Messages());
     }
 
-    //TODO: Farheen
     /**
-     * Checks if the Supervisor Strategy works
-     * @throws IOException Exception thrown by Mapper class in case of any issue while reading the file
-     * @author Farheen Jamadar
-     */
-    /*@Test
-    public void testSupervisorActorStrategy() throws IOException {
-
-        scala.concurrent.duration.Duration timeout =
-                scala.concurrent.duration.Duration.create(5, SECONDS);
-
-        final ActorRef supervisorActor = actorSystem.actorOf(
-                SupervisorActor.props(testProbe.getRef(), testGitHubAPI, testAsyncCacheApi));
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode searchQuery = mapper.readTree(
-                new File("test/resources/searchreposfeature/sampleSearchQuery.json"));
-
-        supervisorActor.tell(searchQuery, testProbe.getRef());
-        System.out.println("Sender: " + testProbe.getLastSender());
-        System.out.println("Sender: " + testProbe.no);
-
-    }*/
-
-    /**
-     * Test case to cover GitHubMock
+     * Tests GitHubMock Search Function
      * @throws IOException Exception thrown by Mapper class in case of any issue while reading the file
      * @author Farheen Jamadar
      */
@@ -224,4 +202,21 @@ public class SearchFeatureActorTest {
         assertNotEquals(null, jsonNode.get("repositoryList").get(0).get("repositoryName").asText());
     }
 
+    /**
+     * Tests the Supervisor strategy
+     * @author Pradnya Kandarkar
+     */
+    @Test
+    public void testSupervisorStrategy() {
+        final Props props = Props.create(SupervisorActor.class, testProbe.getRef(), testGitHubAPI, testAsyncCacheApi);
+        final TestActorRef<SupervisorActor> supervisorActor = TestActorRef.create(actorSystem, props);
+
+        SupervisorStrategy.Directive directive = supervisorActor.underlyingActor()
+                .supervisorStrategy().decider().apply(new Exception());
+        assertEquals(SupervisorStrategy.restart(), directive);
+
+        SupervisorStrategy.Directive directive2 = supervisorActor.underlyingActor()
+                .supervisorStrategy().decider().apply(new Throwable());
+        assertEquals(SupervisorStrategy.escalate(), directive2);
+    }
 }

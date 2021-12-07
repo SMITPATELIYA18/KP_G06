@@ -51,7 +51,7 @@ public class SupervisorActor extends AbstractActor {
     
     /**
      * @param wsOut For sending data/messages to the client
-     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface, for making external API calls to GitHub
+     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface, for making external API calls to GitHub
      * @param asyncCacheApi For temporary data storage
      */
     public SupervisorActor(final ActorRef wsOut, GitHubAPI gitHubAPIInst, AsyncCacheApi asyncCacheApi) {
@@ -63,7 +63,7 @@ public class SupervisorActor extends AbstractActor {
     /**
      * Creates an actor with properties specified using parameters
      * @param wsout For sending data/messages to the client
-     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> inteface, for making external API calls to GitHub
+     * @param gitHubAPIInst Instance of <code>GitHubAPI</code> interface, for making external API calls to GitHub
      * @param asyncCacheApi For temporary storing data
      * @return A <code>Props</code> object holding actor configuration
      * @author Pradnya Kandarkar
