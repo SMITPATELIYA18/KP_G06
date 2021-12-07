@@ -11,12 +11,14 @@ $ ->
         $("#user-profile-info").hide()
         $("#repository-profile-info").hide()
         $("#issue-stat-info").hide()
+        $("#topic-info").hide()
         displaySearchResult(message)
         $("#all-search-results").show()
       when "searchResultUpdate"
         $("#user-profile-info").hide()
         $("#repository-profile-info").hide()
         $("#issue-stat-info").hide()
+        $("#topic-info").hide()
         updateSearchResult(message)
         $("#all-search-results").show()
       when "searchResultPeriodicUpdate"
@@ -24,6 +26,7 @@ $ ->
       when "userProfileInfo"
         $("#all-search-results").hide()
         $("#repository-profile-info").hide()
+        $("#topic-info").hide()
         $("#issue-stat-info").hide()
         displayUserProfileInfo(message)
         $("#user-profile-info").show()
@@ -31,12 +34,14 @@ $ ->
         $("#all-search-results").hide()
         $("#user-profile-info").hide()
         $("#issue-stat-info").hide()
+        $("#topic-info").hide()
         displayRepositoryProfileInfo(message)
         $("#repository-profile-info").show()
       when "issueStatInfo"
         $("#all-search-results").hide()
         $("#user-profile-info").hide()
         $("#repository-profile-info").hide()
+        $("#topic-info").hide()
         displayIssueStatInfo(message)
         $("#issue-stat-info").show()
       when "topicInfo"
@@ -142,7 +147,7 @@ displaySearchResult = (message) ->
       repositoryDetails.append(topicLink)
     respositoryInfo.append(repositoryDetails)
 
-    searchResultData.append(respositoryInfo)
+    searchResultData.prepend(respositoryInfo)
   singleSearchResult.append(searchResultHeader)
   singleSearchResult.append(searchResultData)
   singleSearchResult.append($("<hr>"))
@@ -151,7 +156,10 @@ displaySearchResult = (message) ->
 # Updates displayed search results with new data received from the server
 updateSearchResult = (message) ->
   id_query = replaceSpaceWithUnderscore(message.query)
+  query_result_field = document.getElementById(id_query + "-result")
   for repository in message.repositoryList
+    if query_result_field.childNodes.length == 10
+      query_result_field.removeChild(query_result_field.lastChild)
     respositoryInfo = $("<div>").addClass("repository-info")
 
     repositoryDetails = $("<p>").append($("<b>").text("***New*** Repository Name: "))
@@ -274,6 +282,7 @@ displayIssueStatInfo = (issueModel) ->
     $("#issue-stat-info").append(issueStat)
     
 displayTopicInfo = (message) ->
+  $("#topic-info").empty()
   console.log("0" + JSON.stringify(message))
   id_query = replaceSpaceWithUnderscore(message.query)
   topicResult = $("<div>").addClass("topic-result").prop("id", id_query)
