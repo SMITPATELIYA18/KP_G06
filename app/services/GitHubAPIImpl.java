@@ -47,6 +47,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 *
 	 * @param query Query string from User to search repositories.
 	 * @return Returns SearchRepository Model containing repository information.
+	 * @throws Exception If the call cannot be completed due to an error
 	 * @author SmitPateliya
 	 */
 
@@ -126,6 +127,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @param username Owner of the repository
 	 * @param repositoryName Repository Name
 	 * @return Returns JsonNode containing Repository information
+	 * @throws Exception If the call cannot be completed due to an error
 	 * @author Farheen Jamadar
 	 */
 	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) throws Exception{
@@ -143,6 +145,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * Retrieves top 10 repositories containing the topic provided by the user.
 	 * @param topic Topic based on which the repositories will be retrieved
 	 * @return Future CompletionStage SearchRepository
+	 * @throws Exception If the call cannot be completed due to an error
 	 * @author Indraneel Rachakonda
 	 */
 	public CompletionStage<SearchRepository> getTopicRepository(String topic) throws Exception {
