@@ -1,5 +1,8 @@
 package searchreposfeature;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import models.RepositoryModel;
 import models.SearchCacheStore;
 import models.SearchRepository;
 import org.junit.Test;
@@ -21,7 +24,9 @@ import services.github.GitHubAPI;
 
 import org.junit.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -127,6 +132,19 @@ public class SearchReposImplTest {
             assertTrue(testSearchStore.getSearches().size() <= 10);
         }
     }
+
+    /**
+     * Test case for repository profile model class equals method
+     * @author Indraneel Rachakonda
+     */
+    @Test
+    public void equalsRepositoryModel() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode sampleSearchResult = mapper.readTree(new File("test/resources/searchreposfeature/sampleSearchResult.json"));
+
+        RepositoryModel repositoryModel = new RepositoryModel(sampleSearchResult.get("items").get(0));
+        RepositoryModel repositoryModel2 = new RepositoryModel(sampleSearchResult.get("items").get(0));
+        assertEquals(true, repositoryModel.equals(repositoryModel2));
+        assertEquals(false, repositoryModel.equals(new ArrayList<>()));
+    }
 }
-
-

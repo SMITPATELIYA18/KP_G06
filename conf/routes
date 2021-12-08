@@ -13,7 +13,7 @@ GET     /ws                         controllers.GitterificController.ws
 #GET     /issues/*repoName			controllers.GitterificController.getIssueStat(repoName: String, request: Request)
 
 # Tpoics feature route(s):
-GET     /topics/:topic              controllers.GitterificController.getTopicRepository(topic:String, request: Request)
+#GET     /topics/:topic              controllers.GitterificController.getTopicRepository(topic:String, request: Request)
 
 # Map static resources from the /public folder to the /assets URL path:
 GET     /assets/*file               controllers.Assets.versioned(file)
