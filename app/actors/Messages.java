@@ -2,8 +2,6 @@ package actors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import models.IssueModel;
-
 /**
  * Holds messages used by the application actors
  * @author Pradnya Kandarkar
@@ -124,7 +122,7 @@ public class Messages {
     	public final JsonNode issueModel;
     	
     	/**
-    	 * Initializes issuModel variable
+    	 * Initializes issueModel variable
     	 * @param issueModel
     	 * @author Smit Pateliya
     	 */
@@ -157,7 +155,7 @@ public class Messages {
         public final JsonNode topicResult;
 
         /**
-         * @param userProfileResult Holds user profile and repositories information
+         * @param topicResult Holds information based on topic
          */
         public TopicInfo(JsonNode topicResult) {
             this.topicResult = topicResult;

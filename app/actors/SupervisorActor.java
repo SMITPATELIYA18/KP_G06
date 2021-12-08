@@ -126,7 +126,6 @@ public class SupervisorActor extends AbstractActor {
 	 */
 	private void processRequest(JsonNode receivedJson) {
 		log.info(receivedJson.asText());
-		System.out.println(receivedJson.asText());
 		if (receivedJson.has("search_query")) {
 			/*
 			 * For "search_query" requests, gets the query string and checks id there is a

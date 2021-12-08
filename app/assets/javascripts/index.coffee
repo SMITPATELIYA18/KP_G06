@@ -260,11 +260,9 @@ displayIssueStatInfo = (issueModel) ->
     $("#issue-stat-info").append("<i>").text("(by frequency of the words in descending order)")
 
     repoFullName = issueModel.result.repoFullName
-    console.log(repoFullName)
     $("#issue-stat-info").append($("<h2>").text("Repository Name: " + repoFullName))
     $("#issue-stat-info").append($("<br>"))
     issueStat = $("<div>")
-    console.log($("#issue-stat-info"))
     if issueModel.result.error
         $("#issue-stat-info").append($("<h4>").text(issueModel.result.errorMessage))
     else
@@ -274,16 +272,10 @@ displayIssueStatInfo = (issueModel) ->
             oneIssueStat.append($("<b>").text(": "))
             oneIssueStat.append(value)
             issueStat.append(oneIssueStat)
-        console.log(issueStat)
-        #for key,value of issueModel.result.wordLevelData
-         #   oneIssueStat = $("<div><ul>" + key + " :: " + value + "</div></ul>")
-          #  issueStat.append(oneIssueStat)
-        # issueStat.append("</div>")
     $("#issue-stat-info").append(issueStat)
     
 displayTopicInfo = (message) ->
   $("#topic-info").empty()
-  console.log("0" + JSON.stringify(message))
   id_query = replaceSpaceWithUnderscore(message.query)
   topicResult = $("<div>").addClass("topic-result").prop("id", id_query)
   topicHeader = $("<div>").addClass("topic-header")
@@ -315,6 +307,5 @@ displayTopicInfo = (message) ->
     topicData.append(respositoryInfo)
   topicResult.append(topicHeader)
   topicResult.append(topicData)
-  console.log("1" + JSON.stringify(topicData))
   topicResult.append($("<hr>"))
   $("#topic-info").prepend(topicResult)

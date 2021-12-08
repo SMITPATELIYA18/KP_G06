@@ -56,7 +56,7 @@ public class RepositoryProfileActor extends AbstractActor {
      */
     @Override
     public void preStart() {
-        System.out.println("Created a repository profile actor.");
+        log.info("Created a repository profile actor.");
     }
 
     /**

@@ -1,28 +1,15 @@
 package services;
 
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
-
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.IssueModel;
 import models.SearchRepository;
@@ -60,6 +47,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 *
 	 * @param query Query string from User to search repositories.
 	 * @return Returns SearchRepository Model containing repository information.
+	 * @throws Exception If the call cannot be completed due to an error
 	 * @author SmitPateliya
 	 */
 
@@ -139,6 +127,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * @param username Owner of the repository
 	 * @param repositoryName Repository Name
 	 * @return Returns JsonNode containing Repository information
+	 * @throws Exception If the call cannot be completed due to an error
 	 * @author Farheen Jamadar
 	 */
 	public CompletionStage<JsonNode> getRepositoryProfile(String username, String repositoryName) throws Exception{
@@ -156,6 +145,7 @@ public class GitHubAPIImpl implements WSBodyReadables, WSBodyWritables, GitHubAP
 	 * Retrieves top 10 repositories containing the topic provided by the user.
 	 * @param topic Topic based on which the repositories will be retrieved
 	 * @return Future CompletionStage SearchRepository
+	 * @throws Exception If the call cannot be completed due to an error
 	 * @author Indraneel Rachakonda
 	 */
 	public CompletionStage<SearchRepository> getTopicRepository(String topic) throws Exception {

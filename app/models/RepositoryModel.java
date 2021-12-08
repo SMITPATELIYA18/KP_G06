@@ -21,13 +21,6 @@ public class RepositoryModel {
 	private String repositoryName;
 	private List<String> topics;
 
-	// This constructor is created to help during the development process. Will be removed later if not required.
-	public RepositoryModel(String ownerName, String repositoryName, List<String> topics) {
-		this.ownerName = ownerName;
-		this.repositoryName = repositoryName;
-		this.topics = topics;
-	}
-
 	public RepositoryModel(JsonNode data) {
 		this.ownerName = data.get("owner").get("login").asText();
 		this.repositoryName = data.get("name").asText();
@@ -54,21 +47,6 @@ public class RepositoryModel {
 	public String getOwnerName(){
 		return ownerName;
 	}
-/*
-
-	// These setters are created to help during the development process. Will be removed later if not required.
-	public void setOwnerName(String ownerName) {
-		this.ownerName = ownerName;
-	}
-*/
-
-	/*public void setRepositoryName(String repositoryName) {
-		this.repositoryName = repositoryName;
-	}*/
-
-	/*public void setTopics(List<String> topics) {
-		this.topics = topics;
-	}*/
 
 	@Override
 	public boolean equals(Object obj) {
