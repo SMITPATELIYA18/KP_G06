@@ -80,12 +80,12 @@ public class GitterificController extends Controller {
 	 * @return Future CompletionStage Result
 	 * @author Indraneel Rachakonda
 	 */
-	public CompletionStage<Result> getTopicRepository(String topic, Http.Request request) {
-		return gitterificService.getTopicRepository(topic).thenApplyAsync(
-				topicDetails -> ok(views.html.topics.topics.render(request, topicDetails,
-						assetsFinder)),
-				httpExecutionContext.current());
-	}
+//	public CompletionStage<Result> getTopicRepository(String topic, Http.Request request) {
+//		return gitterificService.getTopicRepository(topic).thenApplyAsync(
+//				topicDetails -> ok(views.html.topics.topics.render(request, topicDetails,
+//						assetsFinder)),
+//				httpExecutionContext.current());
+//	}
 
 	/**
 	 * Creates a websocket, connected to the supervisor actor and returns it
