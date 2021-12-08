@@ -23,7 +23,7 @@ import static play.mvc.Results.ok;
  * Contains cases to test GitHub API Implementation in Repository profile feature
  * @author Farheen Jamadar
  */
-public class RepositoryProfileTestImpl {
+public class RepositoryProfileImplTest {
     private static Application testApp;
     private static GitHubAPIImpl testGitHubAPIImpl;
     private static WSClient wsClient;

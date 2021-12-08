@@ -51,8 +51,6 @@ public class SearchReposControllerUITest extends WithServer {
      * application. Sets up an embedded server for testing.
      * @author Farheen Jamadar
      */
-
-
     @BeforeClass
     public static void setUp() {
         testApp = new GuiceApplicationBuilder().overrides(bind(GitHubAPI.class).to(GitHubAPIMock.class)).build();
@@ -75,7 +73,6 @@ public class SearchReposControllerUITest extends WithServer {
      * @author Farheen Jamadar
      * @throws IOException If the call cannot be completed due to an error
      */
-
     @AfterClass
     public static void tearDown() throws IOException{
         Helpers.stop(testApp);

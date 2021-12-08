@@ -164,7 +164,7 @@ public class SearchFeatureActorTest {
         final String unknownMessageStatus = new EventFilter(1) {
             @Override
             public boolean matches(Logging.LogEvent event) {
-                System.out.println("Printing log event: " + event.message().toString());
+                //System.out.println("Printing log event: " + event.message().toString());
                 return true;
             }
         }.intercept(() -> {
